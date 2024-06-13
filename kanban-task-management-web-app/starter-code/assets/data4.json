@@ -1,0 +1,65 @@
+[
+  {
+    "name": "Todo",
+    "tasks": [
+      { "$oid": "666b0b7b2ab1d085d19305c3" },
+      { "$oid": "666b0b7b2ab1d085d19305c4" },
+      { "$oid": "666b0b7b2ab1d085d19305c5" },
+      { "$oid": "666b0b7b2ab1d085d19305c6" }
+    ]
+  },
+  {
+    "name": "Doing",
+    "tasks": [
+      { "$oid": "666b0b7b2ab1d085d19305c7" },
+      { "$oid": "666b0b7b2ab1d085d19305c8" },
+      { "$oid": "666b0b7b2ab1d085d19305c9" },
+      { "$oid": "666b0b7b2ab1d085d19305ca" },
+      { "$oid": "666b0b7b2ab1d085d19305cb" },
+      { "$oid": "666b0b7b2ab1d085d19305cc" }
+    ]
+  },
+  {
+    "name": "Done",
+    "tasks": [
+      { "$oid": "666b0b7b2ab1d085d19305cd" },
+      { "$oid": "666b0b7b2ab1d085d19305ce" },
+      { "$oid": "666b0b7b2ab1d085d19305cf" },
+      { "$oid": "666b0b7b2ab1d085d19305d0" },
+      { "$oid": "666b0b7b2ab1d085d19305d1" },
+      { "$oid": "666b0b7b2ab1d085d19305d2" },
+      { "$oid": "666b0b7b2ab1d085d19305d3" }
+    ]
+  },
+  {
+    "name": "Todo",
+    "tasks": [
+      { "$oid": "666b0b7b2ab1d085d19305d4" },
+      { "$oid": "666b0b7b2ab1d085d19305d5" },
+      { "$oid": "666b0b7b2ab1d085d19305d6" }
+    ]
+  },
+  {
+    "name": "Doing",
+    "tasks": []
+  },
+  {
+    "name": "Done",
+    "tasks": []
+  },
+  {
+    "name": "Now",
+    "tasks": [
+      { "$oid": "666b0b7b2ab1d085d19305d7" },
+      { "$oid": "666b0b7b2ab1d085d19305d8" }
+    ]
+  },
+  {
+    "name": "Next",
+    "tasks": []
+  },
+  {
+    "name": "Later",
+    "tasks": []
+  }
+]
