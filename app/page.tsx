@@ -1,6 +1,9 @@
 import Link from "next/link";
+import { getAllTasks } from "./_lib/data-service";
+import Data from "./_components/Data";
 
-function page() {
+async function page() {
+
   return (
     <div>
       <Link href="/login">Login</Link>

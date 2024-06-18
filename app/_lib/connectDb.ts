@@ -3,16 +3,24 @@ import mongoose from "mongoose";
 let isConnected = false;
 
 async function connectToDb() {
-  if (isConnected) return;
+  if (isConnected) {
+    console.log("Already connected to MongoDB");
+    return;
+  }
 
   try {
-    const url = process.env.MONGO_URL!;
+    const url = process.env.MONGO_URL;
+    if (!url) {
+      throw new Error("MONGO_URL is not defined in environment variables");
+    }
+
     await mongoose.connect(url);
-    console.log("Connected to MongoDB");
+
     isConnected = true;
+    console.log("Connected to MongoDB");
   } catch (error) {
     console.error("Error connecting to MongoDB:", error);
-    process.exit(1);
+    throw error;
   }
 }
 

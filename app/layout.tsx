@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import { Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
+import SideBarNavigation from "@/app/_components/SideBarNavigation";
 
-const jakarta = Plus_Jakarta_Sans({ subsets: ["latin"] });
+const jakarta = Plus_Jakarta_Sans({ subsets: ["latin"], display: "swap" });
 
 export const metadata: Metadata = {
   title: "Kanban task management web app",
@@ -16,8 +17,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={jakarta.className}>{children}</body>
+    <html lang="en" className="text-[62.5%]">
+      <body
+        className={`${jakarta.className} grid min-h-[100dvh] grid-cols-[30rem_1fr]`}
+      >
+        <SideBarNavigation />
+        <main>{children}</main>
+      </body>
     </html>
   );
 }
