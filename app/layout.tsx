@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import SideBarNavigation from "@/app/_components/SideBarNavigation";
+import { BoardProvider } from "@/app/context/BoardContext";
 
 const jakarta = Plus_Jakarta_Sans({ subsets: ["latin"], display: "swap" });
 
@@ -19,10 +20,12 @@ export default function RootLayout({
   return (
     <html lang="en" className="text-[62.5%]">
       <body
-        className={`${jakarta.className} grid min-h-[100dvh] grid-cols-[30rem_1fr] overflow-x-hidden`}
+        className={`${jakarta.className} flex min-h-[100dvh] overflow-x-hidden`}
       >
         <SideBarNavigation />
-        <main>{children}</main>
+        <BoardProvider>
+          <main>{children}</main>
+        </BoardProvider>
       </body>
     </html>
   );

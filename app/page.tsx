@@ -8,7 +8,7 @@ async function page() {
   const data: BoardType[] = await getAllTasks();
 
   return (
-    <section className="h-full border-l border-[#3e3f4e] bg-[#20212c]">
+    <section className="relative h-full border-l border-[#3e3f4e] bg-[#20212c]">
       <BoardHeader data={data} />
       <section className="overflow-hidden p-[2.4rem]">
         <BoardContainer data={data} />

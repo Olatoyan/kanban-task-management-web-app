@@ -1,0 +1,62 @@
+"use client";
+
+import { BsThreeDotsVertical } from "react-icons/bs";
+import { TaskType } from "../_lib/type";
+import ViewTasksList from "./ViewTasksList";
+import { useBoard } from "@/app/context/BoardContext";
+
+function ViewTasks({ task }: { task: TaskType }) {
+  console.log(task);
+
+  const { clearSelectedTask } = useBoard();
+
+  const numSubTasksCompleted = task.subtasks
+    .map((subtask) => subtask.isCompleted)
+    .filter(Boolean).length;
+
+  return (
+    <div className="fixed inset-0 flex h-full w-full items-center justify-center">
+      <div className="z-10 flex w-full max-w-[50rem] flex-col gap-10 rounded-[0.6rem] bg-[#2b2c37] p-[3.2rem]">
+        <div className="flex items-center justify-between">
+          <h3 className="text-[1.8rem] font-bold text-white">{task.title}</h3>
+
+          <BsThreeDotsVertical className="text-[2rem] text-[#828fa3]" />
+        </div>
+
+        <p className="text-[1.3rem] font-medium leading-[2.3rem] text-[#828fa3]">
+          {task.description}
+        </p>
+
+        <div>
+          <p className="pb-4 text-[1.2rem] font-bold text-white">
+            Subtasks ({numSubTasksCompleted} of {task.subtasks.length})
+          </p>
+
+          <div className="flex flex-col gap-3">
+            {task.subtasks.map((subtask) => (
+              <ViewTasksList key={subtask._id} subtask={subtask} />
+            ))}
+          </div>
+        </div>
+
+        <div>
+          <p className="pb-3 text-[1.2rem] font-bold text-white">
+            Current Status
+          </p>
+          <button className="w-full rounded-[0.4rem] border border-[rgba(130,143,163,0.25)] px-6 py-3">
+            <span className="text-[1.3rem] font-medium leading-[2.3rem] text-white">
+              {task.status}
+            </span>
+          </button>
+        </div>
+      </div>
+
+      <div
+        className="fixed bottom-0 left-0 right-0 top-0 h-full w-full bg-black/50"
+        onClick={clearSelectedTask}
+      ></div>
+    </div>
+  );
+}
+
+export default ViewTasks;

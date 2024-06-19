@@ -11,7 +11,7 @@ async function SideBarNavigation() {
   // console.log(data);
 
   return (
-    <aside className="flex flex-col bg-[#2B2C37] pt-[3.2rem]">
+    <aside className="flex w-full max-w-[30rem] flex-col bg-[#2B2C37] pt-[3.2rem]">
       <Logo />
       <nav className="mt-[5.4rem] flex flex-col gap-8 pr-[2.3rem]">
         <h2 className="px-[3.2rem] text-[1.2rem] font-bold tracking-[0.24rem] text-[#828fa3]">
