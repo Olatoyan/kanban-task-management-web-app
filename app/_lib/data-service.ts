@@ -87,6 +87,19 @@ export async function getSubtasks() {
   return user;
 }
 
+export async function toggleSubtask(id: string) {
+  await connectToDb();
+
+  const subtask = await Subtask.findById(id);
+
+  console.log(subtask);
+
+  subtask.isCompleted = !subtask.isCompleted;
+
+  console.log(subtask);
+  await subtask.save();
+}
+
 // export async function getAllTasks() {
 //   await connectToDb();
 

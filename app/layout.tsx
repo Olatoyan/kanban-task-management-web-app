@@ -24,7 +24,7 @@ export default function RootLayout({
       >
         <SideBarNavigation />
         <BoardProvider>
-          <main>{children}</main>
+          <main className="w-full">{children}</main>
         </BoardProvider>
       </body>
     </html>
