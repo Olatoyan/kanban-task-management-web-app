@@ -19,7 +19,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="text-[62.5%]">
       <body
-        className={`${jakarta.className} grid min-h-[100dvh] grid-cols-[30rem_1fr]`}
+        className={`${jakarta.className} grid min-h-[100dvh] grid-cols-[30rem_1fr] overflow-x-hidden`}
       >
         <SideBarNavigation />
         <main>{children}</main>

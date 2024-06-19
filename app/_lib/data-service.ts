@@ -48,12 +48,15 @@ export async function getAllTasks() {
     _id: board._id.toString(),
     name: board.name,
     columns: board.columns.map((column: any) => ({
+      ...column,
       _id: column._id.toString(),
       // Populate other properties of column if needed
       tasks: column.tasks.map((task: any) => ({
+        ...task,
         _id: task._id.toString(),
         // Populate other properties of task if needed
         subtasks: task.subtasks.map((subtask: any) => ({
+          ...subtask,
           _id: subtask._id.toString(),
           // Populate other properties of subtask if needed
         })),
@@ -61,7 +64,6 @@ export async function getAllTasks() {
     })),
   }));
 }
-
 
 export async function getColumn() {
   await connectToDb();
