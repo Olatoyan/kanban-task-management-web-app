@@ -10,7 +10,7 @@ function ViewTasksList({ subtask }: { subtask: SubtaskType }) {
   const { _id: id, title } = subtask;
 
   function handleChange() {
-    toggleSubtaskAction(id);
+    toggleSubtaskAction(id!);
     setIsCompleted(!isCompleted);
   }
   return (

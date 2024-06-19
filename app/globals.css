@@ -2,7 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-
 .loader {
   width: 65px;
   height: 30px;
@@ -25,4 +24,24 @@
   100% {
     inset: 0 0 0 35px;
   }
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 12px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #2b2c37;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #635fc7;
+  border-radius: 6px;
+  border: 3px solid #2b2c37;
+}
+
+/* For Firefox */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #635fc7 #2b2c37;
 }

@@ -18,7 +18,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="text-[62.5%]">
+    <html lang="en" className="custom-scrollbar text-[62.5%]">
       <body
         className={`${jakarta.className} flex min-h-[100dvh] overflow-x-hidden`}
       >

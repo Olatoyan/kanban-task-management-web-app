@@ -1,11 +1,11 @@
 export type SubtaskType = {
-  _id: string;
+  _id?: string;
   title: string;
   isCompleted: boolean;
 };
 
 export type TaskType = {
-  _id: string;
+  _id?: string;
   title: string;
   status: string;
   description: string;
@@ -13,13 +13,13 @@ export type TaskType = {
 };
 
 export type ColumnType = {
-  _id: string;
+  _id?: string;
   name: string;
   tasks: TaskType[];
 };
 
 export type BoardType = {
-  _id: string;
+  _id?: string;
   name: string;
   columns: ColumnType[];
 };

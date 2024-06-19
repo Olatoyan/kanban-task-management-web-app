@@ -5,6 +5,7 @@ import { BoardType } from "../_lib/type";
 import BoardLists from "./BoardLists";
 import { useBoard } from "@/app/context/BoardContext";
 import ViewTasks from "./ViewTasks";
+import EditTask from "./EditTask";
 
 function BoardContainer({ data }: { data: BoardType[] }) {
   const { state } = useBoard();
@@ -35,7 +36,8 @@ function BoardContainer({ data }: { data: BoardType[] }) {
       </div>
 
       {state.isViewingTask && <ViewTasks task={state.selectedTask!} />}
-      {/* <ViewTasks  /> */}
+
+      {state.isEditingTask && <EditTask task={state.selectedTask!} />}
     </>
   );
 }

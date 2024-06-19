@@ -9,7 +9,7 @@ import { useState } from "react";
 function ViewTasks({ task }: { task: TaskType }) {
   const [isOptionsOpen, setIsOptionsOpen] = useState(false);
 
-  const { clearSelectedTask } = useBoard();
+  const { clearSelectedTask, editSelectedTask } = useBoard();
 
   const numSubTasksCompleted = task.subtasks
     .map((subtask) => subtask.isCompleted)
@@ -46,7 +46,10 @@ function ViewTasks({ task }: { task: TaskType }) {
 
           {isOptionsOpen && (
             <div className="absolute right-[-10%] top-[20%] flex w-[19.2rem] flex-col gap-[1.6rem] bg-[#20212c] p-[1.6rem] shadow-[0px_10px_20px_0px_rgba(54,78,126,0.25)]">
-              <p className="text-[1.3rem] font-medium leading-[2.3rem] text-[#828fa3]">
+              <p
+                className="cursor-pointer text-[1.3rem] font-medium leading-[2.3rem] text-[#828fa3]"
+                onClick={editSelectedTask}
+              >
                 Edit Task
               </p>
               <p className="text-[1.3rem] font-medium leading-[2.3rem] text-[#ea5555]">

@@ -6,15 +6,18 @@ import { TaskType } from "../_lib/type";
 type StateType = {
   selectedTask: TaskType | null;
   isViewingTask: boolean;
+  isEditingTask: boolean;
 };
 
 type ActionType =
   | { type: "SET_SELECTED_TASK"; payload: TaskType }
-  | { type: "CLEAR_SELECTED_TASK" };
+  | { type: "CLEAR_SELECTED_TASK" }
+  | { type: "EDIT_SELECTED_TASK" };
 
 const initialState: StateType = {
   selectedTask: null,
   isViewingTask: false,
+  isEditingTask: false,
 };
 
 const BoardContext = createContext<{
@@ -22,11 +25,13 @@ const BoardContext = createContext<{
   dispatch: React.Dispatch<ActionType>;
   setSelectedTask: (task: TaskType) => void;
   clearSelectedTask: () => void;
+  editSelectedTask: () => void;
 }>({
   state: initialState,
   dispatch: () => null,
   setSelectedTask: () => {},
   clearSelectedTask: () => {},
+  editSelectedTask: () => {},
 });
 
 const reducer = (state: StateType, action: ActionType): StateType => {
@@ -34,7 +39,14 @@ const reducer = (state: StateType, action: ActionType): StateType => {
     case "SET_SELECTED_TASK":
       return { ...state, selectedTask: action.payload, isViewingTask: true };
     case "CLEAR_SELECTED_TASK":
-      return { ...state, selectedTask: null, isViewingTask: false };
+      return {
+        ...state,
+        selectedTask: null,
+        isViewingTask: false,
+        isEditingTask: false,
+      };
+    case "EDIT_SELECTED_TASK":
+      return { ...state, isEditingTask: true, isViewingTask: false };
     default:
       return state;
   }
@@ -51,9 +63,19 @@ function BoardProvider({ children }: { children: ReactNode }) {
     dispatch({ type: "CLEAR_SELECTED_TASK" });
   }
 
+  function editSelectedTask() {
+    dispatch({ type: "EDIT_SELECTED_TASK" });
+  }
+
   return (
     <BoardContext.Provider
-      value={{ state, dispatch, setSelectedTask, clearSelectedTask }}
+      value={{
+        state,
+        dispatch,
+        setSelectedTask,
+        clearSelectedTask,
+        editSelectedTask,
+      }}
     >
       {children}
     </BoardContext.Provider>
