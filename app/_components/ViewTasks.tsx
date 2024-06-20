@@ -79,7 +79,7 @@ function ViewTasks({ task }: { task: TaskType }) {
           <p className="pb-3 text-[1.2rem] font-bold text-white">
             Current Status
           </p>
-          <button className="w-full rounded-[0.4rem] border border-[rgba(130,143,163,0.25)] px-6 py-3">
+          <button className="flex w-full items-start rounded-[0.4rem] border border-[rgba(130,143,163,0.25)] px-6 py-3">
             <span className="text-[1.3rem] font-medium leading-[2.3rem] text-white">
               {task.status}
             </span>

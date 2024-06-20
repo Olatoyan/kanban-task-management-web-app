@@ -16,3 +16,7 @@ export async function toggleSubtaskAction(id: string) {
   console.log("Done");
   revalidatePath("/");
 }
+
+export async function editTaskAction(formData: FormData) {
+  console.log(formData);
+}

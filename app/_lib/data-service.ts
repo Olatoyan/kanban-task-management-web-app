@@ -92,12 +92,13 @@ export async function toggleSubtask(id: string) {
 
   const subtask = await Subtask.findById(id);
 
-  console.log(subtask);
-
   subtask.isCompleted = !subtask.isCompleted;
 
-  console.log(subtask);
   await subtask.save();
+}
+
+export async function editTask({}) {
+  const task = await Task.findByIdAndUpdate;
 }
 
 // export async function getAllTasks() {
