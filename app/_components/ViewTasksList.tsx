@@ -2,17 +2,34 @@
 
 import { toggleSubtaskAction } from "../_lib/actions";
 import { SubtaskType } from "../_lib/type";
-import { useState } from "react";
+import { useState, useTransition } from "react";
+import { useBoard } from "../context/BoardContext";
 
 function ViewTasksList({ subtask }: { subtask: SubtaskType }) {
+  const { state, setSelectedTask } = useBoard();
+
   const [isCompleted, setIsCompleted] = useState(subtask.isCompleted);
+  const [isPending, startTransition] = useTransition();
 
   const { _id: id, title } = subtask;
 
-  function handleChange() {
-    toggleSubtaskAction(id!);
-    setIsCompleted(!isCompleted);
+  async function handleChange() {
+    setIsCompleted((prev) => !prev);
+
+    startTransition(async () => {
+      await toggleSubtaskAction(id!);
+
+      // Update the task in the global state
+      const updatedTask = {
+        ...state.selectedTask!,
+        subtasks: state.selectedTask!.subtasks.map((s) =>
+          s._id === id ? { ...s, isCompleted: !isCompleted } : s,
+        ),
+      };
+      setSelectedTask(updatedTask);
+    });
   }
+
   return (
     <label
       htmlFor={id}
@@ -24,6 +41,7 @@ function ViewTasksList({ subtask }: { subtask: SubtaskType }) {
         className="accent-[#635fc7]"
         checked={isCompleted}
         onChange={handleChange}
+        disabled={isPending}
       />
       <p
         className={`text-[1.2rem] text-white ${isCompleted ? "text-opacity-50 line-through" : ""}`}

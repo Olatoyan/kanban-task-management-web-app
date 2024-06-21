@@ -26,7 +26,7 @@ function BoardContainer({ data }: { data: BoardType[] }) {
   return (
     <>
       <div className="flex h-full gap-10 overflow-auto">
-        <div className="flex gap-10">
+        <div className="flex w-full gap-10">
           {currentBoardData?.columns.map((column, index) => (
             <BoardLists key={column._id} data={column} index={index} />
           ))}
