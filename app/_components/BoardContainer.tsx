@@ -18,7 +18,10 @@ function BoardContainer({ data }: { data: BoardType[] }) {
 
   const currentBoardData = data.find((board) => board.name === currentBoard);
 
+  console.log(currentBoardData);
   console.log(currentBoardData?.columns);
+
+  const allStatus = currentBoardData?.columns.map((column) => column.name);
 
   return (
     <>
@@ -37,7 +40,9 @@ function BoardContainer({ data }: { data: BoardType[] }) {
 
       {state.isViewingTask && <ViewTasks task={state.selectedTask!} />}
 
-      {state.isEditingTask && <EditTask task={state.selectedTask!} />}
+      {state.isEditingTask && (
+        <EditTask task={state.selectedTask!} allStatus={allStatus ?? []} />
+      )}
     </>
   );
 }

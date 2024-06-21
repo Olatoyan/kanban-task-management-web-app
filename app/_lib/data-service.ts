@@ -97,9 +97,35 @@ export async function toggleSubtask(id: string) {
   await subtask.save();
 }
 
-export async function editTask({}) {
-  const task = await Task.findByIdAndUpdate;
-}
+// export async function editTask({
+//   id,
+//   title,
+//   description,
+//   status,
+//   subtasks,
+// }: {
+//   id: string;
+//   title: string;
+//   description: string;
+//   status: string;
+//   subtasks: { title: string }[];
+// }) {
+//   await connectToDb();
+
+//   const updatedTask = await Task.findByIdAndUpdate(
+//     id,
+//     {
+//       title,
+//       description,
+//       status,
+//       subtasks,
+//     },
+//     { new: true },
+//   );
+
+//   console.log("Updated!!!!!!!!!!");
+//   return updatedTask;
+// }
 
 // export async function getAllTasks() {
 //   await connectToDb();
@@ -107,3 +133,64 @@ export async function editTask({}) {
 //   const data = await Board.find().populate("columns");
 //   return data;
 // }
+
+export async function editTask({
+  id,
+  title,
+  description,
+  status,
+  subtasks,
+}: {
+  id: string;
+  title: string;
+  description: string;
+  status: string;
+  subtasks: { title: string }[];
+}) {
+  await connectToDb();
+
+  const task = await Task.findById(id).populate("subtasks").exec();
+  if (!task) {
+    throw new Error("Task not found");
+  }
+
+  // Track existing subtasks and IDs to keep
+  const subtaskTitles = new Set(subtasks.map((subtask) => subtask.title));
+  const existingSubtaskIdsToKeep = [];
+  const existingSubtaskTitles = new Set();
+
+  // Loop through existing subtasks in the task
+  for (let subtask of task.subtasks) {
+    if (subtaskTitles.has(subtask.title)) {
+      existingSubtaskIdsToKeep.push(subtask._id);
+      existingSubtaskTitles.add(subtask.title);
+    } else {
+      // Remove subtask if it's not in the form data
+      await Subtask.findByIdAndDelete(subtask._id);
+    }
+  }
+
+  // Add new subtasks from the form data
+  for (let subtask of subtasks) {
+    if (!existingSubtaskTitles.has(subtask.title)) {
+      const newSubtask = new Subtask({ title: subtask.title });
+      await newSubtask.save();
+      existingSubtaskIdsToKeep.push(newSubtask._id);
+    }
+  }
+
+  // Update the main task with the new set of subtask IDs and other details
+  const updatedTask = await Task.findByIdAndUpdate(
+    id,
+    {
+      title,
+      description,
+      status,
+      subtasks: existingSubtaskIdsToKeep,
+    },
+    { new: true },
+  );
+
+  console.log("Updated!!!!!!!!!!");
+  return updatedTask;
+}

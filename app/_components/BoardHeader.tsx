@@ -1,12 +1,25 @@
 "use client";
 
-import { useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { BoardType } from "../_lib/type";
+import { useEffect } from "react";
 
 function BoardHeader({ data }: { data: BoardType[] }) {
   const searchParams = useSearchParams();
 
+  const router = useRouter();
+  const pathname = usePathname();
+
   const boardName = searchParams.get("board") ?? data[0].name;
+
+  useEffect(() => {
+    const currentBoard = searchParams.get("board");
+    if (currentBoard !== boardName) {
+      const params = new URLSearchParams(window.location.search);
+      params.set("board", boardName);
+      router.push(`${pathname}?${params.toString()}`, { scroll: false });
+    }
+  }, [boardName, searchParams, pathname, router]);
 
   return (
     <div className="flex items-center justify-between bg-[#2b2c37] px-20 py-11">
