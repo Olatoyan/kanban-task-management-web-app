@@ -96,7 +96,7 @@ function EditTask({
             ))}
           </div>
           <p
-            className="rounded-[2rem] bg-white py-[0.85rem] text-[1.3rem] font-bold leading-[2.3rem] text-[#635fc7]"
+            className="rounded-[2rem] bg-white py-[0.85rem] text-center text-[1.3rem] font-bold leading-[2.3rem] text-[#635fc7]"
             onClick={addNewSubtask}
           >
             + Add New SubTask
