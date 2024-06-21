@@ -179,7 +179,26 @@ export async function editTask({
     }
   }
 
-  // Update the main task with the new set of subtask IDs and other details
+  // Find the current column containing the task
+  const currentColumn = await Column.findOne({ tasks: id }).exec();
+  if (!currentColumn) {
+    throw new Error("Current column not found");
+  }
+
+  // Remove the task from the current column's tasks array
+  currentColumn.tasks.pull(id);
+  await currentColumn.save();
+
+  // Find the new column based on the new status
+  const newColumn = await Column.findOne({ name: status }).exec();
+  if (!newColumn) {
+    throw new Error("New column not found");
+  }
+
+  // Add the task to the new column's tasks array
+  newColumn.tasks.push(id);
+  await newColumn.save();
+
   const updatedTask = await Task.findByIdAndUpdate(
     id,
     {
