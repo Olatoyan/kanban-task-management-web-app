@@ -22,7 +22,7 @@ function SideBoardNames({ data }: { data: BoardType[] }) {
       {data.map((board) => (
         <li
           key={board._id}
-          className={`flex cursor-pointer items-center gap-4 rounded-[0_10rem_10rem_0] px-[3.2rem] py-[1.4rem] text-[1.5rem] font-bold text-white ${board.name === activeBoard ? "bg-[#635fc7]" : ""}`}
+          className={`flex cursor-pointer items-center gap-4 rounded-[0_10rem_10rem_0] px-[3.2rem] py-[1.4rem] text-[1.5rem] font-bold text-white transition-all duration-300 ${board.name === activeBoard ? "bg-[#635fc7]" : "hover:bg-white hover:text-[#635fc7]"}`}
           onClick={() => handleBoardClick(board.name)}
         >
           <TbLayoutBoardSplit className="h-[2rem] w-[2rem]" />
