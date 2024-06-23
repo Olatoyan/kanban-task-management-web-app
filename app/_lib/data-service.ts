@@ -219,18 +219,18 @@ export async function addTask({
   if (!currentBoard) {
     throw new Error(`Board with name ${board} not found`);
   }
-  console.log(currentBoard, "0");
 
-  // Update the relevant column in the board based on the task status
-  const column = currentBoard.columns.find((col) => col.name === status);
-  if (column) {
-    column.tasks.push(newTask._id);
-    console.log(column, "1");
-  } else {
-    throw new Error(`Column with status ${status} not found in the board`);
-  }
-  console.log(column, "2");
-  console.log(currentBoard, "3");
+  
+  const findColumn = currentBoard.columns.find((col) => col.name === status);
+  
+
+  const column = await Column.findById(findColumn._id);
+  
+  column.tasks.push(newTask._id);
+
+  await column.save();
+
+
 
   // Save the updated board
   await currentBoard.save();
