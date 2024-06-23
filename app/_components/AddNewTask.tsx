@@ -1,27 +1,27 @@
-"use client";
-
 import { useState } from "react";
-import { TaskType } from "../_lib/type";
-import AddSubtask from "./AddSubtask";
-import { useBoard } from "../context/BoardContext";
-import { BsChevronDown } from "react-icons/bs";
-import { editTaskAction } from "../_lib/actions";
 import Button from "./Button";
+import { BsChevronDown } from "react-icons/bs";
+import AddSubtask from "./AddSubtask";
+import { createNewTask } from "../_lib/actions";
+import { useBoard } from "../context/BoardContext";
 
-function EditTask({
-  task,
+function AddNewTask({
   allStatus,
+  boardName,
 }: {
-  task: TaskType;
   allStatus: string[];
+  boardName: string;
 }) {
-  const { clearSelectedTask } = useBoard();
-
-  const { title, description, _id } = task;
-
-  const [subtasks, setSubtasks] = useState(task.subtasks);
+  const [subtasks, setSubtasks] = useState([
+    {
+      title: "",
+      isCompleted: false,
+    },
+  ]);
   const [isExpanded, setIsExpanded] = useState(false);
-  const [status, setStatus] = useState(task.status);
+  const [status, setStatus] = useState(allStatus[0]);
+
+  const { clearSelectedTask } = useBoard();
 
   function addNewSubtask() {
     const newSubtask = {
@@ -44,13 +44,13 @@ function EditTask({
     <div className="fixed inset-0 flex h-full w-full items-center justify-center">
       <form
         className={`z-[10] flex h-[55rem] w-full max-w-[50rem] flex-col gap-10 overflow-auto rounded-[0.6rem] bg-[#2b2c37] p-[3.2rem]`}
-        action={editTaskAction}
+        action={createNewTask}
         onSubmit={clearSelectedTask}
       >
-        <h3 className="text-[1.8rem] font-bold text-white">Edit Task</h3>
+        <h3 className="text-[1.8rem] font-bold text-white">Add New Task</h3>
 
         <input type="hidden" name="status" value={status} />
-        <input type="hidden" name="id" value={_id} />
+        <input type="hidden" name="boardName" value={boardName} />
 
         <div className="flex flex-col gap-3">
           <label htmlFor="title" className="text-[1.2rem] font-bold text-white">
@@ -62,7 +62,6 @@ function EditTask({
             id="title"
             className="rounded-[0.4rem] border border-[rgba(130,143,163,0.25)] bg-[#2B2C37] px-6 py-3 text-[1.3rem] font-medium leading-[2.3rem] text-white outline-[0] placeholder:text-opacity-25 hover:border-[#635fc7] focus:border-[#635fc7] focus:outline-[#635fc7]"
             placeholder="Enter your title here"
-            defaultValue={title}
           />
         </div>
         <div className="flex flex-col gap-3">
@@ -78,7 +77,6 @@ function EditTask({
             id="description"
             className="resize-none rounded-[0.4rem] border border-[rgba(130,143,163,0.25)] bg-[#2B2C37] px-6 py-3 text-[1.3rem] font-medium leading-[2.3rem] text-white outline-[0] placeholder:text-opacity-25 hover:border-[#635fc7] focus:border-[#635fc7] focus:outline-[#635fc7]"
             placeholder="Enter your description here"
-            defaultValue={description}
           />
         </div>
 
@@ -132,7 +130,7 @@ function EditTask({
           )}
         </div>
 
-        <Button pendingLabel="Saving" label="Save Changes" />
+        <Button pendingLabel="Creating" label="Create Task" />
       </form>
 
       <div
@@ -143,4 +141,4 @@ function EditTask({
   );
 }
 
-export default EditTask;
+export default AddNewTask;

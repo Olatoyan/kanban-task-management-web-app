@@ -4,6 +4,7 @@ import Board from "@/models/boardModel";
 import Task from "@/models/taskModel";
 import Column from "@/models/columnModel";
 import Subtask from "@/models/subtaskModel";
+import { BoardType, ColumnType } from "./type";
 
 export async function createUser({
   name,
@@ -97,43 +98,6 @@ export async function toggleSubtask(id: string) {
   await subtask.save();
 }
 
-// export async function editTask({
-//   id,
-//   title,
-//   description,
-//   status,
-//   subtasks,
-// }: {
-//   id: string;
-//   title: string;
-//   description: string;
-//   status: string;
-//   subtasks: { title: string }[];
-// }) {
-//   await connectToDb();
-
-//   const updatedTask = await Task.findByIdAndUpdate(
-//     id,
-//     {
-//       title,
-//       description,
-//       status,
-//       subtasks,
-//     },
-//     { new: true },
-//   );
-
-//   console.log("Updated!!!!!!!!!!");
-//   return updatedTask;
-// }
-
-// export async function getAllTasks() {
-//   await connectToDb();
-
-//   const data = await Board.find().populate("columns");
-//   return data;
-// }
-
 export async function editTask({
   id,
   title,
@@ -212,4 +176,64 @@ export async function editTask({
 
   console.log("Updated!!!!!!!!!!");
   return updatedTask;
+}
+
+export async function addTask({
+  board,
+  title,
+  description,
+  status,
+  subtasks,
+}: {
+  board: string;
+  title: string;
+  description: string;
+  status: string;
+  subtasks: { title: string }[];
+}) {
+  await connectToDb();
+
+  // Create each subtask and collect their IDs
+  const subtaskIds = [];
+  for (const subtask of subtasks) {
+    const newSubtask = new Subtask({ title: subtask.title });
+    await newSubtask.save();
+    subtaskIds.push(newSubtask._id);
+  }
+
+  // Create the main task with the collected subtask IDs
+  const newTask = new Task({
+    title,
+    description,
+    status,
+    subtasks: subtaskIds,
+  });
+
+  await newTask.save();
+
+  // Retrieve the current board
+  const currentBoard = await Board.findOne({ name: board }).populate({
+    path: "columns",
+  });
+
+  if (!currentBoard) {
+    throw new Error(`Board with name ${board} not found`);
+  }
+  console.log(currentBoard, "0");
+
+  // Update the relevant column in the board based on the task status
+  const column = currentBoard.columns.find((col) => col.name === status);
+  if (column) {
+    column.tasks.push(newTask._id);
+    console.log(column, "1");
+  } else {
+    throw new Error(`Column with status ${status} not found in the board`);
+  }
+  console.log(column, "2");
+  console.log(currentBoard, "3");
+
+  // Save the updated board
+  await currentBoard.save();
+
+  return newTask;
 }

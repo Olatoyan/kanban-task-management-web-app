@@ -7,6 +7,7 @@ type StateType = {
   selectedTask: TaskType | null;
   isViewingTask: boolean;
   isEditingTask: boolean;
+  isAddingTask: boolean;
   isDeletingTask: string | null;
   deletedTask: TaskType | null;
   deletedBoard: BoardType | null;
@@ -23,12 +24,14 @@ type ActionType =
   | {
       type: "DELETE_SELECTED_BOARD";
       payload: { data: BoardType; deletedType: string };
-    };
+    }
+  | { type: "ADD_NEW_TASK" };
 
 const initialState: StateType = {
   selectedTask: null,
   isViewingTask: false,
   isEditingTask: false,
+  isAddingTask: false,
   isDeletingTask: null,
   deletedTask: null,
   deletedBoard: null,
@@ -42,6 +45,7 @@ const BoardContext = createContext<{
   editSelectedTask: () => void;
   deleteSelectedTask: (task: TaskType, deletedType: string) => void;
   deleteSelectedBoard: (board: BoardType, deletedType: string) => void;
+  addNewTask: () => void;
 }>({
   state: initialState,
   dispatch: () => null,
@@ -50,6 +54,7 @@ const BoardContext = createContext<{
   editSelectedTask: () => {},
   deleteSelectedTask: () => {},
   deleteSelectedBoard: () => {},
+  addNewTask: () => {},
 });
 
 const reducer = (state: StateType, action: ActionType): StateType => {
@@ -61,6 +66,7 @@ const reducer = (state: StateType, action: ActionType): StateType => {
         isViewingTask: true,
         isEditingTask: false,
         isDeletingTask: null,
+        isAddingTask: false,
       };
     case "CLEAR_SELECTED_TASK":
       return {
@@ -69,6 +75,7 @@ const reducer = (state: StateType, action: ActionType): StateType => {
         isViewingTask: false,
         isEditingTask: false,
         isDeletingTask: null,
+        isAddingTask: false,
       };
     case "EDIT_SELECTED_TASK":
       return { ...state, isEditingTask: true, isViewingTask: false };
@@ -85,6 +92,13 @@ const reducer = (state: StateType, action: ActionType): StateType => {
         ...state,
         deletedBoard: action.payload.data,
         isDeletingTask: action.payload.deletedType,
+        isViewingTask: false,
+        isEditingTask: false,
+      };
+    case "ADD_NEW_TASK":
+      return {
+        ...state,
+        isAddingTask: true,
         isViewingTask: false,
         isEditingTask: false,
       };
@@ -122,6 +136,10 @@ function BoardProvider({ children }: { children: ReactNode }) {
     });
   }
 
+  function addNewTask() {
+    dispatch({ type: "ADD_NEW_TASK" });
+  }
+
   return (
     <BoardContext.Provider
       value={{
@@ -132,6 +150,7 @@ function BoardProvider({ children }: { children: ReactNode }) {
         editSelectedTask,
         deleteSelectedTask,
         deleteSelectedBoard,
+        addNewTask,
       }}
     >
       {children}

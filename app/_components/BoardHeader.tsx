@@ -4,11 +4,14 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { BoardType } from "../_lib/type";
 import { useEffect, useState } from "react";
 import { BsThreeDotsVertical } from "react-icons/bs";
+import { useBoard } from "../context/BoardContext";
 
 function BoardHeader({ data }: { data: BoardType[] }) {
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
+
+  const { addNewTask } = useBoard();
 
   const boardName = searchParams.get("board") ?? data[0].name;
 
@@ -36,7 +39,10 @@ function BoardHeader({ data }: { data: BoardType[] }) {
       <h1 className="text-[2.4rem] font-bold text-white">{boardName}</h1>
 
       <div className="relative flex items-center gap-6">
-        <button className="flex items-center gap-4 rounded-[2.4rem] bg-[#635fc7] px-[3.2rem] py-[1.4rem] text-[1.5rem] font-bold text-white">
+        <button
+          className="flex items-center gap-4 rounded-[2.4rem] bg-[#635fc7] px-[3.2rem] py-[1.4rem] text-[1.5rem] font-bold text-white"
+          onClick={addNewTask}
+        >
           + Add New Task
         </button>
 
