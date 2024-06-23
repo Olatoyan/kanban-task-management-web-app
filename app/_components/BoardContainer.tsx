@@ -6,6 +6,7 @@ import BoardLists from "./BoardLists";
 import { useBoard } from "@/app/context/BoardContext";
 import ViewTasks from "./ViewTasks";
 import EditTask from "./EditTask";
+import DeleteModal from "./DeleteModal";
 
 function BoardContainer({ data }: { data: BoardType[] }) {
   const { state } = useBoard();
@@ -42,6 +43,14 @@ function BoardContainer({ data }: { data: BoardType[] }) {
 
       {state.isEditingTask && (
         <EditTask task={state.selectedTask!} allStatus={allStatus ?? []} />
+      )}
+
+      {state.isDeletingTask === "board" && (
+        <DeleteModal data={state.deletedTask!} />
+      )}
+
+      {state.isDeletingTask === "task" && (
+        <DeleteModal data={state.deletedBoard!} />
       )}
     </>
   );
