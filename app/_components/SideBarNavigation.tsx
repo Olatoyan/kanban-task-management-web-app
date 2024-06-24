@@ -18,14 +18,7 @@ async function SideBarNavigation() {
           All Boards ({data.length})
         </h2>
 
-        <ul className="flex flex-col gap-6">
-          <SideBoardNames data={data} />
-
-          <button className="flex items-center gap-4 px-[3.2rem] pt-[1.4rem] text-[1.5rem] font-bold text-[#635fc7]">
-            <TbLayoutBoardSplit className="h-[2rem] w-[2rem]" />
-            <span>+ Create New Board</span>
-          </button>
-        </ul>
+        <SideBoardNames data={data} />
       </nav>
 
       <ToggleTheme />

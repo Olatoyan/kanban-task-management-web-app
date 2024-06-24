@@ -22,8 +22,8 @@ export default function RootLayout({
       <body
         className={`${jakarta.className} flex min-h-[100dvh] overflow-x-hidden`}
       >
-        <SideBarNavigation />
         <BoardProvider>
+          <SideBarNavigation />
           <main className="w-full">{children}</main>
         </BoardProvider>
       </body>

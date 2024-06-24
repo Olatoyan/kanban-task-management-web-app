@@ -4,12 +4,21 @@ import Subtask from "@/models/subtaskModel";
 import { signIn } from "./auth";
 import connectToDb from "./connectDb";
 import Task from "@/models/taskModel";
-import { addTask, deleteTask, editTask, toggleSubtask } from "./data-service";
+import {
+  addBoard,
+  addTask,
+  deleteTask,
+  editTask,
+  toggleSubtask,
+} from "./data-service";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 type SubtaskActionType = {
   title: string;
+};
+type ColumnActionType = {
+  name: string;
 };
 
 export async function signInAction() {
@@ -121,5 +130,34 @@ export async function createNewTask(formData: FormData) {
 export async function deleteTaskAction(id: string, type: string) {
   await deleteTask({ type, id });
   console.log("Deleted!!!!!!!!");
+  revalidatePath("/");
+}
+
+export async function createNewBoard(formData: FormData) {
+  try {
+    const name = formData.get("name") as string;
+
+    const columns: ColumnActionType[] = [];
+    formData.forEach((value, key) => {
+      if (key.startsWith("task-")) {
+        const trimmedTitle = (value as string).trim();
+        if (trimmedTitle) {
+          columns.push({
+            name: trimmedTitle,
+          });
+        }
+      }
+    });
+    console.log(name);
+    if (!name.trim()) throw Error("A board name is required");
+
+    addBoard({
+      name,
+      columns,
+    });
+  } catch (error) {
+    return error;
+  }
+  // revalidatePath("/");
   revalidatePath("/");
 }

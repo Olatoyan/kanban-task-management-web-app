@@ -8,6 +8,7 @@ type StateType = {
   isViewingTask: boolean;
   isEditingTask: boolean;
   isAddingTask: boolean;
+  isAddingBoard: boolean;
   isDeletingTask: string | null;
   deletedTask: TaskType | null;
   deletedBoard: BoardType | null;
@@ -25,13 +26,15 @@ type ActionType =
       type: "DELETE_SELECTED_BOARD";
       payload: { data: BoardType; deletedType: string };
     }
-  | { type: "ADD_NEW_TASK" };
+  | { type: "ADD_NEW_TASK" }
+  | { type: "ADD_NEW_BOARD" };
 
 const initialState: StateType = {
   selectedTask: null,
   isViewingTask: false,
   isEditingTask: false,
   isAddingTask: false,
+  isAddingBoard: false,
   isDeletingTask: null,
   deletedTask: null,
   deletedBoard: null,
@@ -46,6 +49,7 @@ const BoardContext = createContext<{
   deleteSelectedTask: (task: TaskType, deletedType: string) => void;
   deleteSelectedBoard: (board: BoardType, deletedType: string) => void;
   addNewTask: () => void;
+  addNewBoard: () => void;
 }>({
   state: initialState,
   dispatch: () => null,
@@ -55,6 +59,7 @@ const BoardContext = createContext<{
   deleteSelectedTask: () => {},
   deleteSelectedBoard: () => {},
   addNewTask: () => {},
+  addNewBoard: () => {},
 });
 
 const reducer = (state: StateType, action: ActionType): StateType => {
@@ -76,6 +81,7 @@ const reducer = (state: StateType, action: ActionType): StateType => {
         isEditingTask: false,
         isDeletingTask: null,
         isAddingTask: false,
+        isAddingBoard: false,
       };
     case "EDIT_SELECTED_TASK":
       return { ...state, isEditingTask: true, isViewingTask: false };
@@ -99,6 +105,14 @@ const reducer = (state: StateType, action: ActionType): StateType => {
       return {
         ...state,
         isAddingTask: true,
+        isViewingTask: false,
+        isEditingTask: false,
+      };
+    case "ADD_NEW_BOARD":
+      return {
+        ...state,
+        isAddingBoard: true,
+        isAddingTask: false,
         isViewingTask: false,
         isEditingTask: false,
       };
@@ -140,6 +154,10 @@ function BoardProvider({ children }: { children: ReactNode }) {
     dispatch({ type: "ADD_NEW_TASK" });
   }
 
+  function addNewBoard() {
+    dispatch({ type: "ADD_NEW_BOARD" });
+  }
+
   return (
     <BoardContext.Provider
       value={{
@@ -151,6 +169,7 @@ function BoardProvider({ children }: { children: ReactNode }) {
         deleteSelectedTask,
         deleteSelectedBoard,
         addNewTask,
+        addNewBoard,
       }}
     >
       {children}

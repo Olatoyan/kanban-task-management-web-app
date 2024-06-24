@@ -261,3 +261,28 @@ export async function deleteTask({ type, id }: { type: string; id: string }) {
 
   throw new Error(`Unsupported type: ${type}`);
 }
+
+export async function addBoard({
+  name,
+  columns,
+}: {
+  name: string;
+  columns: { name: string }[];
+}) {
+  // Create each column and collect their IDs
+  const columnIds = [];
+
+  for (const column of columns) {
+    const trimmedTitle = column.name.trim();
+    const newColumn = new Column({ name: trimmedTitle });
+    await newColumn.save();
+    columnIds.push(newColumn._id);
+  }
+
+  const newBoard = new Board({
+    name,
+    columns: columnIds,
+  });
+
+  await newBoard.save();
+}

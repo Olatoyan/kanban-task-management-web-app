@@ -8,6 +8,7 @@ import ViewTasks from "./ViewTasks";
 import EditTask from "./EditTask";
 import DeleteModal from "./DeleteModal";
 import AddNewTask from "./AddNewTask";
+import AddNewBoard from "./AddNewBoard";
 
 function BoardContainer({ data }: { data: BoardType[] }) {
   const { state } = useBoard();
@@ -57,6 +58,8 @@ function BoardContainer({ data }: { data: BoardType[] }) {
       {state.isAddingTask && (
         <AddNewTask allStatus={allStatus ?? []} boardName={currentBoard} />
       )}
+
+      {state.isAddingBoard && <AddNewBoard />}
     </>
   );
 }
