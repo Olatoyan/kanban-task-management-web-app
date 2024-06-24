@@ -220,20 +220,42 @@ export async function addTask({
     throw new Error(`Board with name ${board} not found`);
   }
 
-  
-  const findColumn = currentBoard.columns.find((col) => col.name === status);
-  
+  const findColumn = currentBoard.columns.find(
+    (col: { name: string }) => col.name === status,
+  );
 
   const column = await Column.findById(findColumn._id);
-  
+
   column.tasks.push(newTask._id);
 
   await column.save();
-
-
 
   // Save the updated board
   await currentBoard.save();
 
   return newTask;
+}
+
+export async function deleteTask({ type, id }: { type: string; id: string }) {
+  if (type === "task") {
+    // Find the task by ID and populate its subtasks
+    const task = await Task.findById(id).populate("subtasks");
+
+    if (!task) {
+      throw new Error(`Task with ID ${id} not found`);
+    }
+
+    // Delete all subtasks associated with the task
+    const subtaskIds = task.subtasks.map(
+      (subtask: { _id: string }) => subtask._id,
+    );
+    await Subtask.deleteMany({ _id: { $in: subtaskIds } });
+
+    // Delete the task itself
+    await Task.findByIdAndDelete(id);
+
+    return { message: "Task and its subtasks have been deleted successfully" };
+  }
+
+  throw new Error(`Unsupported type: ${type}`);
 }

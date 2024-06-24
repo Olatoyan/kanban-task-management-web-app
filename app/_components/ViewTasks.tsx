@@ -9,7 +9,8 @@ import { useState } from "react";
 function ViewTasks({ task }: { task: TaskType }) {
   const [isOptionsOpen, setIsOptionsOpen] = useState(false);
 
-  const { clearSelectedTask, editSelectedTask } = useBoard();
+  const { clearSelectedTask, editSelectedTask, deleteSelectedTask } =
+    useBoard();
 
   const numSubTasksCompleted = task.subtasks
     .map((subtask) => subtask.isCompleted)
@@ -29,6 +30,10 @@ function ViewTasks({ task }: { task: TaskType }) {
     } else {
       clearSelectedTask();
     }
+  }
+
+  function handleDeleteTask(task: TaskType, deletedType: string) {
+    deleteSelectedTask(task, "task");
   }
 
   return (
@@ -52,7 +57,13 @@ function ViewTasks({ task }: { task: TaskType }) {
               >
                 Edit Task
               </p>
-              <p className="text-[1.3rem] font-medium leading-[2.3rem] text-[#ea5555]">
+              <p
+                className="cursor-pointer text-[1.3rem] font-medium leading-[2.3rem] text-[#ea5555]"
+                // onClick={handleDeleteTask}
+                onClick={() => {
+                  deleteSelectedTask(task, "task");
+                }}
+              >
                 Delete Task
               </p>
             </div>

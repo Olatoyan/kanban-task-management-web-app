@@ -46,12 +46,12 @@ function BoardContainer({ data }: { data: BoardType[] }) {
         <EditTask task={state.selectedTask!} allStatus={allStatus ?? []} />
       )}
 
-      {state.isDeletingTask === "board" && (
-        <DeleteModal data={state.deletedTask!} />
+      {state.isDeletingTask === "task" && (
+        <DeleteModal data={state.deletedTask!} type={state.isDeletingTask} />
       )}
 
-      {state.isDeletingTask === "task" && (
-        <DeleteModal data={state.deletedBoard!} />
+      {state.isDeletingTask === "board" && (
+        <DeleteModal data={state.deletedBoard!} type={state.isDeletingTask} />
       )}
 
       {state.isAddingTask && (
