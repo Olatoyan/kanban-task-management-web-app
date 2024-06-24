@@ -49,7 +49,7 @@ export async function editTaskAction(formData: FormData) {
   });
 
   revalidatePath("/");
-  redirect("/");
+  // redirect("/");
 }
 
 export async function createNewTask(formData: FormData) {
@@ -78,8 +78,9 @@ export async function createNewTask(formData: FormData) {
     subtasks,
   });
 
-  revalidatePath("/");
-  // redirect("/");
+  // revalidatePath("/");
+  revalidatePath(`/?board=${board}`);
+  redirect(`/?board=${board}`);
 }
 
 export async function deleteTaskAction(id: string, type: string) {

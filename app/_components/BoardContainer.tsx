@@ -12,7 +12,7 @@ import AddNewTask from "./AddNewTask";
 function BoardContainer({ data }: { data: BoardType[] }) {
   const { state } = useBoard();
 
-  // console.log(state);
+  console.log(data);
 
   const searchParams = useSearchParams();
 
