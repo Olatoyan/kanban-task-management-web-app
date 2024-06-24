@@ -15,6 +15,7 @@ function SideBoardNames({ data }: { data: BoardType[] }) {
     const params = new URLSearchParams(window.location.search);
     params.set("board", boardName);
     router.push(`${pathname}?${params.toString()}`, { scroll: false });
+    router.refresh();
   };
 
   return (

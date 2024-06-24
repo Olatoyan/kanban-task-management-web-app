@@ -175,7 +175,7 @@ export async function editTask({
   );
 
   console.log("Updated!!!!!!!!!!");
-  return updatedTask;
+  // return updatedTask;
 }
 
 export async function addTask({
@@ -233,7 +233,7 @@ export async function addTask({
   // Save the updated board
   await currentBoard.save();
 
-  return newTask;
+  // return newTask;
 }
 
 export async function deleteTask({ type, id }: { type: string; id: string }) {

@@ -79,8 +79,8 @@ export async function createNewTask(formData: FormData) {
   });
 
   // revalidatePath("/");
-  revalidatePath(`/?board=${board}`);
-  redirect(`/?board=${board}`);
+  revalidatePath("/");
+  // redirect(`/?board=${board}`);
 }
 
 export async function deleteTaskAction(id: string, type: string) {

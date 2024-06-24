@@ -4,6 +4,7 @@ import { BoardType } from "./_lib/type";
 import BoardHeader from "@/app/_components/BoardHeader";
 import BoardContainer from "@/app/_components/BoardContainer";
 
+export const revalidate = 0;
 async function page() {
   const data: BoardType[] = await getAllTasks();
 
