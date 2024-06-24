@@ -195,8 +195,10 @@ export async function addTask({
 
   // Create each subtask and collect their IDs
   const subtaskIds = [];
+
   for (const subtask of subtasks) {
-    const newSubtask = new Subtask({ title: subtask.title });
+    const trimmedTitle = subtask.title.trim();
+    const newSubtask = new Subtask({ title: trimmedTitle });
     await newSubtask.save();
     subtaskIds.push(newSubtask._id);
   }

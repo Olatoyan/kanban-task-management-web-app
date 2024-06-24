@@ -40,11 +40,18 @@ function AddNewTask({
     setIsExpanded(false);
   }
 
+  async function clientCreateNewTask(formData: FormData) {
+    const result = await createNewTask(formData);
+
+    console.log(result);
+  }
+
   return (
     <div className="fixed inset-0 flex h-full w-full items-center justify-center">
       <form
         className={`z-[10] flex h-[55rem] w-full max-w-[50rem] flex-col gap-10 overflow-auto rounded-[0.6rem] bg-[#2b2c37] p-[3.2rem]`}
-        action={createNewTask}
+        // action={createNewTask}
+        action={clientCreateNewTask}
         onSubmit={clearSelectedTask}
       >
         <h3 className="text-[1.8rem] font-bold text-white">Add New Task</h3>
