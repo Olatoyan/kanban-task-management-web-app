@@ -11,9 +11,11 @@ function BoardHeader({ data }: { data: BoardType[] }) {
   const router = useRouter();
   const pathname = usePathname();
 
-  const { addNewTask, setSelectedBoard } = useBoard();
+  const { addNewTask, setSelectedBoard, deleteSelectedBoard } = useBoard();
 
   const boardName = searchParams.get("board") ?? data[0].name;
+
+  const currentBoardData = data.find((board) => board.name === boardName);
 
   const [isOptionsOpen, setIsOptionsOpen] = useState(false);
 
@@ -57,11 +59,20 @@ function BoardHeader({ data }: { data: BoardType[] }) {
           <div className="absolute right-0 top-[7rem] flex w-full flex-col gap-[1.6rem] bg-[#20212c] p-[1.6rem] shadow-[0px_10px_20px_0px_rgba(54,78,126,0.25)]">
             <p
               className="cursor-pointer text-[1.3rem] font-medium leading-[2.3rem] text-[#828fa3]"
-              onClick={setSelectedBoard}
+              onClick={() => {
+                handleCloseOptionsBtn();
+                setSelectedBoard();
+              }}
             >
               Edit Board
             </p>
-            <p className="text-[1.3rem] font-medium leading-[2.3rem] text-[#ea5555]">
+            <p
+              className="cursor-pointer text-[1.3rem] font-medium leading-[2.3rem] text-[#ea5555]"
+              onClick={() => {
+                handleCloseOptionsBtn();
+                deleteSelectedBoard(currentBoardData!, "board");
+              }}
+            >
               Delete Board
             </p>
           </div>

@@ -259,6 +259,41 @@ export async function deleteTask({ type, id }: { type: string; id: string }) {
     return { message: "Task and its subtasks have been deleted successfully" };
   }
 
+  if (type === "board") {
+    const board = await Board.findById(id).populate("columns");
+
+    if (!board) {
+      throw new Error(`Board with ID ${id} not found`);
+    }
+
+    // For each column, find and delete its tasks and subtasks
+    for (const column of board.columns) {
+      const populatedColumn = await Column.findById(column._id).populate(
+        "tasks",
+      );
+      const tasks = populatedColumn.tasks;
+
+      for (const task of tasks) {
+        const subtaskIds = task.subtasks.map(
+          (subtask: { _id: string }) => subtask._id,
+        );
+        await Subtask.deleteMany({ _id: { $in: subtaskIds } });
+        await Task.findByIdAndDelete(task._id);
+      }
+
+      // Delete the column itself
+      await Column.findByIdAndDelete(column._id);
+    }
+
+    // Delete the board itself
+    await Board.findByIdAndDelete(id);
+
+    return {
+      message:
+        "Board and its columns, tasks, and subtasks have been deleted successfully",
+    };
+  }
+
   throw new Error(`Unsupported type: ${type}`);
 }
 
@@ -305,7 +340,9 @@ export async function editBoard({
   // Update the board's name
   board.name = name;
 
-  const existingColumnIds = board.columns.map((col) => col._id.toString());
+  const existingColumnIds = board.columns.map((col: { _id: string }) =>
+    col._id.toString(),
+  );
   const incomingColumnIds = columns
     .filter((col) => col.id)
     .map((col) => col.id);
@@ -313,7 +350,7 @@ export async function editBoard({
   const columnsToUpdate = columns.filter((col) => col.id);
   const newColumns = columns.filter((col) => !col.id);
   const columnsToRemove = board.columns.filter(
-    (col) => !incomingColumnIds.includes(col._id.toString()),
+    (col: { _id: string }) => !incomingColumnIds.includes(col._id.toString()),
   );
 
   console.log("Board:", board);

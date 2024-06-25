@@ -132,7 +132,9 @@ export async function createNewTask(formData: FormData) {
 export async function deleteTaskAction(id: string, type: string) {
   await deleteTask({ type, id });
   console.log("Deleted!!!!!!!!");
+
   revalidatePath("/");
+  if (type === "board") redirect("/");
 }
 
 export async function createNewBoard(formData: FormData) {
