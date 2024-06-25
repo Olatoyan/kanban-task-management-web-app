@@ -35,7 +35,7 @@ function EditBoard({ board }: { board: BoardType }) {
     });
   }
 
-  async function clientCreateNewBoard(formData: FormData) {
+  async function clientEditBoardAction(formData: FormData) {
     const result = await editBoardAction(formData);
 
     console.log("ok");
@@ -49,8 +49,8 @@ function EditBoard({ board }: { board: BoardType }) {
       <form
         className={`z-[10] flex max-h-[55rem] w-full max-w-[50rem] flex-col gap-10 overflow-auto rounded-[0.6rem] bg-[#2b2c37] p-[3.2rem]`}
         // action={createNewTask}
-        action={clientCreateNewBoard}
-        // onSubmit={clearSelectedTask}
+        action={clientEditBoardAction}
+        onSubmit={clearSelectedTask}
       >
         <h3 className="text-[1.8rem] font-bold text-white">Edit Board</h3>
 
