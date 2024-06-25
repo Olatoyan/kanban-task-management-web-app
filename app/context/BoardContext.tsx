@@ -5,10 +5,12 @@ import { BoardType, TaskType } from "../_lib/type";
 
 type StateType = {
   selectedTask: TaskType | null;
+  selectedBoard: BoardType | null;
   isViewingTask: boolean;
   isEditingTask: boolean;
   isAddingTask: boolean;
   isAddingBoard: boolean;
+  isEditingBoard: boolean;
   isDeletingTask: string | null;
   deletedTask: TaskType | null;
   deletedBoard: BoardType | null;
@@ -16,6 +18,8 @@ type StateType = {
 
 type ActionType =
   | { type: "SET_SELECTED_TASK"; payload: TaskType }
+  // | { type: "SET_SELECTED_BOARD"; payload: BoardType }
+  | { type: "SET_SELECTED_BOARD" }
   | { type: "CLEAR_SELECTED_TASK" }
   | { type: "EDIT_SELECTED_TASK" }
   | {
@@ -31,10 +35,12 @@ type ActionType =
 
 const initialState: StateType = {
   selectedTask: null,
+  selectedBoard: null,
   isViewingTask: false,
   isEditingTask: false,
   isAddingTask: false,
   isAddingBoard: false,
+  isEditingBoard: false,
   isDeletingTask: null,
   deletedTask: null,
   deletedBoard: null,
@@ -44,6 +50,8 @@ const BoardContext = createContext<{
   state: StateType;
   dispatch: React.Dispatch<ActionType>;
   setSelectedTask: (task: TaskType) => void;
+  setSelectedBoard: () => void;
+  // setSelectedBoard: (board: BoardType) => void;
   clearSelectedTask: () => void;
   editSelectedTask: () => void;
   deleteSelectedTask: (task: TaskType, deletedType: string) => void;
@@ -54,6 +62,7 @@ const BoardContext = createContext<{
   state: initialState,
   dispatch: () => null,
   setSelectedTask: () => {},
+  setSelectedBoard: () => {},
   clearSelectedTask: () => {},
   editSelectedTask: () => {},
   deleteSelectedTask: () => {},
@@ -69,19 +78,24 @@ const reducer = (state: StateType, action: ActionType): StateType => {
         ...state,
         selectedTask: action.payload,
         isViewingTask: true,
-        isEditingTask: false,
-        isDeletingTask: null,
-        isAddingTask: false,
+      };
+    case "SET_SELECTED_BOARD":
+      return {
+        ...state,
+        // selectedBoard: action.payload,
+        isEditingBoard: true,
       };
     case "CLEAR_SELECTED_TASK":
       return {
         ...state,
         selectedTask: null,
+        selectedBoard: null,
         isViewingTask: false,
         isEditingTask: false,
         isDeletingTask: null,
         isAddingTask: false,
         isAddingBoard: false,
+        isEditingBoard: false,
       };
     case "EDIT_SELECTED_TASK":
       return { ...state, isEditingTask: true, isViewingTask: false };
@@ -128,6 +142,13 @@ function BoardProvider({ children }: { children: ReactNode }) {
     dispatch({ type: "SET_SELECTED_TASK", payload: task });
   }
 
+  function setSelectedBoard() {
+    dispatch({ type: "SET_SELECTED_BOARD" });
+  }
+  // function setSelectedBoard(board: BoardType) {
+  //   dispatch({ type: "SET_SELECTED_BOARD", payload: board });
+  // }
+
   function clearSelectedTask() {
     dispatch({ type: "CLEAR_SELECTED_TASK" });
   }
@@ -164,6 +185,7 @@ function BoardProvider({ children }: { children: ReactNode }) {
         state,
         dispatch,
         setSelectedTask,
+        setSelectedBoard,
         clearSelectedTask,
         editSelectedTask,
         deleteSelectedTask,

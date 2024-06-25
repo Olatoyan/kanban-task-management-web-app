@@ -8,6 +8,7 @@ import {
   addBoard,
   addTask,
   deleteTask,
+  editBoard,
   editTask,
   toggleSubtask,
 } from "./data-service";
@@ -19,6 +20,7 @@ type SubtaskActionType = {
 };
 type ColumnActionType = {
   name: string;
+  id?: string;
 };
 
 export async function signInAction() {
@@ -160,4 +162,40 @@ export async function createNewBoard(formData: FormData) {
   }
   // revalidatePath("/");
   revalidatePath("/");
+}
+
+export async function editBoardAction(formData: FormData) {
+  // Convert FormData to an array
+  const formEntries = Array.from(formData.entries());
+
+  console.log(formEntries);
+  // Initialize variables to store the board name and columns
+  let boardName = "";
+  let boardId = "";
+  const columns: { name: string; id: string }[] = [];
+
+  // Iterate over the form entries to extract the board name and columns
+  formEntries.forEach(([key, value]) => {
+    if (key === "name") {
+      boardName = value.toString();
+    } else if (key === "id") {
+      boardId = value.toString();
+    } else if (key.startsWith("task-")) {
+      const index = parseInt(key.split("-")[1], 10);
+      columns[index] = { ...columns[index], name: value.toString() };
+    } else if (key.startsWith("id-")) {
+      const index = parseInt(key.split("-")[1], 10);
+      columns[index] = { ...columns[index], id: value.toString() };
+    }
+  });
+
+  // console.log(boardName);
+  // console.log(boardId);
+  // console.log(columns);
+
+  editBoard({
+    id: boardId,
+    name: boardName,
+    columns,
+  });
 }

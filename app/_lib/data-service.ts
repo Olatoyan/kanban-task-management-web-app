@@ -286,3 +286,58 @@ export async function addBoard({
 
   await newBoard.save();
 }
+
+export async function editBoard({
+  id,
+  name,
+  columns,
+}: {
+  id: string;
+  name: string;
+  columns: { name: string; id: string }[];
+}) {
+  const board: BoardType = await Board.findById(id).populate("columns");
+
+  if (!board) {
+    throw new Error("Board not found");
+  }
+
+  // Update the board's name
+  board.name = name;
+
+  const existingColumnIds = board.columns.map((col) => col._id.toString());
+  const incomingColumnIds = columns
+    .filter((col) => col.id)
+    .map((col) => col.id);
+
+  const columnsToUpdate = columns.filter((col) => col.id);
+  const newColumns = columns.filter((col) => !col.id);
+  const columnsToRemove = board.columns.filter(
+    (col) => !incomingColumnIds.includes(col._id.toString()),
+  );
+
+  console.log("Board:", board);
+  console.log("Existing Column IDs:", existingColumnIds);
+  console.log("Incoming Column IDs:", incomingColumnIds);
+  console.log("Columns to Update:", columnsToUpdate);
+  console.log("New Columns:", newColumns);
+  console.log("Columns to Remove:", columnsToRemove);
+
+  for (const column of columnsToUpdate) {
+    await Column.findByIdAndUpdate(column.id, { name: column.name });
+  }
+}
+
+export async function addColumn({ id, name }: { id: string; name: string }) {
+  const board = await Board.findById(id).populate("columns");
+  if (!board) {
+    throw new Error("Board not found");
+  }
+
+  const trimmedTitle = name.trim();
+
+  const newColumn = new Column({ name: trimmedTitle });
+  await newColumn.save();
+  board.columns.push(newColumn._id);
+  await board.save();
+}

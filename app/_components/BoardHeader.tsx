@@ -11,7 +11,7 @@ function BoardHeader({ data }: { data: BoardType[] }) {
   const router = useRouter();
   const pathname = usePathname();
 
-  const { addNewTask } = useBoard();
+  const { addNewTask, setSelectedBoard } = useBoard();
 
   const boardName = searchParams.get("board") ?? data[0].name;
 
@@ -57,12 +57,12 @@ function BoardHeader({ data }: { data: BoardType[] }) {
           <div className="absolute right-0 top-[7rem] flex w-full flex-col gap-[1.6rem] bg-[#20212c] p-[1.6rem] shadow-[0px_10px_20px_0px_rgba(54,78,126,0.25)]">
             <p
               className="cursor-pointer text-[1.3rem] font-medium leading-[2.3rem] text-[#828fa3]"
-              // onClick={editSelectedTask}
+              onClick={setSelectedBoard}
             >
-              Edit Task
+              Edit Board
             </p>
             <p className="text-[1.3rem] font-medium leading-[2.3rem] text-[#ea5555]">
-              Delete Task
+              Delete Board
             </p>
           </div>
         )}

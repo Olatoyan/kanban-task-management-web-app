@@ -9,6 +9,7 @@ import EditTask from "./EditTask";
 import DeleteModal from "./DeleteModal";
 import AddNewTask from "./AddNewTask";
 import AddNewBoard from "./AddNewBoard";
+import EditBoard from "./EditBoard";
 
 function BoardContainer({ data }: { data: BoardType[] }) {
   const { state } = useBoard();
@@ -60,6 +61,8 @@ function BoardContainer({ data }: { data: BoardType[] }) {
       )}
 
       {state.isAddingBoard && <AddNewBoard />}
+
+      {state.isEditingBoard && <EditBoard board={currentBoardData!} />}
     </>
   );
 }
