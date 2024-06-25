@@ -199,3 +199,7 @@ export async function editBoardAction(formData: FormData) {
     columns,
   });
 }
+
+export async function createColumn(formData: FormData) {
+  console.log(formData);
+}

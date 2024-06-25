@@ -52,7 +52,7 @@ function EditBoard({ board }: { board: BoardType }) {
         action={clientCreateNewBoard}
         // onSubmit={clearSelectedTask}
       >
-        <h3 className="text-[1.8rem] font-bold text-white">Add New Board</h3>
+        <h3 className="text-[1.8rem] font-bold text-white">Edit Board</h3>
 
         <input name="id" type="hidden" value={board._id} />
         <div className="flex flex-col gap-3">
@@ -103,7 +103,7 @@ function EditBoard({ board }: { board: BoardType }) {
           </p>
         </div>
 
-        <Button pendingLabel="Creating" label="Create New Board" />
+        <Button pendingLabel="Saving...." label="Save Changes" />
       </form>
 
       <div

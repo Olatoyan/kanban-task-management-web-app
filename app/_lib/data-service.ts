@@ -296,7 +296,7 @@ export async function editBoard({
   name: string;
   columns: { name: string; id: string }[];
 }) {
-  const board: BoardType = await Board.findById(id).populate("columns");
+  const board = await Board.findById(id).populate("columns");
 
   if (!board) {
     throw new Error("Board not found");
@@ -324,8 +324,36 @@ export async function editBoard({
   console.log("Columns to Remove:", columnsToRemove);
 
   for (const column of columnsToUpdate) {
-    await Column.findByIdAndUpdate(column.id, { name: column.name });
+    console.log("columnToUpdate", column);
+    // await Column.findByIdAndUpdate(column.id, { name: column.name });
   }
+
+  // Remove deleted columns and their associated tasks and subtasks
+  for (const column of columnsToRemove) {
+    const populatedColumn = await Column.findById(column._id).populate("tasks");
+    const tasks = populatedColumn.tasks;
+
+    for (const task of tasks) {
+      console.log("task", task);
+      await Subtask.deleteMany({ _id: { $in: task.subtasks } });
+      await Task.findByIdAndDelete(task._id);
+    }
+
+    await Column.findByIdAndDelete(column._id);
+  }
+
+  // Add new columns
+  for (const column of newColumns) {
+    console.log("newColumns", column);
+    const newColumn = new Column({ name: column.name });
+    await newColumn.save();
+    board.columns.push(newColumn._id);
+  }
+
+  // Save the updated board
+  await board.save();
+
+  return board;
 }
 
 export async function addColumn({ id, name }: { id: string; name: string }) {
