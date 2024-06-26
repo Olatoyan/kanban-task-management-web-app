@@ -11,9 +11,12 @@ import AddNewTask from "./AddNewTask";
 import AddNewBoard from "./AddNewBoard";
 import EditBoard from "./EditBoard";
 import AddNewColumn from "./AddNewColumn";
+import RevealSidebar from "./RevealSidebar";
+import { useTheme } from "../context/ThemeContext";
 
 function BoardContainer({ data }: { data: BoardType[] }) {
   const { state, addNewColumn } = useBoard();
+  const { state: themeState } = useTheme();
 
   console.log(data);
 
@@ -29,7 +32,9 @@ function BoardContainer({ data }: { data: BoardType[] }) {
   const allStatus = currentBoardData?.columns.map((column) => column.name);
 
   return (
-    <>
+    <section
+      className={`custom-scrollbar h-[86.8vh] overflow-hidden p-[2.4rem] ${themeState.isSidebarHidden ? "w-screen" : "w-[80vw]"}`}
+    >
       <div className="custom-scrollbar flex h-full gap-10 overflow-auto">
         <div className="flex w-screen gap-10">
           {currentBoardData?.columns.map((column, index) => (
@@ -39,12 +44,14 @@ function BoardContainer({ data }: { data: BoardType[] }) {
             className="group flex w-[28rem] cursor-pointer items-center justify-center bg-[linear-gradient(180deg,_rgba(43,44,55,0.25)_0%,_rgba(43,44,55,0.13)_100%)]"
             onClick={addNewColumn}
           >
-            <button className="text-[2.4rem] font-bold text-[#828fa3] transition-all duration-300 group-hover:text-[#635fac]">
+            <button className="text-[2.4rem] font-bold text-[#828fa3] transition-all duration-300 group-hover:text-[#635fc7]">
               + New Column
             </button>
           </div>
         </div>
       </div>
+
+      <RevealSidebar />
 
       {state.isViewingTask && <ViewTasks task={state.selectedTask!} />}
 
@@ -68,7 +75,7 @@ function BoardContainer({ data }: { data: BoardType[] }) {
 
       {state.isEditingBoard && <EditBoard board={currentBoardData!} />}
       {state.isAddingColumn && <AddNewColumn board={currentBoardData!} />}
-    </>
+    </section>
   );
 }
 
