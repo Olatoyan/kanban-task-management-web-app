@@ -10,6 +10,7 @@ type StateType = {
   isEditingTask: boolean;
   isAddingTask: boolean;
   isAddingBoard: boolean;
+  isAddingColumn: boolean;
   isEditingBoard: boolean;
   isDeletingTask: string | null;
   deletedTask: TaskType | null;
@@ -31,7 +32,8 @@ type ActionType =
       payload: { data: BoardType; deletedType: string };
     }
   | { type: "ADD_NEW_TASK" }
-  | { type: "ADD_NEW_BOARD" };
+  | { type: "ADD_NEW_BOARD" }
+  | { type: "ADD_NEW_COLUMN" };
 
 const initialState: StateType = {
   selectedTask: null,
@@ -40,6 +42,7 @@ const initialState: StateType = {
   isEditingTask: false,
   isAddingTask: false,
   isAddingBoard: false,
+  isAddingColumn: false,
   isEditingBoard: false,
   isDeletingTask: null,
   deletedTask: null,
@@ -58,6 +61,7 @@ const BoardContext = createContext<{
   deleteSelectedBoard: (board: BoardType, deletedType: string) => void;
   addNewTask: () => void;
   addNewBoard: () => void;
+  addNewColumn: () => void;
 }>({
   state: initialState,
   dispatch: () => null,
@@ -69,6 +73,7 @@ const BoardContext = createContext<{
   deleteSelectedBoard: () => {},
   addNewTask: () => {},
   addNewBoard: () => {},
+  addNewColumn: () => {},
 });
 
 const reducer = (state: StateType, action: ActionType): StateType => {
@@ -96,6 +101,7 @@ const reducer = (state: StateType, action: ActionType): StateType => {
         isAddingTask: false,
         isAddingBoard: false,
         isEditingBoard: false,
+        isAddingColumn: false,
       };
     case "EDIT_SELECTED_TASK":
       return { ...state, isEditingTask: true, isViewingTask: false };
@@ -130,6 +136,11 @@ const reducer = (state: StateType, action: ActionType): StateType => {
         isViewingTask: false,
         isEditingTask: false,
       };
+    case "ADD_NEW_COLUMN":
+      return {
+        ...state,
+        isAddingColumn: true,
+      };
     default:
       return state;
   }
@@ -145,9 +156,6 @@ function BoardProvider({ children }: { children: ReactNode }) {
   function setSelectedBoard() {
     dispatch({ type: "SET_SELECTED_BOARD" });
   }
-  // function setSelectedBoard(board: BoardType) {
-  //   dispatch({ type: "SET_SELECTED_BOARD", payload: board });
-  // }
 
   function clearSelectedTask() {
     dispatch({ type: "CLEAR_SELECTED_TASK" });
@@ -179,6 +187,10 @@ function BoardProvider({ children }: { children: ReactNode }) {
     dispatch({ type: "ADD_NEW_BOARD" });
   }
 
+  function addNewColumn() {
+    dispatch({ type: "ADD_NEW_COLUMN" });
+  }
+
   return (
     <BoardContext.Provider
       value={{
@@ -192,6 +204,7 @@ function BoardProvider({ children }: { children: ReactNode }) {
         deleteSelectedBoard,
         addNewTask,
         addNewBoard,
+        addNewColumn,
       }}
     >
       {children}

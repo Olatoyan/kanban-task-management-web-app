@@ -10,9 +10,10 @@ import DeleteModal from "./DeleteModal";
 import AddNewTask from "./AddNewTask";
 import AddNewBoard from "./AddNewBoard";
 import EditBoard from "./EditBoard";
+import AddNewColumn from "./AddNewColumn";
 
 function BoardContainer({ data }: { data: BoardType[] }) {
-  const { state } = useBoard();
+  const { state, addNewColumn } = useBoard();
 
   console.log(data);
 
@@ -35,7 +36,10 @@ function BoardContainer({ data }: { data: BoardType[] }) {
             <BoardLists key={column._id} data={column} index={index} />
           ))}
           <div className="flex w-[28rem] items-center justify-center bg-[linear-gradient(180deg,_rgba(43,44,55,0.25)_0%,_rgba(43,44,55,0.13)_100%)]">
-            <button className="text-[2.4rem] font-bold text-[#828fa3]">
+            <button
+              className="text-[2.4rem] font-bold text-[#828fa3]"
+              onClick={addNewColumn}
+            >
               + New Column
             </button>
           </div>
@@ -63,6 +67,7 @@ function BoardContainer({ data }: { data: BoardType[] }) {
       {state.isAddingBoard && <AddNewBoard />}
 
       {state.isEditingBoard && <EditBoard board={currentBoardData!} />}
+      {state.isAddingColumn && <AddNewColumn board={currentBoardData!} />}
     </>
   );
 }

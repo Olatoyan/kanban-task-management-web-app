@@ -6,6 +6,7 @@ import connectToDb from "./connectDb";
 import Task from "@/models/taskModel";
 import {
   addBoard,
+  addColumn,
   addTask,
   deleteTask,
   editBoard,
@@ -204,4 +205,24 @@ export async function editBoardAction(formData: FormData) {
 
 export async function createColumn(formData: FormData) {
   console.log(formData);
+
+  const id = formData.get("id") as string;
+
+  const columns: ColumnActionType[] = [];
+  formData.forEach((value, key) => {
+    if (key.startsWith("task-")) {
+      const trimmedTitle = (value as string).trim();
+      if (trimmedTitle) {
+        columns.push({
+          name: trimmedTitle,
+        });
+      }
+    }
+  });
+
+  for (const column of columns) {
+    await addColumn({ id, name: column.name });
+  }
+
+  revalidatePath("/");
 }
