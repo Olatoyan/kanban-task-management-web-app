@@ -7,9 +7,7 @@ async function SideBarNavigation() {
 
   // console.log(data);
 
-  return (
-    <SideBar data={data} />
-  );
+  return <SideBar data={data} />;
 }
 
 export default SideBarNavigation;

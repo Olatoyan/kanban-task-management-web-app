@@ -13,9 +13,9 @@ function BoardHeader({ data }: { data: BoardType[] }) {
 
   const { addNewTask, setSelectedBoard, deleteSelectedBoard } = useBoard();
 
-  const boardName = searchParams.get("board") ?? data[0].name;
+  const boardName = searchParams.get("board") ?? data?.[0]?.name ?? "";
 
-  const currentBoardData = data.find((board) => board.name === boardName);
+  const currentBoardData = data?.find((board) => board.name === boardName);
 
   const [isOptionsOpen, setIsOptionsOpen] = useState(false);
 
@@ -28,6 +28,7 @@ function BoardHeader({ data }: { data: BoardType[] }) {
   }
 
   useEffect(() => {
+    if (!boardName) return;
     const currentBoard = searchParams.get("board");
     if (currentBoard !== boardName) {
       const params = new URLSearchParams(window.location.search);
@@ -42,15 +43,19 @@ function BoardHeader({ data }: { data: BoardType[] }) {
 
       <div className="relative flex items-center gap-6">
         <button
-          className="flex items-center gap-4 rounded-[2.4rem] bg-[#635fc7] px-[3.2rem] py-[1.4rem] text-[1.5rem] font-bold text-white"
+          className="flex items-center gap-4 rounded-[2.4rem] bg-[#635fc7] px-[3.2rem] py-[1.4rem] text-[1.5rem] font-bold text-white disabled:cursor-not-allowed disabled:opacity-50"
           onClick={addNewTask}
+          disabled={data.length === 0}
         >
           + Add New Task
         </button>
 
-        <button>
+        <button
+          disabled={data.length === 0}
+          className="disabled:cursor-not-allowed disabled:opacity-50"
+        >
           <BsThreeDotsVertical
-            className="cursor-pointer text-[2rem] text-[#828fa3]"
+            className="text-[2rem] text-[#828fa3]"
             onClick={handleOpenOptionsBtn}
           />
         </button>

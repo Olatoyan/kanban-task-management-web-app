@@ -11,7 +11,7 @@ function SideBoardNames({ data }: { data: BoardType[] }) {
   const router = useRouter();
   const pathname = usePathname();
 
-  const activeBoard = searchParams.get("board") ?? data[0].name;
+  const activeBoard = searchParams.get("board") ?? data?.[0]?.name;
 
   function handleClick() {
     addNewBoard();

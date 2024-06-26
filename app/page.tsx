@@ -6,7 +6,7 @@ import BoardContainer from "@/app/_components/BoardContainer";
 
 export const revalidate = 0;
 async function page() {
-  const data: BoardType[] = await getAllTasks();
+  const data: BoardType[] = (await getAllTasks()) ?? [];
 
   return (
     <section className="relative h-full border-l border-[#3e3f4e] bg-[#20212c]">

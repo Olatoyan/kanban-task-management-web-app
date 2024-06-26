@@ -19,7 +19,7 @@ function SideBar({ data }: { data: BoardType[] }) {
       <Logo />
       <nav className="mt-[5.4rem] flex flex-col gap-8 pr-[2.3rem]">
         <h2 className="px-[3.2rem] text-[1.2rem] font-bold tracking-[0.24rem] text-[#828fa3]">
-          All Boards ({data.length})
+          {data.length > 0 ? `All Boards (${data.length})` : "No Boards"}
         </h2>
 
         <SideBoardNames data={data} />
