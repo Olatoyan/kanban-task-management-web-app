@@ -30,16 +30,16 @@ function BoardContainer({ data }: { data: BoardType[] }) {
 
   return (
     <>
-      <div className="flex h-full gap-10 overflow-auto">
-        <div className="flex w-full gap-10">
+      <div className="custom-scrollbar flex h-full gap-10 overflow-auto">
+        <div className="flex w-screen gap-10">
           {currentBoardData?.columns.map((column, index) => (
             <BoardLists key={column._id} data={column} index={index} />
           ))}
-          <div className="flex w-[28rem] items-center justify-center bg-[linear-gradient(180deg,_rgba(43,44,55,0.25)_0%,_rgba(43,44,55,0.13)_100%)]">
-            <button
-              className="text-[2.4rem] font-bold text-[#828fa3]"
-              onClick={addNewColumn}
-            >
+          <div
+            className="group flex w-[28rem] cursor-pointer items-center justify-center bg-[linear-gradient(180deg,_rgba(43,44,55,0.25)_0%,_rgba(43,44,55,0.13)_100%)]"
+            onClick={addNewColumn}
+          >
+            <button className="text-[2.4rem] font-bold text-[#828fa3] transition-all duration-300 group-hover:text-[#635fac]">
               + New Column
             </button>
           </div>

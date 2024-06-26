@@ -37,7 +37,7 @@ function BoardHeader({ data }: { data: BoardType[] }) {
   }, [boardName, searchParams, pathname, router]);
 
   return (
-    <div className="flex items-center justify-between bg-[#2b2c37] px-20 py-11">
+    <div className="flex items-center justify-between border-b border-[#3e3f4e] bg-[#2b2c37] px-20 py-11">
       <h1 className="text-[2.4rem] font-bold text-white">{boardName}</h1>
 
       <div className="relative flex items-center gap-6">
