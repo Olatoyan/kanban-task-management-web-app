@@ -179,13 +179,13 @@ export async function editTask({
 }
 
 export async function addTask({
-  board,
+  id,
   title,
   description,
   status,
   subtasks,
 }: {
-  board: string;
+  id: string;
   title: string;
   description: string;
   status: string;
@@ -213,13 +213,12 @@ export async function addTask({
 
   await newTask.save();
 
-  // Retrieve the current board
-  const currentBoard = await Board.findOne({ name: board }).populate({
+  const currentBoard = await Board.findById(id).populate({
     path: "columns",
   });
 
   if (!currentBoard) {
-    throw new Error(`Board with name ${board} not found`);
+    throw new Error(`Board with id ${id} not found`);
   }
 
   const findColumn = currentBoard.columns.find(
@@ -232,10 +231,9 @@ export async function addTask({
 
   await column.save();
 
-  // Save the updated board
   await currentBoard.save();
 
-  // return newTask;
+  return currentBoard;
 }
 
 export async function deleteTask({ type, id }: { type: string; id: string }) {

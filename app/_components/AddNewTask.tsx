@@ -4,14 +4,23 @@ import { BsChevronDown } from "react-icons/bs";
 import AddSubtask from "./AddSubtask";
 import { createNewTask } from "../_lib/actions";
 import { useBoard } from "../context/BoardContext";
+import { NewTaskFormType } from "../_lib/type";
+import { useForm } from "react-hook-form";
+import ErrorMessage from "./ErrorMessage";
 
 function AddNewTask({
   allStatus,
-  boardName,
+  boardId,
 }: {
   allStatus: string[];
-  boardName: string;
+  boardId: string;
 }) {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<NewTaskFormType>();
+
   const [subtasks, setSubtasks] = useState([
     {
       title: "",
@@ -40,36 +49,56 @@ function AddNewTask({
     setIsExpanded(false);
   }
 
-  async function clientCreateNewTask(formData: FormData) {
-    const result = await createNewTask(formData);
+  async function onSubmit(data: NewTaskFormType) {
+    console.log(data);
+    const newData = { ...data, status, id: boardId };
 
-    console.log(result);
+    await createNewTask(newData);
+
+    clearSelectedTask();
   }
+
+  console.log(errors);
 
   return (
     <div className="fixed inset-0 flex h-full w-full items-center justify-center">
       <form
         className={`z-[10] flex h-[55rem] w-full max-w-[50rem] flex-col gap-10 overflow-auto rounded-[0.6rem] bg-[#2b2c37] p-[3.2rem]`}
         // action={createNewTask}
-        action={clientCreateNewTask}
-        onSubmit={clearSelectedTask}
+        // action={clientCreateNewTask}
+        onSubmit={handleSubmit(onSubmit)}
       >
         <h3 className="text-[1.8rem] font-bold text-white">Add New Task</h3>
 
-        <input type="hidden" name="status" value={status} />
-        <input type="hidden" name="boardName" value={boardName} />
+        {/* <input type="hidden" name="status" value={status} />
+        <input type="hidden" name="id" value={boardId} /> */}
 
         <div className="flex flex-col gap-3">
           <label htmlFor="title" className="text-[1.2rem] font-bold text-white">
             Title
           </label>
-          <input
-            type="text"
-            name="title"
-            id="title"
-            className="rounded-[0.4rem] border border-[rgba(130,143,163,0.25)] bg-[#2B2C37] px-6 py-3 text-[1.3rem] font-medium leading-[2.3rem] text-white outline-[0] placeholder:text-opacity-25 hover:border-[#635fc7] focus:border-[#635fc7] focus:outline-[#635fc7]"
-            placeholder="Enter your title here"
-          />
+          <div className="relative">
+            <input
+              type="text"
+              id="title"
+              className={`w-full rounded-[0.4rem] border bg-[#2B2C37] px-6 py-3 text-[1.3rem] font-medium leading-[2.3rem] text-white outline-[0] placeholder:text-opacity-25 ${errors?.title?.message ? "border-[#ea5555] focus:border-[#ea5555]" : "border-[rgba(130,143,163,0.25)] hover:border-[#635fc7] focus:border-[#635fc7] focus:outline-[#635fc7]"}`}
+              placeholder="Enter your title here"
+              {...register("title", {
+                required: "Can't be empty",
+                minLength: {
+                  value: 3,
+                  message: "Must be at least 3 characters",
+                },
+                maxLength: {
+                  value: 50,
+                  message: "Must be less than 50 characters",
+                },
+              })}
+            />
+            {errors?.title?.message && (
+              <ErrorMessage>{errors.title.message}</ErrorMessage>
+            )}
+          </div>
         </div>
         <div className="flex flex-col gap-3">
           <label
@@ -78,13 +107,18 @@ function AddNewTask({
           >
             Description
           </label>
-          <textarea
-            rows={4}
-            name="description"
-            id="description"
-            className="resize-none rounded-[0.4rem] border border-[rgba(130,143,163,0.25)] bg-[#2B2C37] px-6 py-3 text-[1.3rem] font-medium leading-[2.3rem] text-white outline-[0] placeholder:text-opacity-25 hover:border-[#635fc7] focus:border-[#635fc7] focus:outline-[#635fc7]"
-            placeholder="Enter your description here"
-          />
+          <div className="relative">
+            <textarea
+              rows={4}
+              id="description"
+              className={`w-full resize-none rounded-[0.4rem] border bg-[#2B2C37] px-6 py-3 text-[1.3rem] font-medium leading-[2.3rem] text-white outline-[0] placeholder:text-opacity-25 ${errors?.description?.message ? "border-[#ea5555] focus:border-[#ea5555]" : "border-[rgba(130,143,163,0.25)] hover:border-[#635fc7] focus:border-[#635fc7] focus:outline-[#635fc7]"}`}
+              placeholder="Enter your description here"
+              {...register("description")}
+            />
+            {errors?.description?.message && (
+              <ErrorMessage>{errors.description.message}</ErrorMessage>
+            )}
+          </div>
         </div>
 
         <div className="flex flex-col gap-3">
@@ -97,6 +131,8 @@ function AddNewTask({
                 title={subtask.title}
                 index={index}
                 handleRemove={removeSubtask}
+                register={register}
+                error={errors}
               />
             ))}
           </div>

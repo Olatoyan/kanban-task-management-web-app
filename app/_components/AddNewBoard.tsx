@@ -3,8 +3,17 @@ import { useBoard } from "../context/BoardContext";
 import AddSubtask from "./AddSubtask";
 import Button from "./Button";
 import { createNewBoard } from "../_lib/actions";
+import { useForm } from "react-hook-form";
+import { NewBoardFormType } from "../_lib/type";
+import ErrorMessage from "./ErrorMessage";
 
 function AddNewBoard() {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<NewBoardFormType>();
+
   const [columns, setColumns] = useState([
     {
       name: "",
@@ -24,20 +33,21 @@ function AddNewBoard() {
     setColumns(columns.filter((_, i) => i !== index));
   }
 
-  async function clientCreateNewBoard(formData: FormData) {
-    const result = await createNewBoard(formData);
+  async function onSubmit(data: NewBoardFormType) {
+    console.log(data);
 
-    // console.log("ok");
-    console.log(result);
+    await createNewBoard(data);
   }
+
+  console.log(errors);
 
   return (
     <div className="fixed inset-0 flex h-full w-full items-center justify-center">
       <form
         className={`z-[10] flex max-h-[55rem] w-full max-w-[50rem] flex-col gap-10 overflow-auto rounded-[0.6rem] bg-[#2b2c37] p-[3.2rem]`}
         // action={createNewTask}
-        action={clientCreateNewBoard}
-        onSubmit={clearSelectedTask}
+        // action={clientCreateNewBoard}
+        onSubmit={handleSubmit(onSubmit)}
       >
         <h3 className="text-[1.8rem] font-bold text-white">Add New Board</h3>
 
@@ -48,13 +58,28 @@ function AddNewBoard() {
           >
             Board Name
           </label>
-          <input
-            type="text"
-            name="name"
-            id="boardName"
-            className="rounded-[0.4rem] border border-[rgba(130,143,163,0.25)] bg-[#2B2C37] px-6 py-3 text-[1.3rem] font-medium leading-[2.3rem] text-white outline-[0] placeholder:text-opacity-25 hover:border-[#635fc7] focus:border-[#635fc7] focus:outline-[#635fc7]"
-            placeholder="Enter your Board name here"
-          />
+          <div className="relative">
+            <input
+              type="text"
+              id="boardName"
+              className={`w-full rounded-[0.4rem] border bg-[#2B2C37] px-6 py-3 text-[1.3rem] font-medium leading-[2.3rem] text-white outline-[0] placeholder:text-opacity-25 ${errors?.name?.message ? "border-[#ea5555] focus:border-[#ea5555]" : "border-[rgba(130,143,163,0.25)] hover:border-[#635fc7] focus:border-[#635fc7] focus:outline-[#635fc7]"}`}
+              placeholder="Enter your Board name here"
+              {...register("name", {
+                required: "Can't be empty",
+                minLength: {
+                  value: 3,
+                  message: "Must be at least 3 characters",
+                },
+                maxLength: {
+                  value: 15,
+                  message: "Must be less than 15 characters",
+                },
+              })}
+            />
+            {errors?.name?.message && (
+              <ErrorMessage>{errors.name.message}</ErrorMessage>
+            )}
+          </div>
         </div>
 
         <div className="flex flex-col gap-3">
@@ -68,6 +93,8 @@ function AddNewBoard() {
                 index={index}
                 type="column"
                 handleRemove={removeColumn}
+                register={register}
+                error={errors}
               />
             ))}
           </div>

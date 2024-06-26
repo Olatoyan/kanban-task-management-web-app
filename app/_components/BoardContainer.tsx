@@ -73,7 +73,10 @@ function BoardContainer({ data }: { data: BoardType[] }) {
       )}
 
       {state.isAddingTask && (
-        <AddNewTask allStatus={allStatus ?? []} boardName={currentBoard} />
+        <AddNewTask
+          allStatus={allStatus ?? []}
+          boardId={currentBoardData?._id!}
+        />
       )}
 
       {state.isAddingBoard && <AddNewBoard />}

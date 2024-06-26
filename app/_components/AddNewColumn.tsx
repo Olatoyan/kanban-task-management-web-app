@@ -55,7 +55,7 @@ function AddNewColumn({ board }: { board: BoardType }) {
         action={clientCreateColumnAction}
         onSubmit={clearSelectedTask}
       >
-        <h3 className="text-[1.8rem] font-bold text-white">Edit Board</h3>
+        <h3 className="text-[1.8rem] font-bold text-white">Add New Column</h3>
 
         <input name="id" type="hidden" value={board._id} />
         <div className="flex flex-col gap-3">

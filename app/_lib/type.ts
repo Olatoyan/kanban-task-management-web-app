@@ -23,3 +23,15 @@ export type BoardType = {
   name: string;
   columns: ColumnType[];
 };
+
+export type NewBoardFormType = {
+  name: string;
+  columns: { name: string }[];
+};
+export type NewTaskFormType = {
+  id: string;
+  title: string;
+  description: string;
+  status: string;
+  subtasks: { name: string }[];
+};
