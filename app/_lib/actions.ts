@@ -158,16 +158,18 @@ export async function editBoardAction(data: NewBoardFormType) {
   console.log(data);
   const { id, name, columns } = data;
 
-  const columnsWithNames = columns.map((column, index) => ({
-    id: column.id || "",
-    name: (data as any)[`task-${index}`] || "",
-  }));
+  const filteredColumns = columns.filter((column) => column.name.trim() !== "");
 
-  const filteredColumns = columnsWithNames.filter(
-    (column) => column.name.trim() !== "",
-  );
+  // const columnsWithNames = columns.map((column, index) => ({
+  //   id: column.id || "",
+  //   name: (data as any)[`task-${index}`] || "",
+  // }));
 
-  console.log({ columnsWithNames, filteredColumns });
+  // const filteredColumns = columnsWithNames.filter(
+  //   (column) => column.name.trim() !== "",
+  // );
+
+  // console.log({ columnsWithNames, filteredColumns });
 
   const updatedBoard = await editBoard({
     id,

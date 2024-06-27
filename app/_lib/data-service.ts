@@ -327,7 +327,7 @@ export async function editBoard({
 }: {
   id: string | undefined;
   name: string;
-  columns: { name: string; id: string }[];
+  columns: { name: string; id?: string }[];
 }) {
   const board = await Board.findById(id).populate("columns");
 

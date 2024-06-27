@@ -8,6 +8,8 @@ import { useForm } from "react-hook-form";
 import ErrorMessage from "./ErrorMessage";
 import { useRouter } from "next/navigation";
 
+type columnFormProp = { id: string; name: string; key: string };
+
 function EditBoard({ board }: { board: BoardType }) {
   const router = useRouter();
   console.log(board);
@@ -33,7 +35,7 @@ function EditBoard({ board }: { board: BoardType }) {
 
   const [isAddColumn, setIsAddColumn] = useState(false);
 
-  const columns = getValues("columns");
+  const columns: columnFormProp[] = getValues("columns");
   console.log(columns);
 
   useEffect(() => {
@@ -43,19 +45,15 @@ function EditBoard({ board }: { board: BoardType }) {
   function updateColumns() {
     console.log("clicked");
 
-    // Fetch current columns state
-    const currentColumns = getValues("columns");
-
-    // Add a new empty column
     const updatedColumns = [
-      ...currentColumns,
+      ...columns,
       { name: "", id: "", key: Date.now().toString() },
     ];
 
-    // Update the state of columns
+    console.log({ updatedColumns });
+
     setValue("columns", updatedColumns);
 
-    // Exit edit mode
     setIsAddColumn((prev) => !prev);
   }
 
@@ -63,40 +61,31 @@ function EditBoard({ board }: { board: BoardType }) {
     console.log(key);
 
     const updatedColumns = columns.filter((column) => column.key !== key);
-    setIsAddColumn((prev) => !prev);
+    console.log({ updatedColumns });
     setValue("columns", updatedColumns);
+    setIsAddColumn((prev) => !prev);
   }
   function updateColumnName(index: number, name: string) {
     const updatedColumns = columns.map((column, i) =>
       i === index ? { ...column, name } : column,
     );
 
-    setIsAddColumn((prev) => !prev);
     setValue("columns", updatedColumns);
+    setIsAddColumn((prev) => !prev);
   }
 
   console.log(board);
 
-  // async function onSubmit(data: NewBoardFormType) {
-  //   console.log(data);
-
-  //   const newData = { ...data, id: board?._id };
-
-  //   setIsLoading(true);
-  //   await editBoardAction(newData);
-  //   clearSelectedTask();
-  //   setIsLoading(false);
-  // }
-
   async function onSubmit(data: NewBoardFormType) {
     setIsLoading(true);
+    console.log(data);
 
     try {
       const updatedBoard = await editBoardAction({ ...data, id: board?._id });
 
-      const newName = updatedBoard.name.split(" ").join("+");
-      console.log(updatedBoard);
-      router.push(`/?board=${newName}`);
+      // const newName = updatedBoard.name.split(" ").join("+");
+      // console.log(updatedBoard);
+      // router.push(`/?board=${newName}`);
     } catch (error) {
       console.error("Failed to update board:", error);
     } finally {
@@ -106,6 +95,7 @@ function EditBoard({ board }: { board: BoardType }) {
   }
 
   console.log(errors);
+  console.log({ columns });
 
   return (
     <div className="fixed inset-0 flex h-full w-full items-center justify-center">
@@ -143,7 +133,7 @@ function EditBoard({ board }: { board: BoardType }) {
               })}
             />
             {errors?.name?.message && (
-              <ErrorMessage>{errors.name.message}</ErrorMessage>
+              <ErrorMessage>{errors.name.message as string}</ErrorMessage>
             )}
           </div>
         </div>
@@ -164,7 +154,7 @@ function EditBoard({ board }: { board: BoardType }) {
                   register={register}
                   error={errors}
                   handleChange={(name) => updateColumnName(index, name)}
-                  key={column.index}
+                  key={index}
                 />
                 //   <input
                 //     type="hidden"
