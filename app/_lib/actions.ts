@@ -126,31 +126,44 @@ export async function deleteTaskAction(id: string, type: string) {
 export async function createNewBoard(data: NewBoardFormType) {
   try {
     console.log(data);
-    const name = data.name;
+    const { name, columns } = data;
 
-    const columns: ColumnActionType[] = [];
-    Object.entries(data).forEach(([key, value]) => {
-      if (key.startsWith("task-")) {
-        const trimmedTitle = (value as string).trim();
-        if (trimmedTitle) {
-          columns.push({ name: trimmedTitle });
-        } else {
-          throw new Error("A column name is required");
-        }
-      }
-    });
-    console.log(columns);
-    if (!name.trim()) throw Error("A board name is required");
+    const filteredColumns: ColumnActionType[] = columns
+      .map((column) => ({ name: column.name.trim() }))
+      .filter((column) => column.name !== "");
 
-    addBoard({
+    if (!name.trim()) throw new Error("A board name is required");
+
+    const updatedBoard = await addBoard({
       name,
-      columns,
+      columns: filteredColumns,
     });
+
+    //   const name = data.name;
+
+    //   const columns: ColumnActionType[] = [];
+    //   Object.entries(data).forEach(([key, value]) => {
+    //     if (key.startsWith("task-")) {
+    //       const trimmedTitle = (value as string).trim();
+    //       if (trimmedTitle) {
+    //         columns.push({ name: trimmedTitle });
+    //       } else {
+    //         throw new Error("A column name is required");
+    //       }
+    //     }
+    //   });
+    //   console.log(columns);
+    //   if (!name.trim()) throw Error("A board name is required");
+
+    //   addBoard({
+    //     name,
+    //     columns,
+    //   });
+    return updatedBoard;
   } catch (error) {
     console.log("ERROR!!!!!!!!!!!!!!!!!!!!!!!!!!!!💥💥💥💥💥💥", error);
     return { error: getErrorMessage(error) };
   }
-  // revalidatePath("/");
   revalidatePath("/");
 }
 

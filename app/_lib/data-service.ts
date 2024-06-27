@@ -318,6 +318,56 @@ export async function addBoard({
   });
 
   await newBoard.save();
+
+  const data = await Board.find()
+    .populate({
+      path: "columns",
+      populate: {
+        path: "tasks",
+        populate: {
+          path: "subtasks",
+        },
+      },
+    })
+    .lean();
+
+  if (!data) {
+    throw new Error("Board not found");
+  }
+  const boardData = data as {
+    _id: string;
+    name: string;
+    columns: {
+      _id: string;
+      name: string;
+      tasks: {
+        _id: string;
+        subtasks: {
+          _id: string;
+        }[];
+      }[];
+    }[];
+  }[];
+
+  return data.map((board: any) => ({
+    _id: board._id.toString(),
+    name: board.name,
+    columns: board.columns.map((column: any) => ({
+      ...column,
+      _id: column._id.toString(),
+      // Populate other properties of column if needed
+      tasks: column.tasks.map((task: any) => ({
+        ...task,
+        _id: task._id.toString(),
+        // Populate other properties of task if needed
+        subtasks: task.subtasks.map((subtask: any) => ({
+          ...subtask,
+          _id: subtask._id.toString(),
+          // Populate other properties of subtask if needed
+        })),
+      })),
+    })),
+  }));
 }
 
 export async function editBoard({

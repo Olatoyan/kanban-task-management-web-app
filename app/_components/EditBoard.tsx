@@ -8,7 +8,7 @@ import { useForm } from "react-hook-form";
 import ErrorMessage from "./ErrorMessage";
 import { useRouter } from "next/navigation";
 
-type columnFormProp = { id: string; name: string; key: string };
+type columnFormProp = { id: string; name: string };
 
 function EditBoard({ board }: { board: BoardType }) {
   const router = useRouter();
@@ -26,7 +26,6 @@ function EditBoard({ board }: { board: BoardType }) {
       columns: board?.columns.map((column) => ({
         name: column.name,
         id: column._id,
-        key: column._id,
       })),
     },
   });
@@ -45,10 +44,7 @@ function EditBoard({ board }: { board: BoardType }) {
   function updateColumns() {
     console.log("clicked");
 
-    const updatedColumns = [
-      ...columns,
-      { name: "", id: "", key: Date.now().toString() },
-    ];
+    const updatedColumns = [...columns, { name: "", id: "" }];
 
     console.log({ updatedColumns });
 
@@ -57,10 +53,10 @@ function EditBoard({ board }: { board: BoardType }) {
     setIsAddColumn((prev) => !prev);
   }
 
-  function removeColumn(key: string) {
-    console.log(key);
+  function removeColumn(index: number) {
+    console.log(index);
 
-    const updatedColumns = columns.filter((column) => column.key !== key);
+    const updatedColumns = columns.filter((column, i) => index !== i);
     console.log({ updatedColumns });
     setValue("columns", updatedColumns);
     setIsAddColumn((prev) => !prev);
@@ -83,9 +79,9 @@ function EditBoard({ board }: { board: BoardType }) {
     try {
       const updatedBoard = await editBoardAction({ ...data, id: board?._id });
 
-      // const newName = updatedBoard.name.split(" ").join("+");
-      // console.log(updatedBoard);
-      // router.push(`/?board=${newName}`);
+      const newName = updatedBoard.name.split(" ").join("+");
+      console.log(updatedBoard);
+      router.push(`/?board=${newName}`);
     } catch (error) {
       console.error("Failed to update board:", error);
     } finally {
@@ -150,7 +146,7 @@ function EditBoard({ board }: { board: BoardType }) {
                   title={column.name}
                   index={index}
                   type="column"
-                  handleRemove={() => removeColumn(column.key!)}
+                  handleRemove={() => removeColumn(index)}
                   register={register}
                   error={errors}
                   handleChange={(name) => updateColumnName(index, name)}

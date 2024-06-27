@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useBoard } from "../context/BoardContext";
 import AddSubtask from "./AddSubtask";
 import Button from "./Button";
@@ -6,37 +6,91 @@ import { createNewBoard } from "../_lib/actions";
 import { useForm } from "react-hook-form";
 import { NewBoardFormType } from "../_lib/type";
 import ErrorMessage from "./ErrorMessage";
+import { useRouter } from "next/navigation";
+
+type columnFormProp = { name: string };
 
 function AddNewBoard() {
+  const router = useRouter();
+
   const {
     register,
     handleSubmit,
+    getValues,
+    setValue,
     formState: { errors },
-  } = useForm<NewBoardFormType>();
-
-  const [columns, setColumns] = useState([
-    {
+  } = useForm<NewBoardFormType>({
+    defaultValues: {
       name: "",
+      columns: [
+        {
+          name: "",
+          id: "",
+        },
+      ],
     },
-  ]);
+  });
 
-  const { clearSelectedTask } = useBoard();
+  const { clearSelectedTask, setIsLoading } = useBoard();
+  const [isAddColumn, setIsAddColumn] = useState(false);
 
-  function addNewColumn() {
-    const newColumn = {
-      name: "",
-    };
-    setColumns([...columns, newColumn]);
+  const columns: columnFormProp[] = getValues("columns");
+  console.log(columns);
+
+  useEffect(() => {
+    // This effect will run whenever 'columns' value changes after 'setValue' call
+  }, [isAddColumn]);
+
+  function updateColumns() {
+    console.log("clicked");
+
+    const updatedColumns = [...columns, { name: "", id: "" }];
+
+    console.log({ updatedColumns });
+
+    setValue("columns", updatedColumns);
+
+    setIsAddColumn((prev) => !prev);
   }
 
   function removeColumn(index: number) {
-    setColumns(columns.filter((_, i) => i !== index));
+    console.log(index);
+
+    const updatedColumns = columns.filter((column, i) => index !== i);
+    console.log({ updatedColumns });
+    setValue("columns", updatedColumns);
+    setIsAddColumn((prev) => !prev);
   }
 
-  async function onSubmit(data: NewBoardFormType) {
-    console.log(data);
+  function updateColumnName(index: number, name: string) {
+    const updatedColumns = columns.map((column, i) =>
+      i === index ? { ...column, name } : column,
+    );
 
-    await createNewBoard(data);
+    setValue("columns", updatedColumns);
+    setIsAddColumn((prev) => !prev);
+  }
+
+  // async function onSubmit(data: NewBoardFormType) {
+  //   console.log(data);
+
+  //   // await createNewBoard(data);
+  // }
+
+  async function onSubmit(data: NewBoardFormType) {
+    setIsLoading(true);
+
+    try {
+      const updatedBoard = await createNewBoard(data);
+
+      const newName = data.name.split(" ").join("+");
+      router.push(`/?board=${newName}`);
+    } catch (error) {
+      console.error("Failed to update board:", error);
+    } finally {
+      clearSelectedTask();
+      setIsLoading(false);
+    }
   }
 
   console.log(errors);
@@ -88,11 +142,12 @@ function AddNewBoard() {
           <div className="custom-scrollbar flex max-h-[16rem] flex-col gap-5 overflow-auto">
             {columns.map((subtask, index) => (
               <AddSubtask
-                key={`${subtask.name}-${index}`}
+                key={index}
                 title={subtask.name}
                 index={index}
                 type="column"
-                handleRemove={removeColumn}
+                handleRemove={() => removeColumn(index)}
+                handleChange={(name) => updateColumnName(index, name)}
                 register={register}
                 error={errors}
               />
@@ -100,7 +155,7 @@ function AddNewBoard() {
           </div>
           <p
             className="cursor-pointer rounded-[2rem] bg-white py-[0.85rem] text-center text-[1.3rem] font-bold leading-[2.3rem] text-[#635fc7]"
-            onClick={addNewColumn}
+            onClick={updateColumns}
           >
             + Add New Column
           </p>
