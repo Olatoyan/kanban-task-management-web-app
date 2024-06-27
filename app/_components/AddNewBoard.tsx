@@ -7,6 +7,7 @@ import { useForm } from "react-hook-form";
 import { NewBoardFormType } from "../_lib/type";
 import ErrorMessage from "./ErrorMessage";
 import { useRouter } from "next/navigation";
+import { getAllTasks } from "../_lib/data-service";
 
 type columnFormProp = { name: string };
 
@@ -82,7 +83,6 @@ function AddNewBoard() {
 
     try {
       const updatedBoard = await createNewBoard(data);
-
       const newName = data.name.split(" ").join("+");
       router.push(`/?board=${newName}`);
     } catch (error) {

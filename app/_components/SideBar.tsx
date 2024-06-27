@@ -10,7 +10,7 @@ import { useTheme } from "../context/ThemeContext";
 
 function SideBar({ data }: { data: BoardType[] }) {
   const { state } = useTheme();
-  // console.log(data);
+  console.log("SIDEBAR!!!!!!!!!!!!!!!!", data);
 
   return (
     <aside

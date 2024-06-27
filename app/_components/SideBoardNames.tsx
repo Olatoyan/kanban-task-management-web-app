@@ -14,6 +14,8 @@ function SideBoardNames({ data }: { data: BoardType[] }) {
 
   const activeBoard = searchParams.get("board") ?? data?.[0]?.name;
 
+  console.log("activeboard!!!!!", activeBoard);
+
   function handleClick() {
     addNewBoard();
     console.log("clicked");
@@ -28,9 +30,13 @@ function SideBoardNames({ data }: { data: BoardType[] }) {
   };
 
   useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    params.set("board", activeBoard);
+    router.push(`${pathname}?${params.toString()}`, { scroll: false });
+    router.refresh();
     setIsLoading(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pathname, searchParams]);
+  }, [pathname, searchParams, activeBoard, router]);
 
   return (
     <ul className="flex flex-col gap-6">
