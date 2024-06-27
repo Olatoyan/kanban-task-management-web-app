@@ -27,15 +27,15 @@ function BoardHeader({ data }: { data: BoardType[] }) {
     setIsOptionsOpen(false);
   }
 
-  useEffect(() => {
-    if (!boardName) return;
-    const currentBoard = searchParams.get("board");
-    if (currentBoard !== boardName) {
-      const params = new URLSearchParams(window.location.search);
-      params.set("board", boardName);
-      router.push(`${pathname}?${params.toString()}`, { scroll: false });
-    }
-  }, [boardName, searchParams, pathname, router]);
+  // useEffect(() => {
+  //   if (!boardName) return;
+  //   const currentBoard = searchParams.get("board");
+  //   if (currentBoard !== boardName) {
+  //     const params = new URLSearchParams(window.location.search);
+  //     params.set("board", boardName);
+  //     router.push(`${pathname}?${params.toString()}`, { scroll: false });
+  //   }
+  // }, [boardName, searchParams, pathname, router]);
 
   return (
     <div className="flex items-center justify-between border-b border-[#3e3f4e] bg-[#2b2c37] px-20 py-11">

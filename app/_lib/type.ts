@@ -25,8 +25,9 @@ export type BoardType = {
 };
 
 export type NewBoardFormType = {
+  id?: string;
   name: string;
-  columns: { name: string }[];
+  columns: { name: string; id?: string }[];
 };
 export type NewTaskFormType = {
   id: string;

@@ -48,9 +48,9 @@ function AddSubtask({
           </ErrorMessage>
         )}
       </div>
-      <button onClick={() => handleRemove(index)}>
+      <div onClick={() => handleRemove(index)}>
         <BsX className="text-[2rem] text-[#828fa3]" />
-      </button>
+      </div>
     </div>
   );
 }

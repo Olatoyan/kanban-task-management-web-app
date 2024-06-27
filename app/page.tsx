@@ -3,6 +3,8 @@ import { getAllTasks } from "./_lib/data-service";
 import { BoardType } from "./_lib/type";
 import BoardHeader from "@/app/_components/BoardHeader";
 import BoardContainer from "@/app/_components/BoardContainer";
+import Spinner from "./_components/Spinner";
+import { Suspense } from "react";
 
 export const revalidate = 0;
 async function page() {
@@ -12,7 +14,9 @@ async function page() {
     <section className="relative h-full border-l border-[#3e3f4e] bg-[#20212c]">
       <BoardHeader data={data} />
 
-      <BoardContainer data={data} />
+      <Suspense fallback={<Spinner />}>
+        <BoardContainer data={data} />
+      </Suspense>
     </section>
   );
 }

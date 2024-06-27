@@ -14,12 +14,14 @@ import AddNewColumn from "./AddNewColumn";
 import RevealSidebar from "./RevealSidebar";
 import { useTheme } from "../context/ThemeContext";
 import EmptyBoard from "./EmptyBoard";
+import Spinner from "./Spinner";
 
 function BoardContainer({ data }: { data: BoardType[] }) {
   const { state, addNewColumn } = useBoard();
   const { state: themeState } = useTheme();
 
   console.log(data);
+  console.log("isLoading!!!!!!!!!!", state.isLoading);
 
   const searchParams = useSearchParams();
 
@@ -42,6 +44,7 @@ function BoardContainer({ data }: { data: BoardType[] }) {
             {currentBoardData?.columns.map((column, index) => (
               <BoardLists key={column._id} data={column} index={index} />
             ))}
+
             <div
               className="group flex w-[28rem] cursor-pointer items-center justify-center bg-[linear-gradient(180deg,_rgba(43,44,55,0.25)_0%,_rgba(43,44,55,0.13)_100%)]"
               onClick={addNewColumn}
@@ -83,6 +86,8 @@ function BoardContainer({ data }: { data: BoardType[] }) {
 
       {state.isEditingBoard && <EditBoard board={currentBoardData!} />}
       {state.isAddingColumn && <AddNewColumn board={currentBoardData!} />}
+
+      {state.isLoading && <Spinner />}
     </section>
   );
 }

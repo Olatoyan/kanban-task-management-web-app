@@ -154,40 +154,29 @@ export async function createNewBoard(data: NewBoardFormType) {
   revalidatePath("/");
 }
 
-export async function editBoardAction(formData: FormData) {
-  // Convert FormData to an array
-  const formEntries = Array.from(formData.entries());
+export async function editBoardAction(data: NewBoardFormType) {
+  console.log(data);
+  const { id, name, columns } = data;
 
-  console.log(formEntries);
-  // Initialize variables to store the board name and columns
-  let boardName = "";
-  let boardId = "";
-  const columns: { name: string; id: string }[] = [];
+  const columnsWithNames = columns.map((column, index) => ({
+    id: column.id || "",
+    name: (data as any)[`task-${index}`] || "",
+  }));
 
-  // Iterate over the form entries to extract the board name and columns
-  formEntries.forEach(([key, value]) => {
-    if (key === "name") {
-      boardName = value.toString();
-    } else if (key === "id") {
-      boardId = value.toString();
-    } else if (key.startsWith("task-")) {
-      const index = parseInt(key.split("-")[1], 10);
-      columns[index] = { ...columns[index], name: value.toString() };
-    } else if (key.startsWith("id-")) {
-      const index = parseInt(key.split("-")[1], 10);
-      columns[index] = { ...columns[index], id: value.toString() };
-    }
+  const filteredColumns = columnsWithNames.filter(
+    (column) => column.name.trim() !== "",
+  );
+
+  console.log({ columnsWithNames, filteredColumns });
+
+  const updatedBoard = await editBoard({
+    id,
+    name,
+    columns: filteredColumns,
   });
 
-  // console.log(boardName);
-  // console.log(boardId);
-  // console.log(columns);
-
-  editBoard({
-    id: boardId,
-    name: boardName,
-    columns,
-  });
+  revalidatePath("/");
+  return updatedBoard;
 }
 
 export async function createColumn(formData: FormData) {

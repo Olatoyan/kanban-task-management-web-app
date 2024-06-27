@@ -4,9 +4,10 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { BoardType } from "../_lib/type";
 import { TbLayoutBoardSplit } from "react-icons/tb";
 import { useBoard } from "../context/BoardContext";
+import { useEffect } from "react";
 
 function SideBoardNames({ data }: { data: BoardType[] }) {
-  const { addNewBoard } = useBoard();
+  const { addNewBoard, setIsLoading, state } = useBoard();
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
@@ -19,11 +20,16 @@ function SideBoardNames({ data }: { data: BoardType[] }) {
   }
 
   const handleBoardClick = (boardName: string) => {
+    setIsLoading(true);
     const params = new URLSearchParams(window.location.search);
     params.set("board", boardName);
     router.push(`${pathname}?${params.toString()}`, { scroll: false });
     router.refresh();
   };
+
+  useEffect(() => {
+    setIsLoading(false);
+  }, [pathname, searchParams]);
 
   return (
     <ul className="flex flex-col gap-6">

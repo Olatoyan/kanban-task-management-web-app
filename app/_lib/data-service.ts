@@ -325,7 +325,7 @@ export async function editBoard({
   name,
   columns,
 }: {
-  id: string;
+  id: string | undefined;
   name: string;
   columns: { name: string; id: string }[];
 }) {
@@ -360,7 +360,7 @@ export async function editBoard({
 
   for (const column of columnsToUpdate) {
     console.log("columnToUpdate", column);
-    // await Column.findByIdAndUpdate(column.id, { name: column.name });
+    await Column.findByIdAndUpdate(column.id, { name: column.name });
   }
 
   // Remove deleted columns and their associated tasks and subtasks
@@ -386,9 +386,54 @@ export async function editBoard({
   }
 
   // Save the updated board
-  await board.save();
+  await Board.findByIdAndUpdate(id, board, { new: true });
 
-  return board;
+  const data = await Board.findById(id)
+    .populate({
+      path: "columns",
+      populate: {
+        path: "tasks",
+        populate: {
+          path: "subtasks",
+        },
+      },
+    })
+    .lean();
+
+  if (!data) {
+    throw new Error("Board not found");
+  }
+  const boardData = data as {
+    _id: string;
+    name: string;
+    columns: {
+      _id: string;
+      name: string;
+      tasks: {
+        _id: string;
+        subtasks: {
+          _id: string;
+        }[];
+      }[];
+    }[];
+  };
+
+  return {
+    _id: boardData._id.toString(),
+    name: boardData.name,
+    columns: boardData.columns.map((column: any) => ({
+      ...column,
+      _id: column._id.toString(),
+      tasks: column.tasks.map((task: any) => ({
+        ...task,
+        _id: task._id.toString(),
+        subtasks: task.subtasks.map((subtask: any) => ({
+          ...subtask,
+          _id: subtask._id.toString(),
+        })),
+      })),
+    })),
+  };
 }
 
 export async function addColumn({ id, name }: { id: string; name: string }) {

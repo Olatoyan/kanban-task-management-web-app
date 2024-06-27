@@ -15,6 +15,7 @@ type StateType = {
   isDeletingTask: string | null;
   deletedTask: TaskType | null;
   deletedBoard: BoardType | null;
+  isLoading: boolean;
 };
 
 type ActionType =
@@ -33,7 +34,8 @@ type ActionType =
     }
   | { type: "ADD_NEW_TASK" }
   | { type: "ADD_NEW_BOARD" }
-  | { type: "ADD_NEW_COLUMN" };
+  | { type: "ADD_NEW_COLUMN" }
+  | { type: "SET_IS_LOADING"; payload: boolean };
 
 const initialState: StateType = {
   selectedTask: null,
@@ -47,6 +49,7 @@ const initialState: StateType = {
   isDeletingTask: null,
   deletedTask: null,
   deletedBoard: null,
+  isLoading: false,
 };
 
 const BoardContext = createContext<{
@@ -62,6 +65,7 @@ const BoardContext = createContext<{
   addNewTask: () => void;
   addNewBoard: () => void;
   addNewColumn: () => void;
+  setIsLoading: (isLoading: boolean) => void;
 }>({
   state: initialState,
   dispatch: () => null,
@@ -74,6 +78,7 @@ const BoardContext = createContext<{
   addNewTask: () => {},
   addNewBoard: () => {},
   addNewColumn: () => {},
+  setIsLoading: () => {},
 });
 
 const reducer = (state: StateType, action: ActionType): StateType => {
@@ -141,6 +146,11 @@ const reducer = (state: StateType, action: ActionType): StateType => {
         ...state,
         isAddingColumn: true,
       };
+    case "SET_IS_LOADING":
+      return {
+        ...state,
+        isLoading: action.payload,
+      };
     default:
       return state;
   }
@@ -191,6 +201,10 @@ function BoardProvider({ children }: { children: ReactNode }) {
     dispatch({ type: "ADD_NEW_COLUMN" });
   }
 
+  function setIsLoading(isLoading: boolean) {
+    dispatch({ type: "SET_IS_LOADING", payload: isLoading });
+  }
+
   return (
     <BoardContext.Provider
       value={{
@@ -205,6 +219,7 @@ function BoardProvider({ children }: { children: ReactNode }) {
         addNewTask,
         addNewBoard,
         addNewColumn,
+        setIsLoading,
       }}
     >
       {children}
