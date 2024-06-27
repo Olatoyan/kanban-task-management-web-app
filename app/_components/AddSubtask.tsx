@@ -1,6 +1,9 @@
+"use client";
+
 import { FieldErrors, UseFormRegister } from "react-hook-form";
 import { BsX } from "react-icons/bs";
 import ErrorMessage from "./ErrorMessage";
+import { MouseEventHandler } from "react";
 
 function AddSubtask({
   title,
@@ -9,20 +12,23 @@ function AddSubtask({
   type,
   register,
   error,
+  handleChange,
 }: {
   title?: string;
   index: number;
-  handleRemove: (index: number) => void;
+  handleRemove: MouseEventHandler<HTMLDivElement>;
+  handleChange: (value: string) => void;
   type?: string;
   register: UseFormRegister<any>;
   error: FieldErrors<any>;
 }) {
+  console.log(title);
   return (
     <div className="flex items-center gap-3">
       <div className="relative w-full">
         <input
           type="text"
-          defaultValue={title}
+          value={title}
           id={`task-${index}`}
           className={`w-full rounded-[0.4rem] border bg-[#2B2C37] px-6 py-3 text-[1.3rem] font-medium leading-[2.3rem] text-white outline-[0] placeholder:text-opacity-25 ${error?.[`task-${index}`]?.message ? "border-[#ea5555] focus:border-[#ea5555]" : "border-[rgba(130,143,163,0.25)] hover:border-[#635fc7] focus:border-[#635fc7] focus:outline-[#635fc7]"}`}
           placeholder={
@@ -40,6 +46,7 @@ function AddSubtask({
               value: 15,
               message: "Too long",
             },
+            onChange: (e) => handleChange(e.target.value),
           })}
         />
         {error?.[`task-${index}`]?.message && (
@@ -48,7 +55,7 @@ function AddSubtask({
           </ErrorMessage>
         )}
       </div>
-      <div onClick={() => handleRemove(index)}>
+      <div onClick={handleRemove}>
         <BsX className="text-[2rem] text-[#828fa3]" />
       </div>
     </div>

@@ -25,6 +25,7 @@ function AddNewTask({
     {
       title: "",
       isCompleted: false,
+      key: Date.now().toString(),
     },
   ]);
   const [isExpanded, setIsExpanded] = useState(false);
@@ -36,12 +37,19 @@ function AddNewTask({
     const newSubtask = {
       title: "",
       isCompleted: false,
+      key: Date.now().toString(),
     };
-    setSubtasks([...subtasks, newSubtask]);
+    setSubtasks((prev) => [...prev, newSubtask]);
   }
 
-  function removeSubtask(index: number) {
-    setSubtasks(subtasks.filter((_, i) => i !== index));
+  // function removeSubtask(index: number) {
+  //   setSubtasks((prev) => prev.filter((_, i) => i !== index));
+  // }
+
+  function removeSubtask(key: string) {
+    console.log(key);
+    console.log(subtasks.filter((column) => column.key !== key));
+    setSubtasks((prev) => prev.filter((column) => column.key !== key));
   }
 
   function changeStatus(newStatus: string) {
@@ -130,7 +138,7 @@ function AddNewTask({
                 key={`${subtask.title}-${index}`}
                 title={subtask.title}
                 index={index}
-                handleRemove={removeSubtask}
+                handleRemove={() => removeSubtask(subtask.key)}
                 register={register}
                 error={errors}
               />

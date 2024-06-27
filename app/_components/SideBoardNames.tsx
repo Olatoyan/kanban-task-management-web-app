@@ -29,6 +29,7 @@ function SideBoardNames({ data }: { data: BoardType[] }) {
 
   useEffect(() => {
     setIsLoading(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname, searchParams]);
 
   return (

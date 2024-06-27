@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useBoard } from "../context/BoardContext";
 import AddSubtask from "./AddSubtask";
 import Button from "./Button";
@@ -10,29 +10,69 @@ import { useRouter } from "next/navigation";
 
 function EditBoard({ board }: { board: BoardType }) {
   const router = useRouter();
+  console.log(board);
 
   const {
     register,
     handleSubmit,
+    getValues,
+    setValue,
     formState: { errors },
-  } = useForm<NewBoardFormType>();
+  } = useForm<NewBoardFormType | any>({
+    defaultValues: {
+      name: board?.name,
+      columns: board?.columns.map((column) => ({
+        name: column.name,
+        id: column._id,
+        key: column._id,
+      })),
+    },
+  });
 
   const { clearSelectedTask, setIsLoading } = useBoard();
 
-  const [columns, setColumns] = useState(
-    board?.columns.map((column) => ({ name: column.name, id: column._id })),
-  );
+  const [isAddColumn, setIsAddColumn] = useState(false);
 
-  function addNewColumn() {
-    const newColumn = {
-      name: "",
-      id: "",
-    };
-    setColumns([...columns, newColumn]);
+  const columns = getValues("columns");
+  console.log(columns);
+
+  useEffect(() => {
+    // This effect will run whenever 'columns' value changes after 'setValue' call
+  }, [isAddColumn]);
+
+  function updateColumns() {
+    console.log("clicked");
+
+    // Fetch current columns state
+    const currentColumns = getValues("columns");
+
+    // Add a new empty column
+    const updatedColumns = [
+      ...currentColumns,
+      { name: "", id: "", key: Date.now().toString() },
+    ];
+
+    // Update the state of columns
+    setValue("columns", updatedColumns);
+
+    // Exit edit mode
+    setIsAddColumn((prev) => !prev);
   }
 
-  function removeColumn(index: number) {
-    setColumns(columns.filter((_, i) => i !== index));
+  function removeColumn(key: string) {
+    console.log(key);
+
+    const updatedColumns = columns.filter((column) => column.key !== key);
+    setIsAddColumn((prev) => !prev);
+    setValue("columns", updatedColumns);
+  }
+  function updateColumnName(index: number, name: string) {
+    const updatedColumns = columns.map((column, i) =>
+      i === index ? { ...column, name } : column,
+    );
+
+    setIsAddColumn((prev) => !prev);
+    setValue("columns", updatedColumns);
   }
 
   console.log(board);
@@ -53,8 +93,7 @@ function EditBoard({ board }: { board: BoardType }) {
 
     try {
       const updatedBoard = await editBoardAction({ ...data, id: board?._id });
-      // Assuming editBoardAction returns the updated board
-      // Optionally, you can use router to navigate to the updated board
+
       const newName = updatedBoard.name.split(" ").join("+");
       console.log(updatedBoard);
       router.push(`/?board=${newName}`);
@@ -113,29 +152,34 @@ function EditBoard({ board }: { board: BoardType }) {
           <p className="text-[1.2rem] font-bold text-white">Board Columns</p>
 
           <div className="custom-scrollbar flex max-h-[16rem] flex-col gap-5 overflow-auto">
-            {columns?.map((column, index) => (
-              <>
+            {columns?.map((column, index) => {
+              return (
+                // <div key={column.key}>
+                //   <>
                 <AddSubtask
-                  key={`${column.name}-${index}` || index}
                   title={column.name}
                   index={index}
                   type="column"
-                  handleRemove={removeColumn}
+                  handleRemove={() => removeColumn(column.key!)}
                   register={register}
                   error={errors}
+                  handleChange={(name) => updateColumnName(index, name)}
+                  key={column.index}
                 />
-                <input
-                  key={column.id || `${index + 2}`}
-                  type="hidden"
-                  value={column.id}
-                  {...register(`columns.${index}.id` as const)}
-                />
-              </>
-            ))}
+                //   <input
+                //     type="hidden"
+                //     value={column.id}
+                //     {...register(`columns.${index}.id` as const)}
+                //   />
+                //   </>
+                // </div>
+              );
+            })}
           </div>
           <p
             className="cursor-pointer rounded-[2rem] bg-white py-[0.85rem] text-center text-[1.3rem] font-bold leading-[2.3rem] text-[#635fc7]"
-            onClick={addNewColumn}
+            onClick={updateColumns}
+            // onClick={addNewColumn}
           >
             + Add New Column
           </p>
