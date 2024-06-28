@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Button from "./Button";
 import { BsChevronDown } from "react-icons/bs";
 import AddSubtask from "./AddSubtask";
@@ -7,6 +7,9 @@ import { useBoard } from "../context/BoardContext";
 import { NewTaskFormType } from "../_lib/type";
 import { useForm } from "react-hook-form";
 import ErrorMessage from "./ErrorMessage";
+import { useRouter } from "next/navigation";
+
+type TaskFormProp = { title: string };
 
 function AddNewTask({
   allStatus,
@@ -15,55 +18,126 @@ function AddNewTask({
   allStatus: string[];
   boardId: string;
 }) {
+  const router = useRouter();
+
   const {
     register,
     handleSubmit,
+    getValues,
+    setValue,
     formState: { errors },
-  } = useForm<NewTaskFormType>();
-
-  const [subtasks, setSubtasks] = useState([
-    {
+  } = useForm<NewTaskFormType>({
+    defaultValues: {
       title: "",
-      isCompleted: false,
-      key: Date.now().toString(),
+      description: "",
+      status: allStatus[0],
+
+      subtasks: [
+        {
+          title: "",
+          isCompleted: false,
+        },
+      ],
     },
-  ]);
+  });
   const [isExpanded, setIsExpanded] = useState(false);
   const [status, setStatus] = useState(allStatus[0]);
+  const [isAddColumn, setIsAddColumn] = useState(false);
 
-  const { clearSelectedTask } = useBoard();
+  const subtasks = getValues("subtasks");
+  console.log(subtasks);
 
-  function addNewSubtask() {
-    const newSubtask = {
-      title: "",
-      isCompleted: false,
-      key: Date.now().toString(),
-    };
-    setSubtasks((prev) => [...prev, newSubtask]);
-  }
+  useEffect(() => {
+    // This effect will run whenever 'subtasks' value changes after 'setValue' call
+  }, [isAddColumn]);
+
+  // const [subtasks, setSubtasks] = useState([
+  //   {
+  //     title: "",
+  //     isCompleted: false,
+  //     key: Date.now().toString(),
+  //   },
+  // ]);
+
+  const { clearSelectedTask, setIsLoading } = useBoard();
+
+  // function addNewSubtask() {
+  //   const newSubtask = {
+  //     title: "",
+  //     isCompleted: false,
+  //     key: Date.now().toString(),
+  //   };
+  //   setSubtasks((prev) => [...prev, newSubtask]);
+  // }
 
   // function removeSubtask(index: number) {
   //   setSubtasks((prev) => prev.filter((_, i) => i !== index));
   // }
 
-  function removeSubtask(key: string) {
-    console.log(key);
-    console.log(subtasks.filter((column) => column.key !== key));
-    setSubtasks((prev) => prev.filter((column) => column.key !== key));
+  function updateSubtasks() {
+    console.log("clicked");
+
+    const updatedSubtasks = [...subtasks, { title: "", isCompleted: false }];
+
+    console.log({ updatedSubtasks });
+
+    setValue("subtasks", updatedSubtasks);
+
+    setIsAddColumn((prev) => !prev);
+  }
+
+  function removeColumn(index: number) {
+    console.log(index);
+
+    const updatedSubtasks = subtasks.filter((_, i) => index !== i);
+    console.log({ updatedSubtasks });
+    setValue("subtasks", updatedSubtasks);
+    setIsAddColumn((prev) => !prev);
+  }
+
+  function updateColumnName(index: number, title: string) {
+    const updatedSubtasks = subtasks.map((column, i) =>
+      i === index ? { ...column, title } : column,
+    );
+
+    setValue("subtasks", updatedSubtasks);
+    setIsAddColumn((prev) => !prev);
   }
 
   function changeStatus(newStatus: string) {
+    setValue("status", newStatus);
     setStatus(newStatus);
     setIsExpanded(false);
   }
 
+  // async function onSubmit(data: NewTaskFormType) {
+  //   console.log(data);
+  //   const newData = { ...data, status, id: boardId };
+
+  //   await createNewTask(newData);
+
+  //   clearSelectedTask();
+  // }
+
   async function onSubmit(data: NewTaskFormType) {
-    console.log(data);
-    const newData = { ...data, status, id: boardId };
+    setIsLoading(true);
 
-    await createNewTask(newData);
+    console.log({ data });
+    console.log({ boardId });
 
-    clearSelectedTask();
+    try {
+      const newData = await createNewTask({ ...data, id: boardId });
+      console.log({ newData });
+
+      const newName = newData.name.split(" ").join("+");
+
+      router.push(`/?board=${newName}`);
+    } catch (error) {
+      console.error("Failed to update board:", error);
+    } finally {
+      clearSelectedTask();
+      setIsLoading(false);
+    }
   }
 
   console.log(errors);
@@ -135,10 +209,11 @@ function AddNewTask({
           <div className="custom-scrollbar flex max-h-[16rem] flex-col gap-5 overflow-auto">
             {subtasks.map((subtask, index) => (
               <AddSubtask
-                key={`${subtask.title}-${index}`}
+                key={index}
                 title={subtask.title}
                 index={index}
-                handleRemove={() => removeSubtask(subtask.key)}
+                handleRemove={() => removeColumn(index)}
+                handleChange={(name) => updateColumnName(index, name)}
                 register={register}
                 error={errors}
               />
@@ -146,7 +221,7 @@ function AddNewTask({
           </div>
           <p
             className="cursor-pointer rounded-[2rem] bg-white py-[0.85rem] text-center text-[1.3rem] font-bold leading-[2.3rem] text-[#635fc7]"
-            onClick={addNewSubtask}
+            onClick={updateSubtasks}
           >
             + Add New SubTask
           </p>

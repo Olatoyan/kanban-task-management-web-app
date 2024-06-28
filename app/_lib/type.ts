@@ -34,5 +34,5 @@ export type NewTaskFormType = {
   title: string;
   description: string;
   status: string;
-  subtasks: { name: string }[];
+  subtasks: { title: string; isCompleted: boolean }[];
 };

@@ -233,7 +233,52 @@ export async function addTask({
 
   await currentBoard.save();
 
-  return currentBoard;
+  const data = await Board.findById(id)
+    .populate({
+      path: "columns",
+      populate: {
+        path: "tasks",
+        populate: {
+          path: "subtasks",
+        },
+      },
+    })
+    .lean();
+
+  if (!data) {
+    throw new Error("Board not found");
+  }
+  const boardData = data as {
+    _id: string;
+    name: string;
+    columns: {
+      _id: string;
+      name: string;
+      tasks: {
+        _id: string;
+        subtasks: {
+          _id: string;
+        }[];
+      }[];
+    }[];
+  };
+
+  return {
+    _id: boardData._id.toString(),
+    name: boardData.name,
+    columns: boardData.columns.map((column: any) => ({
+      ...column,
+      _id: column._id.toString(),
+      tasks: column.tasks.map((task: any) => ({
+        ...task,
+        _id: task._id.toString(),
+        subtasks: task.subtasks.map((subtask: any) => ({
+          ...subtask,
+          _id: subtask._id.toString(),
+        })),
+      })),
+    })),
+  };
 }
 
 export async function deleteTask({ type, id }: { type: string; id: string }) {

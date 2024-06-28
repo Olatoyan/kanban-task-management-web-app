@@ -57,7 +57,7 @@ function AddNewBoard() {
   function removeColumn(index: number) {
     console.log(index);
 
-    const updatedColumns = columns.filter((column, i) => index !== i);
+    const updatedColumns = columns.filter((_, i) => index !== i);
     console.log({ updatedColumns });
     setValue("columns", updatedColumns);
     setIsAddColumn((prev) => !prev);
@@ -82,7 +82,7 @@ function AddNewBoard() {
     setIsLoading(true);
 
     try {
-      const updatedBoard = await createNewBoard(data);
+      await createNewBoard(data);
       const newName = data.name.split(" ").join("+");
       router.push(`/?board=${newName}`);
     } catch (error) {
