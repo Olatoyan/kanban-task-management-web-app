@@ -172,12 +172,11 @@ export async function editTask({
       subtasks: existingSubtaskIdsToKeep,
     },
     { new: true },
-  );
+  ).lean();
 
   console.log("Updated!!!!!!!!!!");
 
   return updatedData;
-
 }
 
 export async function addTask({
@@ -457,8 +456,26 @@ export async function editBoard({
 
   for (const column of columnsToUpdate) {
     console.log("columnToUpdate", column);
-    await Column.findByIdAndUpdate(column.id, { name: column.name });
+    const existingColumn = await Column.findById(column.id);
+    if (!existingColumn) {
+      throw new Error(`Column with ID ${column.id} not found`);
+    }
+    existingColumn.name = column.name;
+    await existingColumn.save();
+
+    for (const task of existingColumn.tasks) {
+      console.log("THIS IS THE TASKS!!!!", task);
+      const existingTask = await Task.findById(task);
+      existingTask.status = column.name;
+      await existingTask.save();
+      // task.status = existingColumn.name; // Assuming 'column' field in Task schema represents column ID
+      // await task.save();
+    }
   }
+  // for (const column of columnsToUpdate) {
+  //   console.log("columnToUpdate", column);
+  //   await Column.findByIdAndUpdate(column.id, { name: column.name });
+  // }
 
   // Remove deleted columns and their associated tasks and subtasks
   for (const column of columnsToRemove) {
