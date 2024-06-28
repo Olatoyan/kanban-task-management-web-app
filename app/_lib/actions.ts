@@ -33,34 +33,47 @@ export async function toggleSubtaskAction(id: string) {
   revalidatePath("/");
 }
 
-export async function editTaskAction(formData: FormData) {
-  const title = formData.get("title");
-  const description = formData.get("description");
-  const status = formData.get("status");
-  const id = formData.get("id");
+export async function editTaskAction(data: NewTaskFormType) {
+  const { title, description, status, id, subtasks } = data;
 
-  const subtasks: SubtaskActionType[] = [];
-  formData.forEach((value, key) => {
-    if (key.startsWith("task-")) {
-      const trimmedTitle = (value as string).trim();
-      if (trimmedTitle) {
-        subtasks.push({
-          title: trimmedTitle,
-        });
-      }
-    }
-  });
+  if (!title.trim() || title.length < 3) throw Error("A title is required");
 
-  editTask({
-    id: id as string,
-    description: description as string,
-    status: status as string,
-    title: title as string,
-    subtasks,
+  if (!id) throw Error("A board id is required");
+  if (!status) throw Error("A status is required");
+
+  const filteredSubtasks: SubtaskActionType[] = subtasks
+    .map((column) => ({ title: column.title.trim() }))
+    .filter((column) => column.title !== "");
+
+  console.log({ title, description, status, id, filteredSubtasks });
+
+  // const title = formData.get("title");
+  // const description = formData.get("description");
+  // const status = formData.get("status");
+  // const id = formData.get("id");
+
+  // const subtasks: SubtaskActionType[] = [];
+  // formData.forEach((value, key) => {
+  //   if (key.startsWith("task-")) {
+  //     const trimmedTitle = (value as string).trim();
+  //     if (trimmedTitle) {
+  //       subtasks.push({
+  //         title: trimmedTitle,
+  //       });
+  //     }
+  //   }
+  // });
+
+  const newTask = editTask({
+    id,
+    title,
+    description,
+    status,
+    subtasks: filteredSubtasks,
   });
 
   revalidatePath("/");
-  // redirect("/");
+  return newTask;
 }
 
 export async function createNewTask(data: NewTaskFormType) {

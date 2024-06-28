@@ -163,7 +163,7 @@ export async function editTask({
   newColumn.tasks.push(id);
   await newColumn.save();
 
-  const updatedTask = await Task.findByIdAndUpdate(
+  const updatedData = await Task.findByIdAndUpdate(
     id,
     {
       title,
@@ -175,7 +175,9 @@ export async function editTask({
   );
 
   console.log("Updated!!!!!!!!!!");
-  // return updatedTask;
+
+  return updatedData;
+
 }
 
 export async function addTask({
