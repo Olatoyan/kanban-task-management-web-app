@@ -1,48 +1,96 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useBoard } from "../context/BoardContext";
 import AddSubtask from "./AddSubtask";
 import Button from "./Button";
-import { BoardType } from "@/app/_lib/type";
+import { BoardType, NewBoardFormType } from "@/app/_lib/type";
 import { createColumn, editBoardAction } from "../_lib/actions";
+import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
 
+type columnFormProp = { name: string };
 function AddNewColumn({ board }: { board: BoardType }) {
-  const [columns, setColumns] = useState([
-    {
-      name: "",
-      id: "",
+  const router = useRouter();
+
+  const {
+    register,
+    handleSubmit,
+    getValues,
+    setValue,
+    formState: { errors },
+  } = useForm<NewBoardFormType>({
+    defaultValues: {
+      columns: [
+        {
+          name: "",
+        },
+      ],
     },
-  ]);
+  });
+  const { clearSelectedTask, setIsLoading } = useBoard();
 
-  const { clearSelectedTask } = useBoard();
+  const [isAddColumn, setIsAddColumn] = useState(false);
 
-  function addNewColumn() {
-    const newColumn = {
-      name: "",
-      id: "",
-    };
-    setColumns([...columns, newColumn]);
+  const columns: columnFormProp[] = getValues("columns");
+  console.log(columns);
+
+  useEffect(() => {
+    // This effect will run whenever 'columns' value changes after 'setValue' call
+  }, [isAddColumn]);
+
+  function updateColumns() {
+    console.log("clicked");
+
+    const updatedColumns = [...columns, { name: "" }];
+
+    console.log({ updatedColumns });
+
+    setValue("columns", updatedColumns);
+
+    setIsAddColumn((prev) => !prev);
   }
 
   function removeColumn(index: number) {
-    setColumns(columns.filter((_, i) => i !== index));
+    console.log(index);
+
+    const updatedColumns = columns.filter((_, i) => index !== i);
+    console.log({ updatedColumns });
+    setValue("columns", updatedColumns);
+    setIsAddColumn((prev) => !prev);
   }
 
-  function handleColumnChange(index: number, value: string) {
-    setColumns((prevColumns) => {
-      return prevColumns.map((column, i) => {
-        if (i === index) {
-          return { ...column, name: value };
-        }
-        return column;
-      });
-    });
+  function updateColumnName(index: number, name: string) {
+    const updatedColumns = columns.map((column, i) =>
+      i === index ? { ...column, name } : column,
+    );
+
+    setValue("columns", updatedColumns);
+    setIsAddColumn((prev) => !prev);
   }
+  // async function clientCreateColumnAction(formData: FormData) {
+  //   const result = await createColumn(formData);
 
-  async function clientCreateColumnAction(formData: FormData) {
-    const result = await createColumn(formData);
+  //   console.log("ok");
+  //   console.log(result);
+  // }
 
-    console.log("ok");
-    console.log(result);
+  async function onSubmit(data: NewBoardFormType) {
+    setIsLoading(true);
+
+    console.log({ data });
+
+    try {
+      const newData = await createColumn({ ...data, id: board._id! });
+      console.log({ newData });
+
+      // const newName = newData.name.split(" ").join("+");
+
+      // router.push(`/?board=${newName}`);
+    } catch (error) {
+      console.error("Failed to update board:", error);
+    } finally {
+      clearSelectedTask();
+      setIsLoading(false);
+    }
   }
 
   console.log(board);
@@ -52,12 +100,13 @@ function AddNewColumn({ board }: { board: BoardType }) {
       <form
         className={`z-[10] flex max-h-[55rem] w-full max-w-[50rem] flex-col gap-10 overflow-auto rounded-[0.6rem] bg-[#2b2c37] p-[3.2rem]`}
         // action={createNewTask}
-        action={clientCreateColumnAction}
-        onSubmit={clearSelectedTask}
+        // action={clientCreateColumnAction}
+        // onSubmit={clearSelectedTask}
+        onSubmit={handleSubmit(onSubmit)}
       >
         <h3 className="text-[1.8rem] font-bold text-white">Add New Column</h3>
 
-        <input name="id" type="hidden" value={board._id} />
+        {/* <input name="id" type="hidden" value={board._id} /> */}
         <div className="flex flex-col gap-3">
           <label
             htmlFor="boardName"
@@ -83,7 +132,7 @@ function AddNewColumn({ board }: { board: BoardType }) {
             {board.columns.map((column, index) => (
               <input
                 defaultValue={column.name}
-                key={column.name || index}
+                key={index}
                 disabled={true}
                 type="text"
                 className="w-full rounded-[0.4rem] border border-[rgba(130,143,163,0.25)] bg-[#2B2C37] px-6 py-3 text-[1.3rem] font-medium leading-[2.3rem] text-white outline-[0] placeholder:text-opacity-25 hover:border-[#635fc7] focus:border-[#635fc7] focus:outline-[#635fc7] disabled:cursor-not-allowed disabled:opacity-50"
@@ -92,25 +141,22 @@ function AddNewColumn({ board }: { board: BoardType }) {
             {columns.map((column, index) => (
               <>
                 <AddSubtask
-                  key={`${column.name}-${index}` || index}
+                  key={index}
                   title={column.name}
                   index={index}
                   type="column"
-                  handleRemove={removeColumn}
+                  handleRemove={() => removeColumn(index)}
+                  handleChange={(name) => updateColumnName(index, name)}
+                  register={register}
+                  error={errors}
                   // handleChange={handleColumnChange}
-                />
-                <input
-                  key={column.id || index}
-                  type="hidden"
-                  name={`id-${index}`}
-                  value={column.id}
                 />
               </>
             ))}
           </div>
           <p
             className="cursor-pointer rounded-[2rem] bg-white py-[0.85rem] text-center text-[1.3rem] font-bold leading-[2.3rem] text-[#635fc7]"
-            onClick={addNewColumn}
+            onClick={updateColumns}
           >
             + Add New Column
           </p>

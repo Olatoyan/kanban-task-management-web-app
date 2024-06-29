@@ -3,7 +3,7 @@
 import { signIn } from "./auth";
 import {
   addBoard,
-  addColumn,
+  addColumnsToBoard,
   addTask,
   deleteTask,
   editBoard,
@@ -198,26 +198,18 @@ export async function editBoardAction(data: NewBoardFormType) {
   return updatedBoard;
 }
 
-export async function createColumn(formData: FormData) {
-  console.log(formData);
+export async function createColumn(data: NewBoardFormType) {
+  const { id, columns } = data;
 
-  const id = formData.get("id") as string;
+  const filteredColumns: ColumnActionType[] = columns
+    .map((column) => ({ name: column.name.trim() }))
+    .filter((column) => column.name !== "");
 
-  const columns: ColumnActionType[] = [];
-  formData.forEach((value, key) => {
-    if (key.startsWith("task-")) {
-      const trimmedTitle = (value as string).trim();
-      if (trimmedTitle) {
-        columns.push({
-          name: trimmedTitle,
-        });
-      }
-    }
+  const newColumn = await addColumnsToBoard({
+    id: id!,
+    columns: filteredColumns,
   });
 
-  for (const column of columns) {
-    await addColumn({ id, name: column.name });
-  }
-
   revalidatePath("/");
+  return newColumn;
 }

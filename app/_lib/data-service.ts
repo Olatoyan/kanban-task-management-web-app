@@ -559,16 +559,27 @@ export async function editBoard({
   };
 }
 
-export async function addColumn({ id, name }: { id: string; name: string }) {
+export async function addColumnsToBoard({
+  id,
+  columns,
+}: {
+  id: string;
+  columns: { name: string }[];
+}) {
   const board = await Board.findById(id).populate("columns");
   if (!board) {
     throw new Error("Board not found");
   }
 
-  const trimmedTitle = name.trim();
+  const newColumns = [];
 
-  const newColumn = new Column({ name: trimmedTitle });
-  await newColumn.save();
-  board.columns.push(newColumn._id);
+  for (const column of columns) {
+    const newColumn = new Column({ name: column.name });
+    await newColumn.save();
+    board.columns.push(newColumn._id);
+    newColumns.push(newColumn);
+  }
+
   await board.save();
+  return newColumns;
 }
