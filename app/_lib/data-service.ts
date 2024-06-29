@@ -126,7 +126,7 @@ export async function editTask({
 
   // Loop through existing subtasks in the task
   for (let subtask of task.subtasks) {
-    if (subtaskTitles.has(subtask.title)) {
+    if (subtaskTitles.has(subtask.title.trim())) {
       existingSubtaskIdsToKeep.push(subtask._id);
       existingSubtaskTitles.add(subtask.title);
     } else {
@@ -137,10 +137,16 @@ export async function editTask({
 
   // Add new subtasks from the form data
   for (let subtask of subtasks) {
-    if (!existingSubtaskTitles.has(subtask.title)) {
-      const newSubtask = new Subtask({ title: subtask.title });
-      await newSubtask.save();
-      existingSubtaskIdsToKeep.push(newSubtask._id);
+    const trimmedTitle = subtask.title.trim();
+    if (!existingSubtaskTitles.has(trimmedTitle)) {
+      let existingSubtask = await Subtask.findOne({ title: trimmedTitle });
+
+      if (!existingSubtask) {
+        existingSubtask = new Subtask({ title: trimmedTitle });
+        await existingSubtask.save();
+      }
+
+      existingSubtaskIdsToKeep.push(existingSubtask._id);
     }
   }
 
@@ -200,9 +206,15 @@ export async function addTask({
 
   for (const subtask of subtasks) {
     const trimmedTitle = subtask.title.trim();
-    const newSubtask = new Subtask({ title: trimmedTitle });
-    await newSubtask.save();
-    subtaskIds.push(newSubtask._id);
+
+    let existingSubtask = await Subtask.findOne({ title: trimmedTitle });
+
+    if (!existingSubtask) {
+      existingSubtask = new Subtask({ title: trimmedTitle });
+      await existingSubtask.save();
+    }
+
+    subtaskIds.push(existingSubtask._id);
   }
 
   // Create the main task with the collected subtask IDs
@@ -349,6 +361,18 @@ export async function addBoard({
   name: string;
   columns: { name: string }[];
 }) {
+  // Check if a board with the same name already exists
+  const existingBoard = await Board.findOne({ name: name.trim() });
+  if (existingBoard) {
+    throw new Error("Board with the same name already exists");
+  }
+
+  // Ensure column names are unique within the board
+  const columnNames = new Set(columns.map((column) => column.name.trim()));
+  if (columnNames.size !== columns.length) {
+    throw new Error("Duplicate column names are not allowed");
+  }
+
   // Create each column and collect their IDs
   const columnIds = [];
 
@@ -427,9 +451,20 @@ export async function editBoard({
   columns: { name: string; id?: string }[];
 }) {
   const board = await Board.findById(id).populate("columns");
-
   if (!board) {
     throw new Error("Board not found");
+  }
+
+  // Validate unique board name
+  const existingBoard = await Board.findOne({ name }).exec();
+  if (existingBoard && existingBoard._id.toString() !== id) {
+    throw new Error("Board name already exists");
+  }
+
+  // Ensure column names are unique within the board
+  const columnNames = new Set(columns.map((column) => column.name.trim()));
+  if (columnNames.size !== columns.length) {
+    throw new Error("Duplicate column names are not allowed");
   }
 
   // Update the board's name
@@ -571,10 +606,29 @@ export async function addColumnsToBoard({
     throw new Error("Board not found");
   }
 
+  // Validate that there are no duplicate column names within the new columns
+  const newColumnNames = columns.map((column) => column.name.trim());
+  const newColumnNamesSet = new Set(newColumnNames);
+  if (newColumnNamesSet.size !== newColumnNames.length) {
+    throw new Error(
+      "Duplicate column names are not allowed within the new columns",
+    );
+  }
+
+  // Validate that there are no duplicate column names with existing columns
+  const existingColumnNames = board.columns.map(
+    (column: { name: string }) => column.name,
+  );
+  for (const name of newColumnNames) {
+    if (existingColumnNames.includes(name)) {
+      throw new Error(`Column name "${name}" already exists in the board`);
+    }
+  }
+
   const newColumns = [];
 
   for (const column of columns) {
-    const newColumn = new Column({ name: column.name });
+    const newColumn = new Column({ name: column.name.trim() });
     await newColumn.save();
     board.columns.push(newColumn._id);
     newColumns.push(newColumn);
