@@ -8,6 +8,7 @@ import { NewTaskFormType } from "../_lib/type";
 import { useForm } from "react-hook-form";
 import ErrorMessage from "./ErrorMessage";
 import { useRouter } from "next/navigation";
+import { validateSubtasks } from "../_lib/helper";
 
 type TaskFormProp = { title: string };
 
@@ -26,6 +27,7 @@ function AddNewTask({
     getValues,
     setValue,
     formState: { errors },
+    setError,
   } = useForm<NewTaskFormType>({
     defaultValues: {
       title: "",
@@ -124,6 +126,11 @@ function AddNewTask({
 
     console.log({ data });
     console.log({ boardId });
+
+    if (!validateSubtasks(data.subtasks, setError)) {
+      setIsLoading(false);
+      return;
+    }
 
     try {
       const newData = await createNewTask({ ...data, id: boardId });

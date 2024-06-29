@@ -8,10 +8,11 @@ import { NewBoardFormType } from "../_lib/type";
 import ErrorMessage from "./ErrorMessage";
 import { useRouter } from "next/navigation";
 import { getAllTasks } from "../_lib/data-service";
+import { validateBoardName, validateColumns } from "../_lib/helper";
 
 type columnFormProp = { name: string };
 
-function AddNewBoard() {
+function AddNewBoard({ allBoardNames }: { allBoardNames: string[] }) {
   const router = useRouter();
 
   const {
@@ -20,6 +21,7 @@ function AddNewBoard() {
     getValues,
     setValue,
     formState: { errors },
+    setError,
   } = useForm<NewBoardFormType>({
     defaultValues: {
       name: "",
@@ -80,6 +82,16 @@ function AddNewBoard() {
 
   async function onSubmit(data: NewBoardFormType) {
     setIsLoading(true);
+
+    if (!validateBoardName(data.name, allBoardNames, setError)) {
+      setIsLoading(false);
+      return;
+    }
+
+    if (!validateColumns([], data.columns, setError)) {
+      setIsLoading(false);
+      return;
+    }
 
     try {
       await createNewBoard(data);

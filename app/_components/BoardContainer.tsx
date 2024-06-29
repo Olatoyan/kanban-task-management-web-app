@@ -34,6 +34,8 @@ function BoardContainer({ data }: { data: BoardType[] }) {
 
   const allStatus = currentBoardData?.columns.map((column) => column.name);
 
+  const allBoardNames = data.map((column) => column.name.toLowerCase());
+
   return (
     <section
       className={`custom-scrollbar flex h-[86.8vh] items-center justify-center overflow-hidden p-[2.4rem] ${themeState.isSidebarHidden ? "w-screen" : "w-[80vw]"}`}
@@ -82,9 +84,11 @@ function BoardContainer({ data }: { data: BoardType[] }) {
         />
       )}
 
-      {state.isAddingBoard && <AddNewBoard />}
+      {state.isAddingBoard && <AddNewBoard allBoardNames={allBoardNames} />}
 
-      {state.isEditingBoard && <EditBoard board={currentBoardData!} />}
+      {state.isEditingBoard && (
+        <EditBoard board={currentBoardData!} allBoardNames={allBoardNames} />
+      )}
       {state.isAddingColumn && <AddNewColumn board={currentBoardData!} />}
 
       {state.isLoading && <Spinner />}

@@ -5,7 +5,8 @@ import Button from "./Button";
 import { BoardType, NewBoardFormType } from "@/app/_lib/type";
 import { createColumn, editBoardAction } from "../_lib/actions";
 import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
+import { UseFormSetError, useForm } from "react-hook-form";
+import { validateColumns } from "../_lib/helper";
 
 type columnFormProp = { name: string };
 function AddNewColumn({ board }: { board: BoardType }) {
@@ -17,6 +18,7 @@ function AddNewColumn({ board }: { board: BoardType }) {
     getValues,
     setValue,
     formState: { errors },
+    setError,
   } = useForm<NewBoardFormType>({
     defaultValues: {
       columns: [
@@ -77,6 +79,11 @@ function AddNewColumn({ board }: { board: BoardType }) {
     setIsLoading(true);
 
     console.log({ data });
+
+    if (!validateColumns(board.columns, data.columns, setError)) {
+      setIsLoading(false);
+      return;
+    }
 
     try {
       const newData = await createColumn({ ...data, id: board._id! });

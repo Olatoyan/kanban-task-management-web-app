@@ -10,6 +10,7 @@ import Button from "./Button";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import ErrorMessage from "./ErrorMessage";
+import { validateSubtasks } from "../_lib/helper";
 
 function EditTask({
   task,
@@ -26,6 +27,7 @@ function EditTask({
     getValues,
     setValue,
     formState: { errors },
+    setError,
   } = useForm<NewTaskFormType>({
     defaultValues: {
       title: task.title,
@@ -93,6 +95,11 @@ function EditTask({
 
     console.log({ data, id });
     // console.log({ boardId });
+
+    if (!validateSubtasks(data.subtasks, setError)) {
+      setIsLoading(false);
+      return;
+    }
 
     try {
       const newData = await editTaskAction({ ...data, id: id! });

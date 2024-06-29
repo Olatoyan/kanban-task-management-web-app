@@ -7,10 +7,17 @@ import { editBoardAction } from "../_lib/actions";
 import { useForm } from "react-hook-form";
 import ErrorMessage from "./ErrorMessage";
 import { useRouter } from "next/navigation";
+import { validateBoardName, validateColumns } from "../_lib/helper";
 
 type columnFormProp = { id: string; name: string };
 
-function EditBoard({ board }: { board: BoardType }) {
+function EditBoard({
+  board,
+  allBoardNames,
+}: {
+  board: BoardType;
+  allBoardNames: string[];
+}) {
   const router = useRouter();
   console.log(board);
 
@@ -20,6 +27,7 @@ function EditBoard({ board }: { board: BoardType }) {
     getValues,
     setValue,
     formState: { errors },
+    setError,
   } = useForm<NewBoardFormType | any>({
     defaultValues: {
       name: board?.name,
@@ -75,6 +83,16 @@ function EditBoard({ board }: { board: BoardType }) {
   async function onSubmit(data: NewBoardFormType) {
     setIsLoading(true);
     console.log(data);
+
+    if (!validateBoardName(data.name, allBoardNames, setError)) {
+      setIsLoading(false);
+      return;
+    }
+
+    if (!validateColumns([], data.columns, setError)) {
+      setIsLoading(false);
+      return;
+    }
 
     try {
       const updatedBoard = await editBoardAction({ ...data, id: board?._id });
