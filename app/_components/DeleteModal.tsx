@@ -9,7 +9,7 @@ function DeleteModal({
   type: string;
   data: TaskType | BoardType;
 }) {
-  const { clearSelectedTask } = useBoard();
+  const { clearSelectedTask, setIsLoading } = useBoard();
 
   // Type guard to check if data is of type TaskType
   const isTaskType = (data: TaskType | BoardType): data is TaskType => {
@@ -22,8 +22,10 @@ function DeleteModal({
   };
 
   async function handleDelete() {
+    setIsLoading(true);
     await deleteTaskAction(data._id!, type);
     clearSelectedTask();
+    setIsLoading(false);
   }
 
   return (
