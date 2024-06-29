@@ -70,15 +70,24 @@ export function validateSubtasks(
 
 export function validateBoardName(
   newBoardName: string,
-  existingBoardNames: string[],
+  currentBoardId: string,
+  existingBoards: { id: string; name: string }[],
   setError: UseFormSetError<any>,
 ): boolean {
-  if (existingBoardNames.includes(newBoardName.toLowerCase())) {
-    setError("name", {
-      type: "manual",
-      message: "Board name already exists",
-    } as FieldError);
-    return false;
+  const normalizedNewName = newBoardName.toLowerCase();
+
+  for (const board of existingBoards) {
+    if (
+      board.name.toLowerCase() === normalizedNewName &&
+      board.id !== currentBoardId
+    ) {
+      setError("name", {
+        type: "manual",
+        message: "Board name already exists",
+      } as FieldError);
+      return false;
+    }
   }
+
   return true;
 }

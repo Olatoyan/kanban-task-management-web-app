@@ -12,7 +12,11 @@ import { validateBoardName, validateColumns } from "../_lib/helper";
 
 type columnFormProp = { name: string };
 
-function AddNewBoard({ allBoardNames }: { allBoardNames: string[] }) {
+function AddNewBoard({
+  allBoardNames,
+}: {
+  allBoardNames: { id: string; name: string }[];
+}) {
   const router = useRouter();
 
   const {
@@ -83,7 +87,7 @@ function AddNewBoard({ allBoardNames }: { allBoardNames: string[] }) {
   async function onSubmit(data: NewBoardFormType) {
     setIsLoading(true);
 
-    if (!validateBoardName(data.name, allBoardNames, setError)) {
+    if (!validateBoardName(data.name, "", allBoardNames, setError)) {
       setIsLoading(false);
       return;
     }

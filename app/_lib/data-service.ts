@@ -494,20 +494,25 @@ export async function updateBoardDetails({
     console.log("columnToUpdate", column);
     const existingColumn = await Column.findById(column.id);
     if (!existingColumn) {
-      throw new Error(`Column with ID ${column.id} not found`);
+        throw new Error(`Column with ID ${column.id} not found`);
     }
-    existingColumn.name = column.name;
-    await existingColumn.save();
 
     for (const task of existingColumn.tasks) {
-      console.log("THIS IS THE TASKS!!!!", task);
-      const existingTask = await Task.findById(task);
-      existingTask.status = column.name;
-      await existingTask.save();
-      // task.status = existingColumn.name; // Assuming 'column' field in Task schema represents column ID
-      // await task.save();
+        console.log("THIS IS THE TASKS!!!!", task);
+        try {
+            const existingTask = await Task.findById(task);
+            if (!existingTask) {
+                throw new Error(`Task with ID ${task} not found`);
+            }
+            existingTask.status = column.name;
+            await existingTask.save();
+        } catch (error) {
+            console.error(`Failed to update task ${task}`);
+            // Handle or log the error appropriately
+        }
     }
-  }
+}
+
   // for (const column of columnsToUpdate) {
   //   console.log("columnToUpdate", column);
   //   await Column.findByIdAndUpdate(column.id, { name: column.name });

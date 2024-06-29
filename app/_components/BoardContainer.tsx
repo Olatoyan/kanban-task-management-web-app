@@ -34,7 +34,10 @@ function BoardContainer({ data }: { data: BoardType[] }) {
 
   const allStatus = currentBoardData?.columns.map((column) => column.name);
 
-  const allBoardNames = data.map((column) => column.name.toLowerCase());
+  const allBoardNames = data.map((column) => ({
+    id: column._id.toString(),
+    name: column.name.toLowerCase(),
+  }));
 
   return (
     <section

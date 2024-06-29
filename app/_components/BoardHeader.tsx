@@ -45,14 +45,14 @@ function BoardHeader({ data }: { data: BoardType[] }) {
         <button
           className="flex items-center gap-4 rounded-[2.4rem] bg-[#635fc7] px-[3.2rem] py-[1.4rem] text-[1.5rem] font-bold text-white disabled:cursor-not-allowed disabled:opacity-50"
           onClick={addNewTask}
-          disabled={data.length === 0}
+          disabled={data.length === 0 || currentBoardData!.columns.length === 0}
         >
           + Add New Task
         </button>
 
         <button
           disabled={data.length === 0}
-          className="disabled:cursor-not-allowed disabled:opacity-50"
+          className="rounded-[1rem] py-4 transition-all duration-300 hover:bg-[#20212C] disabled:cursor-not-allowed disabled:opacity-50"
         >
           <BsThreeDotsVertical
             className="text-[2rem] text-[#828fa3]"

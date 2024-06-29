@@ -16,7 +16,7 @@ function EditBoard({
   allBoardNames,
 }: {
   board: BoardType;
-  allBoardNames: string[];
+  allBoardNames: { id: string; name: string }[];
 }) {
   const router = useRouter();
   console.log(board);
@@ -84,7 +84,7 @@ function EditBoard({
     setIsLoading(true);
     console.log(data);
 
-    if (!validateBoardName(data.name, allBoardNames, setError)) {
+    if (!validateBoardName(data.name, board?._id!, allBoardNames, setError)) {
       setIsLoading(false);
       return;
     }
