@@ -5,6 +5,7 @@ import Task from "@/models/taskModel";
 import Column from "@/models/columnModel";
 import Subtask from "@/models/subtaskModel";
 import { BoardType, ColumnType } from "./type";
+import mongoose from "mongoose";
 
 export async function createUser({
   name,
@@ -490,6 +491,14 @@ export async function editBoard({
 
     await Column.findByIdAndDelete(column._id);
   }
+
+  // Remove the column IDs from the board's columns array
+  board.columns = board.columns.filter(
+    (col: { _id: mongoose.Types.ObjectId }) =>
+      !columnsToRemove.some((colToRemove: { _id: mongoose.Types.ObjectId }) =>
+        colToRemove._id.equals(col._id),
+      ),
+  );
 
   // Add new columns
   for (const column of newColumns) {
