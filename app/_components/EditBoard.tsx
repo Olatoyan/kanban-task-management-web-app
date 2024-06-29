@@ -3,7 +3,7 @@ import { useBoard } from "../context/BoardContext";
 import AddSubtask from "./AddSubtask";
 import Button from "./Button";
 import { BoardType, NewBoardFormType } from "@/app/_lib/type";
-import { editBoardAction } from "../_lib/actions";
+import { updateBoardAction } from "../_lib/actions";
 import { useForm } from "react-hook-form";
 import ErrorMessage from "./ErrorMessage";
 import { useRouter } from "next/navigation";
@@ -95,7 +95,7 @@ function EditBoard({
     }
 
     try {
-      const updatedBoard = await editBoardAction({ ...data, id: board?._id });
+      const updatedBoard = await updateBoardAction({ ...data, id: board?._id });
 
       const newName = updatedBoard.name.split(" ").join("+");
       console.log(updatedBoard);

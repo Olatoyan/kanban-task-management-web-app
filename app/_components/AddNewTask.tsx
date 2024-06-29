@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import Button from "./Button";
 import { BsChevronDown } from "react-icons/bs";
 import AddSubtask from "./AddSubtask";
-import { createNewTask } from "../_lib/actions";
+import { createNewTaskAction } from "../_lib/actions";
 import { useBoard } from "../context/BoardContext";
 import { NewTaskFormType } from "../_lib/type";
 import { useForm } from "react-hook-form";
@@ -116,7 +116,7 @@ function AddNewTask({
   //   console.log(data);
   //   const newData = { ...data, status, id: boardId };
 
-  //   await createNewTask(newData);
+  //   await createNewTaskAction(newData);
 
   //   clearSelectedTask();
   // }
@@ -133,7 +133,7 @@ function AddNewTask({
     }
 
     try {
-      const newData = await createNewTask({ ...data, id: boardId });
+      const newData = await createNewTaskAction({ ...data, id: boardId });
       console.log({ newData });
 
       const newName = newData.name.split(" ").join("+");
@@ -153,8 +153,8 @@ function AddNewTask({
     <div className="fixed inset-0 flex h-full w-full items-center justify-center">
       <form
         className={`z-[10] flex h-[55rem] w-full max-w-[50rem] flex-col gap-10 overflow-auto rounded-[0.6rem] bg-[#2b2c37] p-[3.2rem]`}
-        // action={createNewTask}
-        // action={clientCreateNewTask}
+        // action={createNewTaskAction}
+        // action={clientcreateNewTaskAction}
         onSubmit={handleSubmit(onSubmit)}
       >
         <h3 className="text-[1.8rem] font-bold text-white">Add New Task</h3>

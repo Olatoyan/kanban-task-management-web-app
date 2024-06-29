@@ -2,12 +2,12 @@
 
 import { signIn } from "./auth";
 import {
-  addBoard,
-  addColumnsToBoard,
-  addTask,
-  deleteTask,
-  editBoard,
-  editTask,
+  createBoard,
+  addNewColumnsToBoard,
+  createTask,
+  deleteItem,
+  updateBoardDetails,
+  updateTaskDetails,
   toggleSubtask,
 } from "./data-service";
 import { revalidatePath } from "next/cache";
@@ -64,7 +64,7 @@ export async function editTaskAction(data: NewTaskFormType) {
   //   }
   // });
 
-  const newTask = editTask({
+  const newTask = updateTaskDetails({
     id,
     title,
     description,
@@ -76,7 +76,7 @@ export async function editTaskAction(data: NewTaskFormType) {
   return newTask;
 }
 
-export async function createNewTask(data: NewTaskFormType) {
+export async function createNewTaskAction(data: NewTaskFormType) {
   console.log(data);
 
   const { title, description, status, id, subtasks } = data;
@@ -107,7 +107,7 @@ export async function createNewTask(data: NewTaskFormType) {
   // });
   // console.log(title);
   // if (!title.trim()) throw Error("A title is required");
-  const newTask = await addTask({
+  const newTask = await createTask({
     id,
     title,
     description,
@@ -119,15 +119,15 @@ export async function createNewTask(data: NewTaskFormType) {
   return newTask;
 }
 
-export async function deleteTaskAction(id: string, type: string) {
-  await deleteTask({ type, id });
+export async function deleteItemAction(id: string, type: string) {
+  await deleteItem({ type, id });
   console.log("Deleted!!!!!!!!");
 
   revalidatePath("/");
   if (type === "board") redirect("/");
 }
 
-export async function createNewBoard(data: NewBoardFormType) {
+export async function createNewBoardAction(data: NewBoardFormType) {
   try {
     console.log(data);
     const { name, columns } = data;
@@ -138,7 +138,7 @@ export async function createNewBoard(data: NewBoardFormType) {
 
     if (!name.trim()) throw new Error("A board name is required");
 
-    const updatedBoard = await addBoard({
+    const updatedBoard = await createBoard({
       name,
       columns: filteredColumns,
     });
@@ -159,7 +159,7 @@ export async function createNewBoard(data: NewBoardFormType) {
     //   console.log(columns);
     //   if (!name.trim()) throw Error("A board name is required");
 
-    //   addBoard({
+    //   createBoard({
     //     name,
     //     columns,
     //   });
@@ -171,7 +171,7 @@ export async function createNewBoard(data: NewBoardFormType) {
   revalidatePath("/");
 }
 
-export async function editBoardAction(data: NewBoardFormType) {
+export async function updateBoardAction(data: NewBoardFormType) {
   console.log(data);
   const { id, name, columns } = data;
 
@@ -188,7 +188,7 @@ export async function editBoardAction(data: NewBoardFormType) {
 
   // console.log({ columnsWithNames, filteredColumns });
 
-  const updatedBoard = await editBoard({
+  const updatedBoard = await updateBoardDetails({
     id,
     name,
     columns: filteredColumns,
@@ -198,14 +198,14 @@ export async function editBoardAction(data: NewBoardFormType) {
   return updatedBoard;
 }
 
-export async function createColumn(data: NewBoardFormType) {
+export async function addColumnsToExistingBoardAction(data: NewBoardFormType) {
   const { id, columns } = data;
 
   const filteredColumns: ColumnActionType[] = columns
     .map((column) => ({ name: column.name.trim() }))
     .filter((column) => column.name !== "");
 
-  const newColumn = await addColumnsToBoard({
+  const newColumn = await addNewColumnsToBoard({
     id: id!,
     columns: filteredColumns,
   });

@@ -99,7 +99,7 @@ export async function toggleSubtask(id: string) {
   await subtask.save();
 }
 
-export async function editTask({
+export async function updateTaskDetails({
   id,
   title,
   description,
@@ -186,7 +186,7 @@ export async function editTask({
   return updatedData;
 }
 
-export async function addTask({
+export async function createTask({
   id,
   title,
   description,
@@ -295,7 +295,7 @@ export async function addTask({
   };
 }
 
-export async function deleteTask({ type, id }: { type: string; id: string }) {
+export async function deleteItem({ type, id }: { type: string; id: string }) {
   if (type === "task") {
     // Find the task by ID and populate its subtasks
     const task = await Task.findById(id).populate("subtasks");
@@ -354,7 +354,7 @@ export async function deleteTask({ type, id }: { type: string; id: string }) {
   throw new Error(`Unsupported type: ${type}`);
 }
 
-export async function addBoard({
+export async function createBoard({
   name,
   columns,
 }: {
@@ -441,7 +441,7 @@ export async function addBoard({
   }));
 }
 
-export async function editBoard({
+export async function updateBoardDetails({
   id,
   name,
   columns,
@@ -594,7 +594,7 @@ export async function editBoard({
   };
 }
 
-export async function addColumnsToBoard({
+export async function addNewColumnsToBoard({
   id,
   columns,
 }: {

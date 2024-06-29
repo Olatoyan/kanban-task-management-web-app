@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useBoard } from "../context/BoardContext";
 import AddSubtask from "./AddSubtask";
 import Button from "./Button";
-import { createNewBoard } from "../_lib/actions";
+import { createNewBoardAction } from "../_lib/actions";
 import { useForm } from "react-hook-form";
 import { NewBoardFormType } from "../_lib/type";
 import ErrorMessage from "./ErrorMessage";
@@ -77,7 +77,7 @@ function AddNewBoard({ allBoardNames }: { allBoardNames: string[] }) {
   // async function onSubmit(data: NewBoardFormType) {
   //   console.log(data);
 
-  //   // await createNewBoard(data);
+  //   // await createNewBoardAction(data);
   // }
 
   async function onSubmit(data: NewBoardFormType) {
@@ -94,7 +94,7 @@ function AddNewBoard({ allBoardNames }: { allBoardNames: string[] }) {
     }
 
     try {
-      await createNewBoard(data);
+      await createNewBoardAction(data);
       const newName = data.name.split(" ").join("+");
       router.push(`/?board=${newName}`);
     } catch (error) {
@@ -111,8 +111,8 @@ function AddNewBoard({ allBoardNames }: { allBoardNames: string[] }) {
     <div className="fixed inset-0 flex h-full w-full items-center justify-center">
       <form
         className={`z-[10] flex max-h-[55rem] w-full max-w-[50rem] flex-col gap-10 overflow-auto rounded-[0.6rem] bg-[#2b2c37] p-[3.2rem]`}
-        // action={createNewTask}
-        // action={clientCreateNewBoard}
+        // action={createNewTaskAction}
+        // action={clientcreateNewBoardAction}
         onSubmit={handleSubmit(onSubmit)}
       >
         <h3 className="text-[1.8rem] font-bold text-white">Add New Board</h3>

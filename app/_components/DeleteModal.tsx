@@ -1,4 +1,4 @@
-import { deleteTaskAction } from "../_lib/actions";
+import { deleteItemAction } from "../_lib/actions";
 import { BoardType, TaskType } from "../_lib/type";
 import { useBoard } from "../context/BoardContext";
 
@@ -23,7 +23,7 @@ function DeleteModal({
 
   async function handleDelete() {
     setIsLoading(true);
-    await deleteTaskAction(data._id!, type);
+    await deleteItemAction(data._id!, type);
     clearSelectedTask();
     setIsLoading(false);
   }

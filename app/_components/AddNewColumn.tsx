@@ -3,7 +3,10 @@ import { useBoard } from "../context/BoardContext";
 import AddSubtask from "./AddSubtask";
 import Button from "./Button";
 import { BoardType, NewBoardFormType } from "@/app/_lib/type";
-import { createColumn, editBoardAction } from "../_lib/actions";
+import {
+  addColumnsToExistingBoardAction,
+  updateBoardAction,
+} from "../_lib/actions";
 import { useRouter } from "next/navigation";
 import { UseFormSetError, useForm } from "react-hook-form";
 import { validateColumns } from "../_lib/helper";
@@ -68,8 +71,8 @@ function AddNewColumn({ board }: { board: BoardType }) {
     setValue("columns", updatedColumns);
     setIsAddColumn((prev) => !prev);
   }
-  // async function clientCreateColumnAction(formData: FormData) {
-  //   const result = await createColumn(formData);
+  // async function clientaddColumnsToExistingBoardActionAction(formData: FormData) {
+  //   const result = await addColumnsToExistingBoardAction(formData);
 
   //   console.log("ok");
   //   console.log(result);
@@ -86,7 +89,10 @@ function AddNewColumn({ board }: { board: BoardType }) {
     }
 
     try {
-      const newData = await createColumn({ ...data, id: board._id! });
+      const newData = await addColumnsToExistingBoardAction({
+        ...data,
+        id: board._id!,
+      });
       console.log({ newData });
 
       // const newName = newData.name.split(" ").join("+");
@@ -106,8 +112,8 @@ function AddNewColumn({ board }: { board: BoardType }) {
     <div className="fixed inset-0 flex h-full w-full items-center justify-center">
       <form
         className={`z-[10] flex max-h-[55rem] w-full max-w-[50rem] flex-col gap-10 overflow-auto rounded-[0.6rem] bg-[#2b2c37] p-[3.2rem]`}
-        // action={createNewTask}
-        // action={clientCreateColumnAction}
+        // action={createNewTaskAction}
+        // action={clientaddColumnsToExistingBoardActionAction}
         // onSubmit={clearSelectedTask}
         onSubmit={handleSubmit(onSubmit)}
       >
