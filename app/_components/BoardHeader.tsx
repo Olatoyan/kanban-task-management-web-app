@@ -2,9 +2,10 @@
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { BoardType } from "../_lib/type";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { useBoard } from "../context/BoardContext";
+import { useTheme } from "../context/ThemeContext";
 
 function BoardHeader({ data }: { data: BoardType[] }) {
   const searchParams = useSearchParams();
@@ -12,6 +13,10 @@ function BoardHeader({ data }: { data: BoardType[] }) {
   const pathname = usePathname();
 
   const { addNewTask, setSelectedBoard, deleteSelectedBoard } = useBoard();
+
+  const {
+    state: { isDarkMode },
+  } = useTheme();
 
   const boardName = searchParams.get("board") ?? data?.[0]?.name ?? "";
 
@@ -38,8 +43,14 @@ function BoardHeader({ data }: { data: BoardType[] }) {
   // }, [boardName, searchParams, pathname, router]);
 
   return (
-    <div className="flex items-center justify-between border-b border-[#3e3f4e] bg-[#2b2c37] px-20 py-11">
-      <h1 className="text-[2.4rem] font-bold text-white">{boardName}</h1>
+    <div
+      className={`flex items-center justify-between border-b px-20 py-11 transition-all duration-200 ${isDarkMode ? "border-[#3e3f4e] bg-[#2b2c37]" : "border-[#e4ebfa] bg-white"}`}
+    >
+      <h1
+        className={`text-[2.4rem] font-bold transition-all duration-300 ${isDarkMode ? "text-white" : "text-[#000112]"}`}
+      >
+        {boardName}
+      </h1>
 
       <div className="relative flex items-center gap-6">
         <button
@@ -52,7 +63,7 @@ function BoardHeader({ data }: { data: BoardType[] }) {
 
         <button
           disabled={data.length === 0}
-          className="rounded-[1rem] py-4 transition-all duration-300 hover:bg-[#20212C] disabled:cursor-not-allowed disabled:opacity-50"
+          className={`rounded-[1rem] py-4 transition-all duration-300 disabled:cursor-not-allowed disabled:opacity-50 ${isDarkMode ? "hover:bg-[#20212c]" : "hover:bg-[#E4EBFA]"}`}
         >
           <BsThreeDotsVertical
             className="text-[2rem] text-[#828fa3]"
@@ -61,7 +72,9 @@ function BoardHeader({ data }: { data: BoardType[] }) {
         </button>
 
         {isOptionsOpen && (
-          <div className="absolute right-0 top-[7rem] flex w-full flex-col gap-[1.6rem] bg-[#20212c] p-[1.6rem] shadow-[0px_10px_20px_0px_rgba(54,78,126,0.25)]">
+          <div
+            className={`absolute right-0 top-[7rem] flex w-full flex-col gap-[1.6rem] p-[1.6rem] shadow-[0px_10px_20px_0px_rgba(54,78,126,0.25)] ${isDarkMode ? "bg-[#20212c]" : "bg-white"}`}
+          >
             <p
               className="cursor-pointer text-[1.3rem] font-medium leading-[2.3rem] text-[#828fa3]"
               onClick={() => {

@@ -9,12 +9,14 @@ import SideBoardNames from "./SideBoardNames";
 import { useTheme } from "../context/ThemeContext";
 
 function SideBar({ data }: { data: BoardType[] }) {
-  const { state } = useTheme();
+  const {
+    state: { isDarkMode, isSidebarHidden },
+  } = useTheme();
   console.log("SIDEBAR!!!!!!!!!!!!!!!!", data);
 
   return (
     <aside
-      className={`w-full max-w-[30rem] flex-col bg-[#2B2C37] pt-[3.2rem] ${state.isSidebarHidden ? "hidden" : "flex"}`}
+      className={`w-full max-w-[30rem] flex-col pt-[3.2rem] transition-all duration-300 ${isSidebarHidden ? "hidden" : "flex"} ${isDarkMode ? "bg-[#2B2C37]" : "bg-white"} `}
     >
       <Logo />
       <nav className="mt-[5.4rem] flex flex-col gap-8 pr-[2.3rem]">

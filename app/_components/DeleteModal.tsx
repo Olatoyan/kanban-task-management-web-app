@@ -1,6 +1,7 @@
 import { deleteItemAction } from "../_lib/actions";
 import { BoardType, TaskType } from "../_lib/type";
 import { useBoard } from "../context/BoardContext";
+import { useTheme } from "../context/ThemeContext";
 
 function DeleteModal({
   type,
@@ -10,6 +11,9 @@ function DeleteModal({
   data: TaskType | BoardType;
 }) {
   const { clearSelectedTask, setIsLoading } = useBoard();
+  const {
+    state: { isDarkMode },
+  } = useTheme();
 
   // Type guard to check if data is of type TaskType
   const isTaskType = (data: TaskType | BoardType): data is TaskType => {
@@ -30,7 +34,9 @@ function DeleteModal({
 
   return (
     <div className="fixed inset-0 flex h-full w-full items-center justify-center">
-      <div className="z-10 flex w-full max-w-[50rem] flex-col gap-10 rounded-[0.6rem] bg-[#2b2c37] p-[3.2rem_3.2rem_4rem]">
+      <div
+        className={`z-10 flex w-full max-w-[50rem] flex-col gap-10 rounded-[0.6rem] p-[3.2rem_3.2rem_4rem] ${isDarkMode ? "bg-[#2b2c37]" : "text-white"}`}
+      >
         <h2 className="text-[1.3rem] font-bold text-[#ea5555]">
           Delete this {type}?
         </h2>
@@ -51,7 +57,7 @@ function DeleteModal({
 
         <div className="flex items-center gap-7">
           <button
-            className="w-full rounded-[2rem] bg-white py-[0.8rem] text-[1.3rem] font-bold leading-[2.3rem] text-[#635fc7]"
+            className={`rounded-[2rem] py-[0.85rem] text-center text-[1.3rem] font-bold leading-[2.3rem] text-[#635fc7] transition-all duration-300 ${isDarkMode ? "bg-white" : "bg-[rgba(99,95,199,0.10)] hover:bg-[rgba(99,95,199,0.25)]"}`}
             onClick={clearSelectedTask}
           >
             Cancel

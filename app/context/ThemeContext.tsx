@@ -4,20 +4,24 @@ import { ReactNode, createContext, useContext, useReducer } from "react";
 
 type StateType = {
   isSidebarHidden: boolean;
+  isDarkMode: boolean;
 };
 
-type ActionType = { type: "TOGGLE_SIDEBAR" };
+type ActionType = { type: "TOGGLE_SIDEBAR" } | { type: "TOGGLE_DARK_MODE" };
 
 const initialState: StateType = {
   isSidebarHidden: false,
+  isDarkMode: true,
 };
 
 const ThemeContext = createContext<{
   state: StateType;
   toggleSidebar: () => void;
+  toggleDarkMode: () => void;
 }>({
   state: initialState,
   toggleSidebar: () => {},
+  toggleDarkMode: () => {},
 });
 
 const reducer = (state: StateType, action: ActionType): StateType => {
@@ -26,6 +30,11 @@ const reducer = (state: StateType, action: ActionType): StateType => {
       return {
         ...state,
         isSidebarHidden: !state.isSidebarHidden,
+      };
+    case "TOGGLE_DARK_MODE":
+      return {
+        ...state,
+        isDarkMode: !state.isDarkMode,
       };
     default:
       return state;
@@ -39,8 +48,12 @@ function ThemeProvider({ children }: { children: ReactNode }) {
     dispatch({ type: "TOGGLE_SIDEBAR" });
   }
 
+  function toggleDarkMode() {
+    dispatch({ type: "TOGGLE_DARK_MODE" });
+  }
+
   return (
-    <ThemeContext.Provider value={{ state, toggleSidebar }}>
+    <ThemeContext.Provider value={{ state, toggleSidebar, toggleDarkMode }}>
       {children}
     </ThemeContext.Provider>
   );

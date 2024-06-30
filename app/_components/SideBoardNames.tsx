@@ -5,9 +5,13 @@ import { BoardType } from "../_lib/type";
 import { TbLayoutBoardSplit } from "react-icons/tb";
 import { useBoard } from "../context/BoardContext";
 import { useEffect } from "react";
+import { useTheme } from "../context/ThemeContext";
 
 function SideBoardNames({ data }: { data: BoardType[] }) {
-  const { addNewBoard, setIsLoading, state } = useBoard();
+  const { addNewBoard, setIsLoading } = useBoard();
+  const {
+    state: { isDarkMode },
+  } = useTheme();
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
@@ -43,7 +47,13 @@ function SideBoardNames({ data }: { data: BoardType[] }) {
       {data.map((board) => (
         <li
           key={board._id}
-          className={`flex cursor-pointer items-center gap-4 rounded-[0_10rem_10rem_0] px-[3.2rem] py-[1.4rem] text-[1.5rem] font-bold text-white transition-all duration-300 ${board.name === activeBoard ? "bg-[#635fc7]" : "hover:bg-white hover:text-[#635fc7]"}`}
+          className={`$ flex cursor-pointer items-center gap-4 rounded-[0_10rem_10rem_0] px-[3.2rem] py-[1.4rem] text-[1.5rem] font-bold transition-all duration-300 ${board.name === activeBoard ? "bg-[#635fc7] text-white" : "text-[#828fa3]"} ${
+            isDarkMode
+              ? board.name !== activeBoard &&
+                "hover:bg-white hover:text-[#635fc7]"
+              : board.name !== activeBoard &&
+                "hover:bg-[#635fc7] hover:bg-opacity-10 hover:text-[#635fc7]"
+          }`}
           onClick={() => handleBoardClick(board.name)}
         >
           <TbLayoutBoardSplit className="h-[2rem] w-[2rem]" />

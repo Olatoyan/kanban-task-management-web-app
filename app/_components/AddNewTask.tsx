@@ -9,6 +9,7 @@ import { useForm } from "react-hook-form";
 import ErrorMessage from "./ErrorMessage";
 import { useRouter } from "next/navigation";
 import { validateSubtasks } from "../_lib/helper";
+import { useTheme } from "../context/ThemeContext";
 
 type TaskFormProp = { title: string };
 
@@ -62,6 +63,9 @@ function AddNewTask({
   // ]);
 
   const { clearSelectedTask, setIsLoading } = useBoard();
+  const {
+    state: { isDarkMode },
+  } = useTheme();
 
   // function addNewSubtask() {
   //   const newSubtask = {
@@ -152,25 +156,32 @@ function AddNewTask({
   return (
     <div className="fixed inset-0 flex h-full w-full items-center justify-center">
       <form
-        className={`z-[10] flex h-[55rem] w-full max-w-[50rem] flex-col gap-10 overflow-auto rounded-[0.6rem] bg-[#2b2c37] p-[3.2rem]`}
+        className={`z-[10] flex h-[55rem] w-full max-w-[50rem] flex-col gap-10 overflow-auto rounded-[0.6rem] p-[3.2rem] ${isDarkMode ? "bg-[#2b2c37]" : "bg-white"}`}
         // action={createNewTaskAction}
         // action={clientcreateNewTaskAction}
         onSubmit={handleSubmit(onSubmit)}
       >
-        <h3 className="text-[1.8rem] font-bold text-white">Add New Task</h3>
+        <h3
+          className={`text-[1.8rem] font-bold ${isDarkMode ? "text-white" : "text-[#000112]"}`}
+        >
+          Add New Task
+        </h3>
 
         {/* <input type="hidden" name="status" value={status} />
         <input type="hidden" name="id" value={boardId} /> */}
 
         <div className="flex flex-col gap-3">
-          <label htmlFor="title" className="text-[1.2rem] font-bold text-white">
+          <label
+            htmlFor="title"
+            className={`text-[1.2rem] font-bold ${isDarkMode ? "text-white" : "text-[#828fa3]"}`}
+          >
             Title
           </label>
           <div className="relative">
             <input
               type="text"
               id="title"
-              className={`w-full rounded-[0.4rem] border bg-[#2B2C37] px-6 py-3 text-[1.3rem] font-medium leading-[2.3rem] text-white outline-[0] placeholder:text-opacity-25 ${errors?.title?.message ? "border-[#ea5555] focus:border-[#ea5555]" : "border-[rgba(130,143,163,0.25)] hover:border-[#635fc7] focus:border-[#635fc7] focus:outline-[#635fc7]"}`}
+              className={`w-full rounded-[0.4rem] border bg-transparent px-6 py-3 text-[1.3rem] font-medium leading-[2.3rem] outline-[0] placeholder:text-opacity-25 ${errors?.title?.message ? "border-[#ea5555] focus:border-[#ea5555]" : "border-[rgba(130,143,163,0.25)] hover:border-[#635fc7] focus:border-[#635fc7] focus:outline-[#635fc7]"} ${isDarkMode ? "text-white" : "text-[#000112]"}`}
               placeholder="Enter your title here"
               {...register("title", {
                 required: "Can't be empty",
@@ -192,7 +203,7 @@ function AddNewTask({
         <div className="flex flex-col gap-3">
           <label
             htmlFor="description"
-            className="text-[1.2rem] font-bold text-white"
+            className={`text-[1.2rem] font-bold ${isDarkMode ? "text-white" : "text-[#828fa3]"}`}
           >
             Description
           </label>
@@ -200,7 +211,7 @@ function AddNewTask({
             <textarea
               rows={4}
               id="description"
-              className={`w-full resize-none rounded-[0.4rem] border bg-[#2B2C37] px-6 py-3 text-[1.3rem] font-medium leading-[2.3rem] text-white outline-[0] placeholder:text-opacity-25 ${errors?.description?.message ? "border-[#ea5555] focus:border-[#ea5555]" : "border-[rgba(130,143,163,0.25)] hover:border-[#635fc7] focus:border-[#635fc7] focus:outline-[#635fc7]"}`}
+              className={`w-full resize-none rounded-[0.4rem] border bg-transparent px-6 py-3 text-[1.3rem] font-medium leading-[2.3rem] outline-[0] placeholder:text-opacity-25 ${errors?.description?.message ? "border-[#ea5555] focus:border-[#ea5555]" : "border-[rgba(130,143,163,0.25)] hover:border-[#635fc7] focus:border-[#635fc7] focus:outline-[#635fc7]"} ${isDarkMode ? "text-white" : "text-[#000112]"}`}
               placeholder="Enter your description here"
               {...register("description")}
             />
@@ -211,7 +222,11 @@ function AddNewTask({
         </div>
 
         <div className="flex flex-col gap-3">
-          <p className="text-[1.2rem] font-bold text-white">Subtasks</p>
+          <p
+            className={`text-[1.2rem] font-bold ${isDarkMode ? "text-white" : "text-[#828fa3]"}`}
+          >
+            Subtasks
+          </p>
 
           <div className="custom-scrollbar flex max-h-[16rem] flex-col gap-5 overflow-auto">
             {subtasks.map((subtask, index) => (
@@ -227,7 +242,7 @@ function AddNewTask({
             ))}
           </div>
           <p
-            className="cursor-pointer rounded-[2rem] bg-white py-[0.85rem] text-center text-[1.3rem] font-bold leading-[2.3rem] text-[#635fc7]"
+            className={`cursor-pointer rounded-[2rem] py-[0.85rem] text-center text-[1.3rem] font-bold leading-[2.3rem] text-[#635fc7] transition-all duration-300 ${isDarkMode ? "bg-white" : "bg-[rgba(99,95,199,0.10)] hover:bg-[rgba(99,95,199,0.25)]"}`}
             onClick={updateSubtasks}
           >
             + Add New SubTask
@@ -235,10 +250,14 @@ function AddNewTask({
         </div>
 
         <div className="relative">
-          <p className="text-[1.2rem] font-bold text-white">Status</p>
+          <p
+            className={`text-[1.2rem] font-bold ${isDarkMode ? "text-white" : "text-[#828fa3]"}`}
+          >
+            Status
+          </p>
 
           <div
-            className="relatives flex w-full items-center justify-between gap-3 rounded-[0.4rem] border border-[rgba(130,143,163,0.25)] bg-[#2B2C37] px-[1.6rem] py-[0.85rem]"
+            className="relatives flex w-full items-center justify-between gap-3 rounded-[0.4rem] border border-[rgba(130,143,163,0.25)] bg-transparent px-[1.6rem] py-[0.85rem]"
             onClick={() => setIsExpanded((prev) => !prev)}
           >
             <p className="text-[1.3rem] font-bold leading-[2.3rem] text-white">

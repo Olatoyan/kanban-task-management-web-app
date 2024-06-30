@@ -9,6 +9,7 @@ import ErrorMessage from "./ErrorMessage";
 import { useRouter } from "next/navigation";
 import { getAllTasks } from "../_lib/data-service";
 import { validateBoardName, validateColumns } from "../_lib/helper";
+import { useTheme } from "../context/ThemeContext";
 
 type columnFormProp = { name: string };
 
@@ -39,6 +40,9 @@ function AddNewBoard({
   });
 
   const { clearSelectedTask, setIsLoading } = useBoard();
+  const {
+    state: { isDarkMode },
+  } = useTheme();
   const [isAddColumn, setIsAddColumn] = useState(false);
 
   const columns: columnFormProp[] = getValues("columns");
@@ -114,17 +118,21 @@ function AddNewBoard({
   return (
     <div className="fixed inset-0 flex h-full w-full items-center justify-center">
       <form
-        className={`z-[10] flex max-h-[55rem] w-full max-w-[50rem] flex-col gap-10 overflow-auto rounded-[0.6rem] bg-[#2b2c37] p-[3.2rem]`}
+        className={`z-[10] flex max-h-[55rem] w-full max-w-[50rem] flex-col gap-10 overflow-auto rounded-[0.6rem] p-[3.2rem] ${isDarkMode ? "bg-[#2b2c37]" : "bg-white"}`}
         // action={createNewTaskAction}
         // action={clientcreateNewBoardAction}
         onSubmit={handleSubmit(onSubmit)}
       >
-        <h3 className="text-[1.8rem] font-bold text-white">Add New Board</h3>
+        <h3
+          className={`text-[1.8rem] font-bold ${isDarkMode ? "text-white" : "text-[#000112]"}`}
+        >
+          Add New Board
+        </h3>
 
         <div className="flex flex-col gap-3">
           <label
             htmlFor="boardName"
-            className="text-[1.2rem] font-bold text-white"
+            className={`text-[1.2rem] font-bold ${isDarkMode ? "text-white" : "text-[#828fa3]"}`}
           >
             Board Name
           </label>
@@ -132,7 +140,7 @@ function AddNewBoard({
             <input
               type="text"
               id="boardName"
-              className={`w-full rounded-[0.4rem] border bg-[#2B2C37] px-6 py-3 text-[1.3rem] font-medium leading-[2.3rem] text-white outline-[0] placeholder:text-opacity-25 ${errors?.name?.message ? "border-[#ea5555] focus:border-[#ea5555]" : "border-[rgba(130,143,163,0.25)] hover:border-[#635fc7] focus:border-[#635fc7] focus:outline-[#635fc7]"}`}
+              className={`w-full rounded-[0.4rem] border bg-transparent px-6 py-3 text-[1.3rem] font-medium leading-[2.3rem] outline-[0] placeholder:text-opacity-25 ${errors?.name?.message ? "border-[#ea5555] focus:border-[#ea5555]" : "border-[rgba(130,143,163,0.25)] hover:border-[#635fc7] focus:border-[#635fc7] focus:outline-[#635fc7]"} ${isDarkMode ? "text-white" : "text-[#000112]"}`}
               placeholder="Enter your Board name here"
               {...register("name", {
                 required: "Can't be empty",
@@ -141,8 +149,8 @@ function AddNewBoard({
                   message: "Must be at least 3 characters",
                 },
                 maxLength: {
-                  value: 15,
-                  message: "Must be less than 15 characters",
+                  value: 30,
+                  message: "Must be less than 30 characters",
                 },
               })}
             />
@@ -153,7 +161,11 @@ function AddNewBoard({
         </div>
 
         <div className="flex flex-col gap-3">
-          <p className="text-[1.2rem] font-bold text-white">Board Columns</p>
+          <p
+            className={`text-[1.2rem] font-bold ${isDarkMode ? "text-white" : "text-[#828fa3]"}`}
+          >
+            Board Columns
+          </p>
 
           <div className="custom-scrollbar flex max-h-[16rem] flex-col gap-5 overflow-auto">
             {columns.map((subtask, index) => (
@@ -170,7 +182,7 @@ function AddNewBoard({
             ))}
           </div>
           <p
-            className="cursor-pointer rounded-[2rem] bg-white py-[0.85rem] text-center text-[1.3rem] font-bold leading-[2.3rem] text-[#635fc7]"
+            className={`cursor-pointer rounded-[2rem] py-[0.85rem] text-center text-[1.3rem] font-bold leading-[2.3rem] text-[#635fc7] transition-all duration-300 ${isDarkMode ? "bg-white" : "bg-[rgba(99,95,199,0.10)] hover:bg-[rgba(99,95,199,0.25)]"}`}
             onClick={updateColumns}
           >
             + Add New Column

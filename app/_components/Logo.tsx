@@ -1,11 +1,16 @@
 import Image from "next/image";
 import Link from "next/link";
+import { useTheme } from "../context/ThemeContext";
 
 function Logo() {
+  const {
+    state: { isDarkMode },
+  } = useTheme();
+
   return (
     <Link href="/">
       <Image
-        src="/logo-light.svg"
+        src={isDarkMode ? "/logo-light.svg" : "/logo-dark.svg"}
         alt="logo"
         width={155}
         height={26}
