@@ -43,5 +43,5 @@
 /* For Firefox */
 .custom-scrollbar {
   scrollbar-width: thin;
-  scrollbar-color: #635fc7 #2b2c37;
+  scrollbar-color: #635fc7 transparent;
 }

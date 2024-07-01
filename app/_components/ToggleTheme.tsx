@@ -24,7 +24,7 @@ function ToggleTheme() {
       </div>
 
       <button
-        className={`flex items-center gap-4 rounded-[0_10rem_10rem_0] px-[3.2rem] py-[1.4rem] text-[1.5rem] font-bold text-[#828fa3] transition-all duration-300 hover:text-[#635fc7] ${isDarkMode ? "hover:bg-white" : "hover:bg-[#635fc7] hover:bg-opacity-10"}`}
+        className={`flex items-center gap-4 rounded-[0_10rem_10rem_0] px-[3.2rem] py-[1.4rem] text-[1.5rem] font-bold text-[#828fa3] transition-all duration-300 hover:text-[#635fc7] tablet:hidden ${isDarkMode ? "hover:bg-white" : "hover:bg-[#635fc7] hover:bg-opacity-10"}`}
         onClick={toggleSidebar}
       >
         <BsEyeSlash />

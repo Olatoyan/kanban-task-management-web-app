@@ -40,7 +40,7 @@ function ViewTasks({ task }: { task: TaskType }) {
   return (
     <div className="fixed inset-0 flex h-full w-full items-center justify-center">
       <div
-        className={`relative z-10 flex max-h-[55rem] w-full max-w-[50rem] flex-col gap-10 overflow-y-auto overflow-x-hidden rounded-[0.6rem] p-[3.2rem] ${isDarkMode ? "bg-[#2b2c37]" : "bg-white"}`}
+        className={`relative z-10 mx-8 flex max-h-[55rem] w-full max-w-[50rem] flex-col gap-10 overflow-y-auto overflow-x-hidden rounded-[0.6rem] p-[3.2rem] tablet:px-8 ${isDarkMode ? "bg-[#2b2c37]" : "bg-white"}`}
       >
         <div className="flex items-center justify-between gap-5">
           <h3
@@ -60,7 +60,7 @@ function ViewTasks({ task }: { task: TaskType }) {
 
           {isOptionsOpen && (
             <div
-              className={`absolute right-[-10%] top-[20%] flex w-[19.2rem] flex-col gap-[1.6rem] p-[1.6rem] shadow-[0px_10px_20px_0px_rgba(54,78,126,0.25)] ${isDarkMode ? "bg-[#20212c]" : "bg-white"}`}
+              className={`absolute right-[-10%] top-[20%] flex w-[19.2rem] flex-col gap-[1.6rem] p-[1.6rem] shadow-[0px_10px_20px_0px_rgba(54,78,126,0.25)] tablet:w-[16rem] ${isDarkMode ? "bg-[#20212c]" : "bg-white"}`}
             >
               <p
                 className="cursor-pointer text-[1.3rem] font-medium leading-[2.3rem] text-[#828fa3]"

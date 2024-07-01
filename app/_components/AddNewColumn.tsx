@@ -115,7 +115,7 @@ function AddNewColumn({ board }: { board: BoardType }) {
   return (
     <div className="fixed inset-0 flex h-full w-full items-center justify-center">
       <form
-        className={`z-[10] flex max-h-[55rem] w-full max-w-[50rem] flex-col gap-10 overflow-auto rounded-[0.6rem] p-[3.2rem] ${isDarkMode ? "bg-[#2b2c37]" : "bg-white"}`}
+        className={`z-[10] mx-8 flex max-h-[55rem] w-full max-w-[50rem] flex-col gap-10 overflow-auto rounded-[0.6rem] p-[3.2rem] tablet:px-8 ${isDarkMode ? "bg-[#2b2c37]" : "bg-white"}`}
         // action={createNewTaskAction}
         // action={clientaddColumnsToExistingBoardActionAction}
         // onSubmit={clearSelectedTask}

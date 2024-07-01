@@ -5,23 +5,33 @@ import { ReactNode, createContext, useContext, useReducer } from "react";
 type StateType = {
   isSidebarHidden: boolean;
   isDarkMode: boolean;
+  isMobileNavOpen: boolean;
 };
 
-type ActionType = { type: "TOGGLE_SIDEBAR" } | { type: "TOGGLE_DARK_MODE" };
+type ActionType =
+  | { type: "TOGGLE_SIDEBAR" }
+  | { type: "TOGGLE_DARK_MODE" }
+  | { type: "TOGGLE_MOBILE_NAV" }
+  | { type: "CLOSE_MOBILE_NAV" };
 
 const initialState: StateType = {
   isSidebarHidden: false,
   isDarkMode: true,
+  isMobileNavOpen: false,
 };
 
 const ThemeContext = createContext<{
   state: StateType;
   toggleSidebar: () => void;
   toggleDarkMode: () => void;
+  toggleMobileNav: () => void;
+  closeMobileNav: () => void;
 }>({
   state: initialState,
   toggleSidebar: () => {},
   toggleDarkMode: () => {},
+  toggleMobileNav: () => {},
+  closeMobileNav: () => {},
 });
 
 const reducer = (state: StateType, action: ActionType): StateType => {
@@ -35,6 +45,16 @@ const reducer = (state: StateType, action: ActionType): StateType => {
       return {
         ...state,
         isDarkMode: !state.isDarkMode,
+      };
+    case "TOGGLE_MOBILE_NAV":
+      return {
+        ...state,
+        isMobileNavOpen: !state.isMobileNavOpen,
+      };
+    case "CLOSE_MOBILE_NAV":
+      return {
+        ...state,
+        isMobileNavOpen: false,
       };
     default:
       return state;
@@ -52,8 +72,24 @@ function ThemeProvider({ children }: { children: ReactNode }) {
     dispatch({ type: "TOGGLE_DARK_MODE" });
   }
 
+  function toggleMobileNav() {
+    dispatch({ type: "TOGGLE_MOBILE_NAV" });
+  }
+
+  function closeMobileNav() {
+    dispatch({ type: "CLOSE_MOBILE_NAV" });
+  }
+
   return (
-    <ThemeContext.Provider value={{ state, toggleSidebar, toggleDarkMode }}>
+    <ThemeContext.Provider
+      value={{
+        state,
+        toggleSidebar,
+        toggleDarkMode,
+        toggleMobileNav,
+        closeMobileNav,
+      }}
+    >
       {children}
     </ThemeContext.Provider>
   );

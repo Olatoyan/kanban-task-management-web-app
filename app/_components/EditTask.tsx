@@ -123,7 +123,7 @@ function EditTask({
   return (
     <div className="fixed inset-0 flex h-full w-full items-center justify-center">
       <form
-        className={`z-[10] flex h-[55rem] w-full max-w-[50rem] flex-col gap-10 overflow-auto rounded-[0.6rem] p-[3.2rem] ${isDarkMode ? "bg-[#2b2c37]" : "bg-white"}`}
+        className={`z-[10] mx-8 flex h-[55rem] w-full max-w-[50rem] flex-col gap-10 overflow-auto rounded-[0.6rem] p-[3.2rem] tablet:px-8 ${isDarkMode ? "bg-[#2b2c37]" : "bg-white"}`}
         // action={editTaskAction}
         // onSubmit={clearSelectedTask}
         onSubmit={handleSubmit(onSubmit)}
@@ -235,7 +235,9 @@ function EditTask({
               {status}
             </p>
             <span>
-              <BsChevronDown className="text-[1.5rem] text-[#828fa3]" />
+              <BsChevronDown
+                className={`text-[1.5rem] text-[#828fa3] transition-all duration-300 ${isExpanded ? "rotate-180" : "rotate-0"}`}
+              />
             </span>
           </div>
           {isExpanded && (

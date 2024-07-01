@@ -35,7 +35,7 @@ function DeleteModal({
   return (
     <div className="fixed inset-0 flex h-full w-full items-center justify-center">
       <div
-        className={`z-10 flex w-full max-w-[50rem] flex-col gap-10 rounded-[0.6rem] p-[3.2rem_3.2rem_4rem] ${isDarkMode ? "bg-[#2b2c37]" : "text-white"}`}
+        className={`z-10 mx-8 flex w-full max-w-[50rem] flex-col gap-10 rounded-[0.6rem] p-[3.2rem_3.2rem_4rem] tablet:px-8 ${isDarkMode ? "bg-[#2b2c37]" : "bg-white"}`}
       >
         <h2 className="text-[1.3rem] font-bold text-[#ea5555]">
           Delete this {type}?
@@ -55,9 +55,9 @@ function DeleteModal({
           </p>
         )}
 
-        <div className="flex items-center gap-7">
+        <div className="flex items-center gap-7 tablet:flex-col">
           <button
-            className={`rounded-[2rem] py-[0.85rem] text-center text-[1.3rem] font-bold leading-[2.3rem] text-[#635fc7] transition-all duration-300 ${isDarkMode ? "bg-white" : "bg-[rgba(99,95,199,0.10)] hover:bg-[rgba(99,95,199,0.25)]"}`}
+            className={`w-full rounded-[2rem] py-[0.85rem] text-center text-[1.3rem] font-bold leading-[2.3rem] text-[#635fc7] transition-all duration-300 ${isDarkMode ? "bg-white" : "bg-[rgba(99,95,199,0.10)] hover:bg-[rgba(99,95,199,0.25)]"}`}
             onClick={clearSelectedTask}
           >
             Cancel

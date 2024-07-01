@@ -14,7 +14,7 @@ function Logo() {
         alt="logo"
         width={155}
         height={26}
-        className="ml-[3.2rem]"
+        className="ml-[3.2rem] tablet:hidden"
       />
     </Link>
   );
