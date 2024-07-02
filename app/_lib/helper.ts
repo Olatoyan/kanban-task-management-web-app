@@ -1,5 +1,6 @@
 import { FieldError, UseFormSetError } from "react-hook-form";
 import { NewBoardFormType, NewTaskFormType } from "./type";
+import { SignJWT, jwtVerify } from "jose";
 
 type columnFormProp = { name: string };
 
@@ -90,4 +91,31 @@ export function validateBoardName(
   }
 
   return true;
+}
+
+const key = new TextEncoder().encode(process.env.JWT_SECRET);
+
+export async function encrypt(payload: any) {
+  const expirationTime = new Date();
+  expirationTime.setHours(expirationTime.getHours() + 24); // Set expiration to 24 hours from now
+
+  return await new SignJWT(payload)
+    .setProtectedHeader({ alg: "HS256" })
+    .setIssuedAt()
+    .setExpirationTime(expirationTime)
+    .sign(key);
+}
+// export async function encrypt(payload: any) {
+//   return await new SignJWT(payload)
+//     .setProtectedHeader({ alg: "HS256" })
+//     .setIssuedAt()
+//     .setExpirationTime("10 sec from now")
+//     .sign(key);
+// }
+
+export async function decrypt(input: string) {
+  const { payload } = await jwtVerify(input, key, {
+    algorithms: ["HS256"],
+  });
+  return payload;
 }

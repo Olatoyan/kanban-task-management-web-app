@@ -14,6 +14,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { getErrorMessage } from "./helper";
 import { NewBoardFormType, NewTaskFormType } from "./type";
+import { createUserWithEmailAndPassword, verifyEmail } from "./userAuth";
 
 type SubtaskActionType = {
   title: string;
@@ -25,6 +26,26 @@ type ColumnActionType = {
 
 export async function signInAction() {
   await signIn("google", { redirectTo: "/" });
+}
+
+export async function signupWithEmailAction({
+  name,
+  email,
+  password,
+}: {
+  name: string;
+  email: string;
+  password: string;
+}) {
+  console.log({ name, email, password });
+
+  await createUserWithEmailAndPassword({ name, email, password });
+}
+
+export async function verifyEmailAction(token: string) {
+  console.log({ token });
+  const newToken = await verifyEmail(token);
+  return newToken;
 }
 
 export async function toggleSubtaskAction(id: string) {

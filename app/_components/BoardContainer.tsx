@@ -43,7 +43,7 @@ function BoardContainer({ data }: { data: BoardType[] }) {
 
   return (
     <section
-      className={`custom-scrollbar tablet:w-screen h-[86.8vh] overflow-hidden p-[2.4rem] pr-0 ${isSidebarHidden ? "w-screen" : "w-[80vw]"} `}
+      className={`custom-scrollbar h-[86.8vh] overflow-hidden p-[2.4rem] pr-0 tablet:w-screen ${isSidebarHidden ? "w-screen" : "w-[81vw]"} `}
     >
       {data.length > 0 ? (
         <div className="custom-scrollbar flex h-full gap-10 overflow-auto">

@@ -4,6 +4,7 @@ import "./globals.css";
 import SideBarNavigation from "@/app/_components/SideBarNavigation";
 import { BoardProvider } from "@/app/context/BoardContext";
 import { ThemeProvider } from "./context/ThemeContext";
+import { Toaster } from "react-hot-toast";
 
 const jakarta = Plus_Jakarta_Sans({ subsets: ["latin"], display: "swap" });
 
@@ -25,10 +26,18 @@ export default function RootLayout({
       >
         <ThemeProvider>
           <BoardProvider>
-            <SideBarNavigation />
-            <main className="w-full">{children}</main>
+            {/* <SideBarNavigation /> */}
+            <main className="flex w-full">{children}</main>
           </BoardProvider>
         </ThemeProvider>
+
+        <Toaster
+          position="top-center"
+          toastOptions={{
+            duration: 3000,
+            style: { fontSize: "1.6rem", padding: "1.4rem 2.4rem" },
+          }}
+        />
       </body>
     </html>
   );

@@ -7,6 +7,22 @@ import Subtask from "@/models/subtaskModel";
 import { BoardType, ColumnType } from "./type";
 import mongoose from "mongoose";
 
+export async function createUserWithEmailAndPassword({
+  name,
+  email,
+  password,
+  confirmPassword,
+}: {
+  name: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+}) {
+  await connectToDb();
+  console.log(name, email, password, confirmPassword);
+  const user = new User({ name, email, password, confirmPassword });
+}
+
 export async function createUser({
   name,
   email,
@@ -494,24 +510,24 @@ export async function updateBoardDetails({
     console.log("columnToUpdate", column);
     const existingColumn = await Column.findById(column.id);
     if (!existingColumn) {
-        throw new Error(`Column with ID ${column.id} not found`);
+      throw new Error(`Column with ID ${column.id} not found`);
     }
 
     for (const task of existingColumn.tasks) {
-        console.log("THIS IS THE TASKS!!!!", task);
-        try {
-            const existingTask = await Task.findById(task);
-            if (!existingTask) {
-                throw new Error(`Task with ID ${task} not found`);
-            }
-            existingTask.status = column.name;
-            await existingTask.save();
-        } catch (error) {
-            console.error(`Failed to update task ${task}`);
-            // Handle or log the error appropriately
+      console.log("THIS IS THE TASKS!!!!", task);
+      try {
+        const existingTask = await Task.findById(task);
+        if (!existingTask) {
+          throw new Error(`Task with ID ${task} not found`);
         }
+        existingTask.status = column.name;
+        await existingTask.save();
+      } catch (error) {
+        console.error(`Failed to update task ${task}`);
+        // Handle or log the error appropriately
+      }
     }
-}
+  }
 
   // for (const column of columnsToUpdate) {
   //   console.log("columnToUpdate", column);
