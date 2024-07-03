@@ -14,7 +14,12 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { getErrorMessage } from "./helper";
 import { NewBoardFormType, NewTaskFormType } from "./type";
-import { createUserWithEmailAndPassword, verifyEmail } from "./userAuth";
+import {
+  createUserWithEmailAndPassword,
+  getSession,
+  loginWithEmailAndPassword,
+  verifyEmail,
+} from "./userAuth";
 
 type SubtaskActionType = {
   title: string;
@@ -46,6 +51,17 @@ export async function verifyEmailAction(token: string) {
   console.log({ token });
   const newToken = await verifyEmail(token);
   return newToken;
+}
+
+export async function loginWithEmailAction({
+  email,
+  password,
+}: {
+  email: string;
+  password: string;
+}) {
+  const user = await loginWithEmailAndPassword({ email, password });
+  return user;
 }
 
 export async function toggleSubtaskAction(id: string) {
@@ -150,7 +166,14 @@ export async function deleteItemAction(id: string, type: string) {
 
 export async function createNewBoardAction(data: NewBoardFormType) {
   try {
-    console.log(data);
+    const session = await getSession();
+    console.log({ data });
+
+    if (!session) {
+      console.log("REDIRECTING!!!");
+      return redirect("/auth/login");
+    }
+    console.log({ data });
     const { name, columns } = data;
 
     const filteredColumns: ColumnActionType[] = columns

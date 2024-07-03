@@ -37,6 +37,7 @@ function SideBoardNames({ data }: { data: BoardType[] }) {
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
+    if (activeBoard === undefined) return;
     params.set("board", activeBoard);
     router.push(`${pathname}?${params.toString()}`, { scroll: false });
     router.refresh();

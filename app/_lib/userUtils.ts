@@ -3,14 +3,23 @@ import { IUser } from "@/models/userModel";
 import bcrypt from "bcryptjs";
 import crypto from "crypto";
 
-export const hashPassword = async (password: string) => {
-  return await bcrypt.hash(password, 12);
-};
+// export async function hashPassword(password: string) {
+//   return await bcrypt.hash(password, 12);
+// }
 
 export const comparePasswords = async (
   candidatePassword: string,
   userPassword: string,
 ) => {
+  console.log("candidatePassword:", candidatePassword);
+  console.log("userPassword:", userPassword);
+
+  if (
+    typeof candidatePassword !== "string" ||
+    typeof userPassword !== "string"
+  ) {
+    throw new Error("Both passwords must be strings");
+  }
   return await bcrypt.compare(candidatePassword, userPassword);
 };
 

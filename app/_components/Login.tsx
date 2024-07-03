@@ -1,17 +1,16 @@
 "use client";
 
-import ErrorMessage from "@/app/_components/ErrorMessage";
 import Image from "next/image";
 import { useForm } from "react-hook-form";
 
 import { BsEyeSlash, BsEyeFill } from "react-icons/bs";
 import Button from "./Button";
-import { signupWithEmailAction } from "../_lib/actions";
 import { useState } from "react";
-import toast from "react-hot-toast";
+import { loginWithEmailAction } from "../_lib/actions";
 import { getErrorMessage } from "../_lib/helper";
+import toast from "react-hot-toast";
 
-function SignUp() {
+function Login() {
   const {
     register,
     handleSubmit,
@@ -31,25 +30,13 @@ function SignUp() {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
     return emailRegex.test(email) || "Invalid email address";
   };
-  const validatePassword = (password: string) => {
-    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\W).{8,}$/;
-    return (
-      passwordRegex.test(password) ||
-      "Password must be at least 8 characters long, contain one uppercase letter, one lowercase letter, and one special character"
-    );
-  };
-
-  const validateConfirmPassword = (confirmPassword: string) => {
-    return (
-      confirmPassword === getValues("password") || "Passwords do not match"
-    );
-  };
 
   async function onSubmit(data: any) {
     try {
-      console.log(data);
-      const { name, email, password } = data;
-      await signupWithEmailAction({ name, email, password });
+      const { email, password } = data;
+      const session = await loginWithEmailAction({ email, password });
+      console.log(session);
+      // Handle successful login (e.g., redirect to dashboard)
     } catch (error) {
       toast.error(getErrorMessage(error));
     }
@@ -72,38 +59,6 @@ function SignUp() {
           onSubmit={handleSubmit(onSubmit)}
           className="flex w-full flex-col gap-[2.4rem]"
         >
-          <div className="flex flex-col gap-3">
-            <label
-              htmlFor="name"
-              className={`text-[1.2rem] font-bold text-white`}
-            >
-              Name
-            </label>
-            <div className="flex flex-col gap-4">
-              <input
-                type="text"
-                id="name"
-                className={`w-full rounded-[0.4rem] border bg-transparent px-6 py-3 text-[1.3rem] font-medium leading-[2.3rem] outline-[0] placeholder:text-opacity-25 ${errors?.name?.message ? "border-[#ea5555] focus:border-[#ea5555]" : "border-[rgba(130,143,163,0.25)] hover:border-[#635fc7] focus:border-[#635fc7] focus:outline-[#635fc7]"} text-white`}
-                placeholder="Enter your name here"
-                {...register("name", {
-                  required: "Can't be empty",
-                  minLength: {
-                    value: 3,
-                    message: "Must be at least 3 characters",
-                  },
-                  maxLength: {
-                    value: 50,
-                    message: "Must be less than 50 characters",
-                  },
-                })}
-              />
-              {errors?.name?.message && (
-                <p className="text-[1.2rem] font-medium leading-[2.3rem] text-[#ea5555]">
-                  {errors.name.message as string}
-                </p>
-              )}
-            </div>
-          </div>
           <div className="flex flex-col gap-3">
             <label
               htmlFor="email"
@@ -141,10 +96,9 @@ function SignUp() {
                 type={showPassword ? "text" : "password"}
                 id="password"
                 className={`w-full rounded-[0.4rem] border bg-transparent px-6 py-3 text-[1.3rem] font-medium leading-[2.3rem] outline-[0] placeholder:text-opacity-25 ${errors?.password?.message ? "border-[#ea5555] focus:border-[#ea5555]" : "border-[rgba(130,143,163,0.25)] hover:border-[#635fc7] focus:border-[#635fc7] focus:outline-[#635fc7]"} text-white`}
-                placeholder="Must be at least 8 characters"
+                placeholder="Enter your password"
                 {...register("password", {
                   required: "Can't be empty",
-                  validate: validatePassword,
                 })}
               />
               <span
@@ -160,38 +114,12 @@ function SignUp() {
               )}
             </div>
           </div>
-          <div className="flex flex-col gap-3">
-            <label
-              htmlFor="confirmPassword"
-              className={`text-[1.2rem] font-bold text-white`}
-            >
-              Confirm Password
-            </label>
-            <div className="flex flex-col gap-4">
-              <input
-                type={showPassword ? "text" : "password"}
-                id="confirmPassword"
-                className={`w-full rounded-[0.4rem] border bg-transparent px-6 py-3 text-[1.3rem] font-medium leading-[2.3rem] outline-[0] placeholder:text-opacity-25 ${errors?.confirmPassword?.message ? "border-[#ea5555] focus:border-[#ea5555]" : "border-[rgba(130,143,163,0.25)] hover:border-[#635fc7] focus:border-[#7b7aa5] focus:outline-[#635fc7]"} text-white`}
-                placeholder="Please confirm your password"
-                {...register("confirmPassword", {
-                  required: "Can't be empty",
-                  validate: validateConfirmPassword,
-                })}
-              />
 
-              {errors?.confirmPassword?.message && (
-                <p className="text-[1.2rem] font-medium leading-[2.3rem] text-[#ea5555]">
-                  {errors.confirmPassword.message as string}
-                </p>
-              )}
-            </div>
-          </div>
-
-          <Button pendingLabel="Creating" label="Create Your Account" />
+          <Button pendingLabel="Logging in" label="Login Into Your Account" />
         </form>
       </section>
     </section>
   );
 }
 
-export default SignUp;
+export default Login;

@@ -5,7 +5,11 @@ import { NextRequest, NextResponse } from "next/server";
 import { decrypt, encrypt } from "./helper";
 
 import User from "../../models/userModel";
-import { comparePasswords, createEmailVerificationToken } from "./userUtils";
+import {
+  comparePasswords,
+  createEmailVerificationToken,
+  // hashPassword,
+} from "./userUtils";
 import connectToDb from "./connectDb";
 import crypto from "crypto";
 import { sendEmail } from "./sendEmail";
@@ -14,6 +18,8 @@ export async function createToken(email: string) {
   // Create the session
   const expires = new Date(Date.now() + 60 * 60 * 24 * 1000);
   const session = await encrypt({ email, expires });
+
+  console.log({ session });
 
   return session;
 }
@@ -41,13 +47,17 @@ export async function createUserWithEmailAndPassword({
     throw new Error("There is already a user with that email");
   }
 
-  const hashedPassword = await bcrypt.hash(password, 12);
+  console.log({ password });
+  // const hashedPassword = await hashPassword(password);
 
-  const newUser = new User({ name, email, password: hashedPassword });
+  // console.log({ hashedPassword });
+  const newUser = new User({ name, email, password });
 
   const verificationToken = createEmailVerificationToken(newUser);
 
   const verificationLink = `http://localhost:3000/auth/verify-email?token=${verificationToken}`;
+
+  console.log({ verificationToken });
 
   const emailOptions = {
     email,
@@ -65,13 +75,15 @@ export async function createUserWithEmailAndPassword({
     `,
   };
 
-  await sendEmail({
-    email,
-    subject: emailOptions.subject,
-    message: emailOptions.message,
-  });
+  // await sendEmail({
+  //   email,
+  //   subject: emailOptions.subject,
+  //   message: emailOptions.message,
+  // });
 
   await newUser.save();
+
+  console.log({ newUser });
 
   return newUser;
 }
@@ -102,20 +114,25 @@ export async function verifyEmail(token: string) {
   const session = await createToken(user.email);
 
   // Save the session in a cookie
-  cookies().set("session", session, { httpOnly: true });
+  cookies().set("session", session, {
+    httpOnly: true,
+    sameSite: "lax",
+    expires: new Date(Date.now() + 60 * 60 * 24 * 1000),
+  });
 
   return user;
 }
 
-export async function login({
+export async function loginWithEmailAndPassword({
   email,
   password,
 }: {
   email: string;
   password: string;
 }) {
-  const user = await User.findOne({ email });
-
+  const user = await User.findOne({ email }).select("+password -__v");
+  const isCorrect = await comparePasswords(password, user.password);
+  console.log({ isCorrect });
   if (!user || !(await comparePasswords(password, user.password))) {
     throw new Error("Invalid email or password");
   }
@@ -124,12 +141,22 @@ export async function login({
     throw new Error("Please verify your email address first");
   }
 
+  console.log("SUCESSFULLY LOGGED IN!!!!!!!");
+
   const session = await createToken(email);
 
   // Save the session in a cookie
-  cookies().set("session", session, { httpOnly: true });
+  cookies().set("session", session, {
+    httpOnly: true,
+    sameSite: "lax",
+    expires: new Date(Date.now() + 60 * 60 * 24 * 1000),
+  });
 
-  return user;
+  const test = await getSession();
+
+  console.log({ test });
+
+  return user.toObject();
 }
 
 export async function logout() {

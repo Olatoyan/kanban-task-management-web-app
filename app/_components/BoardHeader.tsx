@@ -57,7 +57,7 @@ function BoardHeader({ data }: { data: BoardType[] }) {
           className={`flex items-center gap-4 text-[2.4rem] font-bold transition-all duration-300 tablet:text-[1.8rem] ${isDarkMode ? "text-white" : "text-[#000112]"}`}
           onClick={toggleMobileNav}
         >
-          <span>{boardName}</span>
+          <span>{boardName === undefined ? "" : boardName}</span>
 
           <span>
             <BsChevronDown

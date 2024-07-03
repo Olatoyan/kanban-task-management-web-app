@@ -1,6 +1,6 @@
-import { hashPassword } from "@/app/_lib/userUtils";
 import mongoose, { Document, Schema } from "mongoose";
 import validator from "validator";
+import bcrypt from "bcryptjs";
 
 export interface IUser extends Document {
   name: string;
@@ -12,6 +12,8 @@ export interface IUser extends Document {
   passwordResetToken?: string;
   passwordResetExpires?: Date;
   boards?: string[];
+
+  matchPassword(candidatePassword: string): Promise<boolean>;
 }
 
 // User schema definition
@@ -58,7 +60,7 @@ userSchema.pre<IUser>("save", async function (next) {
   if (!this.isModified("password")) return next();
 
   if (!this.usedOAuth) {
-    this.password = await hashPassword(this.password!);
+    this.password = await bcrypt.hash(this.password!, 12);
   }
 
   next();

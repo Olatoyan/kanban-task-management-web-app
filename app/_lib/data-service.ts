@@ -6,6 +6,8 @@ import Column from "@/models/columnModel";
 import Subtask from "@/models/subtaskModel";
 import { BoardType, ColumnType } from "./type";
 import mongoose from "mongoose";
+import { getSession } from "./userAuth";
+import { redirect } from "next/navigation";
 
 export async function createUserWithEmailAndPassword({
   name,
@@ -48,7 +50,19 @@ export async function getUser(email: string) {
 export async function getAllTasks() {
   await connectToDb();
 
-  const data = await Board.find()
+  const session = await getSession();
+
+  if (!session) return [];
+
+  const { email } = session;
+
+  console.log({ email });
+
+  const getUser = await User.findOne({ email });
+
+  const getBoards = getUser.boards;
+
+  const data = await Board.find({ _id: { $in: getBoards } })
     .populate({
       path: "columns",
       populate: {
@@ -59,10 +73,9 @@ export async function getAllTasks() {
       },
     })
     .lean();
-  // const data = await Board.find();
 
   // Transform the populated fields to plain objects
-  return data.map((board: any) => ({
+  return data?.map((board: any) => ({
     _id: board._id.toString(),
     name: board.name,
     columns: board.columns.map((column: any) => ({
@@ -216,6 +229,10 @@ export async function createTask({
   subtasks: { title: string }[];
 }) {
   await connectToDb();
+
+  const session = await getSession();
+
+  if (!session) redirect("/auth/login");
 
   // Create each subtask and collect their IDs
   const subtaskIds = [];
@@ -377,6 +394,10 @@ export async function createBoard({
   name: string;
   columns: { name: string }[];
 }) {
+  const session = await getSession();
+
+  if (!session) redirect("/auth/login");
+
   // Check if a board with the same name already exists
   const existingBoard = await Board.findOne({ name: name.trim() });
   if (existingBoard) {
