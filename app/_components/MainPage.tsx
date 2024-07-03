@@ -1,6 +1,6 @@
 "use client";
 
-import { BoardType } from "@/app/_lib/type";
+import { BoardType, isSessionType } from "@/app/_lib/type";
 import BoardHeader from "@/app/_components/BoardHeader";
 import BoardContainer from "@/app/_components/BoardContainer";
 import Spinner from "./Spinner";
@@ -9,7 +9,13 @@ import { useTheme } from "../context/ThemeContext";
 import SideBar from "./SideBar";
 // import SideBarNavigation from "./SideBarNavigation";
 
-function MainPage({ data }: { data: BoardType[] }) {
+function MainPage({
+  data,
+  isSession,
+}: {
+  data: BoardType[];
+  isSession: isSessionType;
+}) {
   const {
     state: { isDarkMode },
   } = useTheme();
@@ -23,7 +29,7 @@ function MainPage({ data }: { data: BoardType[] }) {
         <BoardHeader data={data} />
 
         <Suspense fallback={<Spinner />}>
-          <BoardContainer data={data} />
+          <BoardContainer data={data} isSession={isSession} />
         </Suspense>
       </section>
     </>

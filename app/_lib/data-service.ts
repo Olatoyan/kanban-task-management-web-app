@@ -43,9 +43,21 @@ export async function createUser({
 export async function getUser(email: string) {
   await connectToDb();
 
-  const user = User.findOne({ email });
+  
+    const user = await User.findOne({ email });
 
-  return user;
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    if (!user.usedOAuth) {
+      throw new Error(
+        "Account found, but you need to log in with your email and password.",
+      );
+    }
+
+    return user;
+ 
 }
 
 export async function getUserSession() {
@@ -55,13 +67,9 @@ export async function getUserSession() {
 
   console.log({ OAuthSession });
 
-  if (!emailSession || !OAuthSession) return [];
+  if (!emailSession && !OAuthSession) return [];
 
-  const { email } = emailSession;
-
-  console.log({ email });
-
-  const finalEmail = email || OAuthSession?.user?.email;
+  const finalEmail = emailSession?.email || OAuthSession?.user?.email;
 
   const getUser = await User.findOne({ email: finalEmail });
 
@@ -76,6 +84,8 @@ export async function getAllTasks() {
   const getUser = await getUserSession();
 
   const getBoards = getUser?.boards;
+
+  console.log({ getUser });
 
   const data = await Board.find({ _id: { $in: getBoards } })
     .populate({

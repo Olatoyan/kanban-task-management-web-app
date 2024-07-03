@@ -1,7 +1,7 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import { BoardType } from "../_lib/type";
+import { BoardType, isSessionType } from "../_lib/type";
 import BoardLists from "./BoardLists";
 import { useBoard } from "@/app/context/BoardContext";
 import ViewTasks from "./ViewTasks";
@@ -16,7 +16,13 @@ import { useTheme } from "../context/ThemeContext";
 import EmptyBoard from "./EmptyBoard";
 import Spinner from "./Spinner";
 
-function BoardContainer({ data }: { data: BoardType[] }) {
+function BoardContainer({
+  data,
+  isSession,
+}: {
+  data: BoardType[];
+  isSession: isSessionType;
+}) {
   const { state, addNewColumn } = useBoard();
   const {
     state: { isSidebarHidden, isDarkMode },
@@ -89,7 +95,9 @@ function BoardContainer({ data }: { data: BoardType[] }) {
         />
       )}
 
-      {state.isAddingBoard && <AddNewBoard allBoardNames={allBoardNames} />}
+      {state.isAddingBoard && (
+        <AddNewBoard allBoardNames={allBoardNames} isSession={isSession} />
+      )}
 
       {state.isEditingBoard && (
         <EditBoard board={currentBoardData!} allBoardNames={allBoardNames} />

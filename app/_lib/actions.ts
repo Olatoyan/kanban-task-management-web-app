@@ -1,6 +1,6 @@
 "use server";
 
-import { signIn } from "./auth";
+import { auth, signIn } from "./auth";
 import {
   createBoard,
   addNewColumnsToBoard,
@@ -30,7 +30,7 @@ type ColumnActionType = {
 };
 
 export async function signInAction() {
-  await signIn("google", { redirectTo: "/" });
+  return await signIn("google", { redirectTo: "/" });
 }
 
 export async function signupWithEmailAction({
@@ -165,14 +165,14 @@ export async function deleteItemAction(id: string, type: string) {
 }
 
 export async function createNewBoardAction(data: NewBoardFormType) {
-  try {
-    const session = await getSession();
-    console.log({ data });
+  const emailSession = await getSession();
+  const OAuthSession = await auth();
 
-    if (!session) {
-      console.log("REDIRECTING!!!");
-      return redirect("/auth/login");
-    }
+  if (!emailSession || !OAuthSession) {
+    console.log("REDIRECTING!!!");
+    return redirect("/auth/login");
+  }
+  try {
     console.log({ data });
     const { name, columns } = data;
 

@@ -1,3 +1,6 @@
+import { JWTPayload } from "jose";
+import { Session } from "next-auth";
+
 export type SubtaskType = {
   _id?: string;
   title: string;
@@ -36,3 +39,5 @@ export type NewTaskFormType = {
   status: string;
   subtasks: { title: string; isCompleted: boolean }[];
 };
+
+export type isSessionType = JWTPayload | Session | null;
