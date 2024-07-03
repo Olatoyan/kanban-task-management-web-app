@@ -34,7 +34,7 @@ export async function createUser({
 }) {
   await connectToDb();
   console.log(name, email);
-  const user = new User({ name, email });
+  const user = new User({ name, email, isVerified: true, usedOAuth: true });
 
   await user.save();
 }
@@ -47,9 +47,7 @@ export async function getUser(email: string) {
   return user;
 }
 
-export async function getAllTasks() {
-  await connectToDb();
-
+export async function getUserSession() {
   const session = await getSession();
 
   if (!session) return [];
@@ -60,7 +58,17 @@ export async function getAllTasks() {
 
   const getUser = await User.findOne({ email });
 
-  const getBoards = getUser.boards;
+  // const getBoards = getUser.boards;
+
+  return getUser;
+}
+
+export async function getAllTasks() {
+  await connectToDb();
+
+  const getUser = await getUserSession();
+
+  const getBoards = getUser?.boards;
 
   const data = await Board.find({ _id: { $in: getBoards } })
     .populate({
@@ -350,6 +358,8 @@ export async function deleteItem({ type, id }: { type: string; id: string }) {
   }
 
   if (type === "board") {
+    const getUser = await getUserSession();
+
     const board = await Board.findById(id).populate("columns");
 
     if (!board) {
@@ -378,6 +388,10 @@ export async function deleteItem({ type, id }: { type: string; id: string }) {
     // Delete the board itself
     await Board.findByIdAndDelete(id);
 
+    getUser.boards.pull(id);
+
+    await getUser.save();
+
     return {
       message:
         "Board and its columns, tasks, and subtasks have been deleted successfully",
@@ -394,9 +408,7 @@ export async function createBoard({
   name: string;
   columns: { name: string }[];
 }) {
-  const session = await getSession();
-
-  if (!session) redirect("/auth/login");
+  const getUser = await getUserSession();
 
   // Check if a board with the same name already exists
   const existingBoard = await Board.findOne({ name: name.trim() });
@@ -426,6 +438,12 @@ export async function createBoard({
   });
 
   await newBoard.save();
+
+  const getBoards = getUser?.boards;
+
+  getBoards.push(newBoard._id);
+
+  await getUser.save();
 
   const data = await Board.find()
     .populate({

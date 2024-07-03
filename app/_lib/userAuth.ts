@@ -65,12 +65,12 @@ export async function createUserWithEmailAndPassword({
     message: `
     <div style="background-color: #fafafa; padding: 20px; border-radius: 10px;">
     <h1 style="color: #633cff; margin-bottom: 20px;">Welcome aboard!</h1>
-    <p style="color: #737373; margin-bottom: 15px;">Greetings from Toyan DevLinks! We're thrilled to have you join our community.</p>
+    <p style="color: #737373; margin-bottom: 15px;">Greetings from Toyan Kaban! We're thrilled to have you join our community.</p>
     <p style="color: #737373; margin-bottom: 15px;">To complete your registration and unlock all the amazing features, please click the button below to verify your email address:</p>
     <p style="text-align: center; margin-bottom: 20px;"><a href="${verificationLink}" style="background-color: #633cff; color: #fafafa; padding: 10px 20px; border-radius: 5px; text-decoration: none;">Verify Email Address</a></p>
     <p style="color: #737373; margin-bottom: 15px;">Alternatively, you can copy and paste the following link into your browser:</p>
     <p style="color: #737373; margin-bottom: 15px;"><em>${verificationLink}</em></p>
-    <p style="color: #737373; font-weight: bold;">If you didn't sign up for Toyan DevLinks, no worries! Simply ignore this email.</p>
+    <p style="color: #737373; font-weight: bold;">If you didn't sign up for Toyan Kaban, no worries! Simply ignore this email.</p>
   </div>
     `,
   };
