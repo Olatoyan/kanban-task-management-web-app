@@ -50,15 +50,16 @@ const authConfig = {
   },
 
   pages: {
-    signIn: "/login",
+    signIn: "/auth/login",
   },
 };
 
 export const {
   auth,
   handlers: { GET, POST },
-  signIn,
+
   signOut,
+  signIn,
 } = NextAuth(authConfig);
 
 /*

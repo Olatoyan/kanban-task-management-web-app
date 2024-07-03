@@ -60,6 +60,7 @@ function SignUp() {
       console.log(data);
       const { name, email, password } = data;
       await signupWithEmailAction({ name, email, password });
+      toast.success("Please check your email for verification");
     } catch (error) {
       toast.error(getErrorMessage(error));
     } finally {

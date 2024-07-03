@@ -1,20 +1,20 @@
 import User from "@/models/userModel";
 import { comparePasswords, createEmailVerificationToken } from "./userUtils";
 
-export async function signUpWithEmail(userData: {
-  name: string;
-  email: string;
-  password: string;
-  confirmPassword: string;
-}) {
-  const newUser = new User(userData);
-  await newUser.save();
+// export async function signUpWithEmail(userData: {
+//   name: string;
+//   email: string;
+//   password: string;
+//   confirmPassword: string;
+// }) {
+//   const newUser = new User(userData);
+//   await newUser.save();
 
-  const verificationToken = createEmailVerificationToken(newUser);
-  // Send the verification token via email (implement this as needed)
+//   const verificationToken = createEmailVerificationToken(newUser);
+//   // Send the verification token via email (implement this as needed)
 
-  return newUser;
-}
+//   return newUser;
+// }
 
 export async function signInWithEmail(email: string, password: string) {
   const user = await User.findOne({ email }).select("+password");

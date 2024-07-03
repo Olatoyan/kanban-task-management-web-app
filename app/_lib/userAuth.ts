@@ -5,11 +5,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { decrypt, encrypt } from "./helper";
 
 import User from "../../models/userModel";
-import {
-  comparePasswords,
-  createEmailVerificationToken,
-  // hashPassword,
-} from "./userUtils";
+import { comparePasswords, createEmailVerificationToken } from "./userUtils";
 import connectToDb from "./connectDb";
 import crypto from "crypto";
 import { sendEmail } from "./sendEmail";
@@ -52,7 +48,7 @@ export async function createUserWithEmailAndPassword({
 
   // console.log({ hashedPassword });
   const newUser = new User({ name, email, password });
-
+  console.log({ newUser });
   const verificationToken = createEmailVerificationToken(newUser);
 
   const verificationLink = `http://localhost:3000/auth/verify-email?token=${verificationToken}`;
@@ -92,12 +88,20 @@ export async function verifyEmail(token: string) {
   // Convert the token to a hashed value
   const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
 
+  console.log({ hashedToken });
+
   // Find the user with the hashed token
   const user = await User.findOne({
     emailVerificationToken: hashedToken,
     isVerified: false,
     // emailVerificationTokenExpires: { $gt: Date.now() }, // Check if the token is not expired
   });
+
+  console.log("THIS IS THE USER", { user });
+
+  if (user) {
+    console.log("FOUND THE USER!!!!");
+  }
 
   // Send an error response if the user is not found
   if (!user) {
@@ -106,10 +110,10 @@ export async function verifyEmail(token: string) {
 
   // Update the user's verification status
   user.isVerified = true;
-  user.emailVerificationToken = undefined;
+  // user.emailVerificationToken = undefined;
   // user.emailVerificationToken = undefined;
   // user.emailVerificationTokenExpires = undefined;
-  await user.save({ validateBeforeSave: false });
+  await user.save();
 
   const session = await createToken(user.email);
 
@@ -120,7 +124,8 @@ export async function verifyEmail(token: string) {
     expires: new Date(Date.now() + 60 * 60 * 24 * 1000),
   });
 
-  return user;
+  // Return plain object data instead of the user instance
+  return { email: user.email, isVerified: user.isVerified };
 }
 
 export async function loginWithEmailAndPassword({

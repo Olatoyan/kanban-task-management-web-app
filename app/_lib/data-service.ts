@@ -8,6 +8,7 @@ import { BoardType, ColumnType } from "./type";
 import mongoose from "mongoose";
 import { getSession } from "./userAuth";
 import { redirect } from "next/navigation";
+import { auth } from "./auth";
 
 export async function createUserWithEmailAndPassword({
   name,
@@ -48,15 +49,21 @@ export async function getUser(email: string) {
 }
 
 export async function getUserSession() {
-  const session = await getSession();
+  const emailSession = await getSession();
 
-  if (!session) return [];
+  const OAuthSession = await auth();
 
-  const { email } = session;
+  console.log({ OAuthSession });
+
+  if (!emailSession || !OAuthSession) return [];
+
+  const { email } = emailSession;
 
   console.log({ email });
 
-  const getUser = await User.findOne({ email });
+  const finalEmail = email || OAuthSession?.user?.email;
+
+  const getUser = await User.findOne({ email: finalEmail });
 
   // const getBoards = getUser.boards;
 

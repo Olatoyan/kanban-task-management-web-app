@@ -1,6 +1,7 @@
 import mongoose, { Document, Schema } from "mongoose";
 import validator from "validator";
 import bcrypt from "bcryptjs";
+import crypto from "crypto";
 
 export interface IUser extends Document {
   name: string;
@@ -12,8 +13,6 @@ export interface IUser extends Document {
   passwordResetToken?: string;
   passwordResetExpires?: Date;
   boards?: string[];
-
-  matchPassword(candidatePassword: string): Promise<boolean>;
 }
 
 // User schema definition

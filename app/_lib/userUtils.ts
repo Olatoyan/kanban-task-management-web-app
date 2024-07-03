@@ -29,6 +29,7 @@ export const createEmailVerificationToken = (user: IUser) => {
     .createHash("sha256")
     .update(verificationToken)
     .digest("hex");
+
   return verificationToken;
 };
 
