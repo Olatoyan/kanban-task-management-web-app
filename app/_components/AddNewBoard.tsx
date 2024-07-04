@@ -4,7 +4,7 @@ import AddSubtask from "./AddSubtask";
 import Button from "./Button";
 import { createNewBoardAction } from "../_lib/actions";
 import { useForm } from "react-hook-form";
-import { NewBoardFormType, isSessionType } from "../_lib/type";
+import { NewBoardFormType } from "../_lib/type";
 import ErrorMessage from "./ErrorMessage";
 import { useRouter } from "next/navigation";
 import { getAllTasks } from "../_lib/data-service";
@@ -15,10 +15,8 @@ type columnFormProp = { name: string };
 
 function AddNewBoard({
   allBoardNames,
-  isSession,
 }: {
   allBoardNames: { id: string; name: string }[];
-  isSession: isSessionType;
 }) {
   const router = useRouter();
 
@@ -92,15 +90,6 @@ function AddNewBoard({
 
   async function onSubmit(data: NewBoardFormType) {
     setIsLoading(true);
-
-    console.log({ isSession });
-
-    if (!isSession) {
-      console.log("REDIRECTING!!!");
-      setIsLoading(false);
-      clearSelectedTask();
-      return router.push("/auth/login");
-    }
 
     if (!validateBoardName(data.name, "", allBoardNames, setError)) {
       setIsLoading(false);

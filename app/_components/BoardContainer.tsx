@@ -98,9 +98,7 @@ function BoardContainer({
         />
       )}
 
-      {state.isAddingBoard && (
-        <AddNewBoard allBoardNames={allBoardNames} isSession={isSession} />
-      )}
+      {state.isAddingBoard && <AddNewBoard allBoardNames={allBoardNames} />}
 
       {state.isEditingBoard && (
         <EditBoard board={currentBoardData!} allBoardNames={allBoardNames} />
