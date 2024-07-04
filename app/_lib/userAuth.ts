@@ -137,7 +137,7 @@ export async function loginWithEmailAndPassword({
   email: string;
   password: string;
 }) {
-  const user = await User.findOne({ email }).select("+password -__v");
+  const user = await User.findOne({ email }).select("+password");
   const isCorrect = await comparePasswords(password, user.password);
   console.log({ isCorrect });
   if (!user || !(await comparePasswords(password, user.password))) {
@@ -146,6 +146,10 @@ export async function loginWithEmailAndPassword({
 
   if (!user.isVerified) {
     throw new Error("Please verify your email address first");
+  }
+
+  if (user.usedOAuth) {
+    throw new Error("You are already logged in with an OAuth account");
   }
 
   console.log("SUCESSFULLY LOGGED IN!!!!!!!");

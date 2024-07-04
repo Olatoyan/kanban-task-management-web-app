@@ -15,6 +15,11 @@ import { redirect, useRouter } from "next/navigation";
 import { useBoard } from "../context/BoardContext";
 import Spinner from "./Spinner";
 
+type LoginType = {
+  email: string;
+  password: string;
+};
+
 function Login() {
   const {
     register,
@@ -23,7 +28,7 @@ function Login() {
     setValue,
     formState: { errors },
     setError,
-  } = useForm();
+  } = useForm<LoginType>();
 
   const {
     setIsLoading,
@@ -43,24 +48,35 @@ function Login() {
     return emailRegex.test(email) || "Invalid email address";
   };
 
-  async function onSubmit(data: any) {
+  async function onSubmit(data: LoginType) {
+    const { email, password } = data;
     setIsLoading(true);
-    try {
-      const { email, password } = data;
-      const session = await loginWithEmailAction({ email, password });
-      if (session) {
-        router.push("/");
-        toast.success("Welcome back!");
-      }
-      console.log(session);
-      // Handle successful login (e.g., redirect to dashboard)
-    } catch (error) {
-      console.log("ERROR DURING LOG IN", error);
-      toast.error("Invalid email or password");
-    } finally {
-      // toast.error("Invalid email or password");
-      setIsLoading(false);
+
+    const result = await loginWithEmailAction({ email, password });
+
+    console.log(result);
+
+    if (result?.error) {
+      toast.error(result.error);
+    } else {
+      toast.success("Login successful!");
+      router.push("/");
     }
+    setIsLoading(false);
+
+    // try {
+    //   if (session) {
+    //     router.push("/");
+    //     toast.success("Welcome back!");
+    //   }
+    //   console.log(session);
+    //   // Handle successful login (e.g., redirect to dashboard)
+    // } catch (error) {
+    //   console.log("ERROR DURING LOG IN", error);
+    //   toast.error("Invalid email or password");
+    // } finally {
+    //   // toast.error("Invalid email or password");
+    // }
   }
 
   console.log(errors);

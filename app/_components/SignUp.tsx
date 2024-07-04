@@ -15,6 +15,13 @@ import SignInButton from "./SignInButton";
 import { useBoard } from "../context/BoardContext";
 import Spinner from "./Spinner";
 
+type SignUpType = {
+  name: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+};
+
 function SignUp() {
   const {
     register,
@@ -24,7 +31,7 @@ function SignUp() {
     formState: { errors },
     setError,
     reset,
-  } = useForm();
+  } = useForm<SignUpType>();
 
   const {
     setIsLoading,
@@ -55,7 +62,7 @@ function SignUp() {
     );
   };
 
-  async function onSubmit(data: any) {
+  async function onSubmit(data: SignUpType) {
     setIsLoading(true);
     try {
       console.log(data);
