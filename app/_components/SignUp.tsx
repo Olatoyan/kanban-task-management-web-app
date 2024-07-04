@@ -62,7 +62,7 @@ function SignUp() {
       await signupWithEmailAction({ name, email, password });
       toast.success("Please check your email for verification");
     } catch (error) {
-      toast.error(getErrorMessage(error));
+      toast.error("There was an error creating your account");
     } finally {
       setIsLoading(false);
     }

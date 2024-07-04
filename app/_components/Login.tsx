@@ -50,12 +50,12 @@ function Login() {
       const session = await loginWithEmailAction({ email, password });
       if (session) {
         router.push("/");
-        toast.success("Login successful");
+        toast.success("Welcome back!");
       }
       console.log(session);
       // Handle successful login (e.g., redirect to dashboard)
     } catch (error) {
-      toast.error(getErrorMessage(error));
+      toast.error("Invalid email or password");
     } finally {
       setIsLoading(false);
     }
