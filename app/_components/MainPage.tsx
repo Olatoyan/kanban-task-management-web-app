@@ -22,7 +22,7 @@ function MainPage({
 
   return (
     <>
-      <SideBar data={data} />
+      <SideBar data={data} isSession={isSession} />
       <section
         className={`relative h-full border-l border-[#3e3f4e] transition-all duration-300 ${isDarkMode ? "bg-[#20212c]" : "bg-[#faf7fd]"}`}
       >

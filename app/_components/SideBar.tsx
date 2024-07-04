@@ -8,7 +8,13 @@ import ToggleTheme from "./ToggleTheme";
 import SideBoardNames from "./SideBoardNames";
 import { useTheme } from "../context/ThemeContext";
 
-function SideBar({ data }: { data: BoardType[] }) {
+function SideBar({
+  data,
+  isSession,
+}: {
+  data: BoardType[];
+  isSession: isSessionType;
+}) {
   const {
     state: { isDarkMode, isSidebarHidden, isMobileNavOpen },
     closeMobileNav,
@@ -26,7 +32,7 @@ function SideBar({ data }: { data: BoardType[] }) {
             {data.length > 0 ? `All Boards (${data.length})` : "No Boards"}
           </h2>
 
-          <SideBoardNames data={data} />
+          <SideBoardNames data={data} isSession={isSession} />
         </nav>
 
         <ToggleTheme />

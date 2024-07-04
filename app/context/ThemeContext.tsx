@@ -1,6 +1,12 @@
 "use client";
 
-import { ReactNode, createContext, useContext, useReducer } from "react";
+import {
+  ReactNode,
+  createContext,
+  useContext,
+  useEffect,
+  useReducer,
+} from "react";
 
 type StateType = {
   isSidebarHidden: boolean;
@@ -12,7 +18,8 @@ type ActionType =
   | { type: "TOGGLE_SIDEBAR" }
   | { type: "TOGGLE_DARK_MODE" }
   | { type: "TOGGLE_MOBILE_NAV" }
-  | { type: "CLOSE_MOBILE_NAV" };
+  | { type: "CLOSE_MOBILE_NAV" }
+  | { type: "SET_DARK_MODE" };
 
 const initialState: StateType = {
   isSidebarHidden: false,
@@ -56,6 +63,8 @@ const reducer = (state: StateType, action: ActionType): StateType => {
         ...state,
         isMobileNavOpen: false,
       };
+    case "SET_DARK_MODE":
+      return { ...state, isDarkMode: true };
     default:
       return state;
   }
@@ -79,6 +88,16 @@ function ThemeProvider({ children }: { children: ReactNode }) {
   function closeMobileNav() {
     dispatch({ type: "CLOSE_MOBILE_NAV" });
   }
+
+  useEffect(() => {
+    const darkModeMediaQuery = window.matchMedia(
+      "(prefers-color-scheme: dark)",
+    );
+
+    if (darkModeMediaQuery.matches) {
+      dispatch({ type: "SET_DARK_MODE" });
+    }
+  }, []);
 
   return (
     <ThemeContext.Provider

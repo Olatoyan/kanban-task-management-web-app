@@ -15,6 +15,7 @@ import RevealSidebar from "./RevealSidebar";
 import { useTheme } from "../context/ThemeContext";
 import EmptyBoard from "./EmptyBoard";
 import Spinner from "./Spinner";
+import NoUserLogin from "./NoUserLogin";
 
 function BoardContainer({
   data,
@@ -68,6 +69,8 @@ function BoardContainer({
             </div>
           </div>
         </div>
+      ) : !isSession ? (
+        <NoUserLogin />
       ) : (
         <EmptyBoard />
       )}

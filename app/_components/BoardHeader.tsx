@@ -2,7 +2,7 @@
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { BoardType, isSessionType } from "../_lib/type";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { BsThreeDotsVertical, BsChevronDown } from "react-icons/bs";
 import { useBoard } from "../context/BoardContext";
 import { useTheme } from "../context/ThemeContext";
@@ -38,6 +38,7 @@ function BoardHeader({
   const currentBoardData = data?.find((board) => board.name === boardName);
 
   const [isOptionsOpen, setIsOptionsOpen] = useState(false);
+  const optionsRef = useRef<HTMLDivElement>(null);
 
   function handleOpenOptionsBtn() {
     setIsOptionsOpen((prev) => !prev);
@@ -64,6 +65,27 @@ function BoardHeader({
     setIsLoading(false);
   }
 
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        optionsRef.current &&
+        !optionsRef.current.contains(event.target as Node)
+      ) {
+        setIsOptionsOpen(false);
+      }
+    }
+
+    if (isOptionsOpen) {
+      document.addEventListener("mouseup", handleClickOutside);
+    } else {
+      document.removeEventListener("mouseup", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isOptionsOpen]);
+
   return (
     <div
       className={`flex items-center justify-between border-b px-20 py-11 transition-all duration-200 tablet:px-6 ${isDarkMode ? "border-[#3e3f4e] bg-[#2b2c37]" : "border-[#e4ebfa] bg-white"}`}
@@ -86,7 +108,7 @@ function BoardHeader({
 
       <div className="relative flex items-center gap-6">
         {isSession && (
-          <button className="pr-20" onClick={logUserOut}>
+          <button className="mr-20" onClick={logUserOut}>
             <CiLogout className="text-[3rem] text-[#828fa3]" />
           </button>
         )}
@@ -112,6 +134,7 @@ function BoardHeader({
 
         {isOptionsOpen && (
           <div
+            ref={optionsRef}
             className={`absolute right-0 top-[7rem] flex w-full flex-col gap-[1.6rem] p-[1.6rem] shadow-[0px_10px_20px_0px_rgba(54,78,126,0.25)] tablet:w-[16rem] ${isDarkMode ? "bg-[#20212c]" : "bg-white"}`}
           >
             <p

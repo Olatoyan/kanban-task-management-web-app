@@ -7,7 +7,13 @@ import { useBoard } from "../context/BoardContext";
 import { useEffect } from "react";
 import { useTheme } from "../context/ThemeContext";
 
-function SideBoardNames({ data }: { data: BoardType[] }) {
+function SideBoardNames({
+  data,
+  isSession,
+}: {
+  data: BoardType[];
+  isSession: isSessionType;
+}) {
   const { addNewBoard, setIsLoading } = useBoard();
   const {
     state: { isDarkMode },
@@ -68,8 +74,9 @@ function SideBoardNames({ data }: { data: BoardType[] }) {
       ))}
 
       <button
-        className="flex items-center gap-4 pl-[3.2rem] pt-[1.4rem] text-[1.5rem] font-bold text-[#635fc7] tablet:pb-10 tablet:pl-8"
+        className="flex items-center gap-4 pl-[3.2rem] pt-[1.4rem] text-[1.5rem] font-bold text-[#635fc7] disabled:cursor-not-allowed disabled:opacity-50 tablet:pb-10 tablet:pl-8"
         onClick={handleClick}
+        disabled={!isSession}
       >
         <TbLayoutBoardSplit className="h-[2rem] w-[2rem]" />
         <span>+ Create New Board</span>
