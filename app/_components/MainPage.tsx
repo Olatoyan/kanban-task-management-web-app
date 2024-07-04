@@ -26,7 +26,7 @@ function MainPage({
       <section
         className={`relative h-full border-l border-[#3e3f4e] transition-all duration-300 ${isDarkMode ? "bg-[#20212c]" : "bg-[#faf7fd]"}`}
       >
-        <BoardHeader data={data} />
+        <BoardHeader data={data} isSession={isSession} />
 
         <Suspense fallback={<Spinner />}>
           <BoardContainer data={data} isSession={isSession} />

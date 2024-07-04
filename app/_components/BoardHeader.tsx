@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { BoardType } from "../_lib/type";
+import { BoardType, isSessionType } from "../_lib/type";
 import { useState } from "react";
 import { BsThreeDotsVertical, BsChevronDown } from "react-icons/bs";
 import { useBoard } from "../context/BoardContext";
@@ -9,14 +9,24 @@ import { useTheme } from "../context/ThemeContext";
 import Image from "next/image";
 
 import { BsPlus } from "react-icons/bs";
-import MobileLogo from "@/public/logo-mobile.svg";
+import { CiLogout } from "react-icons/ci";
 
-function BoardHeader({ data }: { data: BoardType[] }) {
+import MobileLogo from "@/public/logo-mobile.svg";
+import { signOutAction } from "../_lib/actions";
+
+function BoardHeader({
+  data,
+  isSession,
+}: {
+  data: BoardType[];
+  isSession: isSessionType;
+}) {
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
 
-  const { addNewTask, setSelectedBoard, deleteSelectedBoard } = useBoard();
+  const { addNewTask, setSelectedBoard, deleteSelectedBoard, setIsLoading } =
+    useBoard();
 
   const {
     state: { isDarkMode, isMobileNavOpen },
@@ -47,6 +57,13 @@ function BoardHeader({ data }: { data: BoardType[] }) {
   //   }
   // }, [boardName, searchParams, pathname, router]);
 
+  async function logUserOut() {
+    setIsLoading(true);
+    await signOutAction();
+    router.push("/", { scroll: false });
+    setIsLoading(false);
+  }
+
   return (
     <div
       className={`flex items-center justify-between border-b px-20 py-11 transition-all duration-200 tablet:px-6 ${isDarkMode ? "border-[#3e3f4e] bg-[#2b2c37]" : "border-[#e4ebfa] bg-white"}`}
@@ -68,6 +85,12 @@ function BoardHeader({ data }: { data: BoardType[] }) {
       </div>
 
       <div className="relative flex items-center gap-6">
+        {isSession && (
+          <button className="pr-20" onClick={logUserOut}>
+            <CiLogout className="text-[3rem] text-[#828fa3]" />
+          </button>
+        )}
+
         <button
           className="flex items-center gap-4 rounded-[2.4rem] bg-[#635fc7] px-[3.2rem] py-[1.4rem] text-[1.5rem] font-bold text-white disabled:cursor-not-allowed disabled:opacity-50 tablet:px-4 tablet:py-2"
           onClick={addNewTask}

@@ -1,6 +1,6 @@
 "use server";
 
-import { auth, signIn } from "./auth";
+import { auth, signIn, signOut } from "./auth";
 import {
   createBoard,
   addNewColumnsToBoard,
@@ -18,6 +18,7 @@ import {
   createUserWithEmailAndPassword,
   getSession,
   loginWithEmailAndPassword,
+  logout,
   verifyEmail,
 } from "./userAuth";
 
@@ -34,6 +35,19 @@ export async function signInAction() {
   console.log("THIS IS THE DATA", data);
 }
 
+export async function signOutAction() {
+  try {
+    // Then clear the session cookie
+    await logout();
+
+    // First sign out using next-auth
+    await signOut({ redirectTo: "/" });
+
+    console.log("SUCCESSFULLY LOGGED OUT!!!!!!!");
+  } catch (error) {
+    console.error("Error during logout:", error);
+  }
+}
 export async function signupWithEmailAction({
   name,
   email,
