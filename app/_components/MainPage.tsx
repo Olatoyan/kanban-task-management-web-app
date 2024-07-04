@@ -7,7 +7,6 @@ import Spinner from "./Spinner";
 import { Suspense } from "react";
 import { useTheme } from "../context/ThemeContext";
 import SideBar from "./SideBar";
-// import SideBarNavigation from "./SideBarNavigation";
 
 function MainPage({
   data,
