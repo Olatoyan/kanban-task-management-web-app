@@ -19,7 +19,7 @@ type ActionType =
   | { type: "TOGGLE_DARK_MODE" }
   | { type: "TOGGLE_MOBILE_NAV" }
   | { type: "CLOSE_MOBILE_NAV" }
-  | { type: "SET_DARK_MODE" };
+  | { type: "SET_DARK_MODE"; payload: boolean };
 
 const initialState: StateType = {
   isSidebarHidden: false,
@@ -64,7 +64,7 @@ const reducer = (state: StateType, action: ActionType): StateType => {
         isMobileNavOpen: false,
       };
     case "SET_DARK_MODE":
-      return { ...state, isDarkMode: true };
+      return { ...state, isDarkMode: action.payload };
     default:
       return state;
   }
@@ -94,8 +94,12 @@ function ThemeProvider({ children }: { children: ReactNode }) {
       "(prefers-color-scheme: dark)",
     );
 
+    console.log({ darkModeMediaQuery });
+
     if (darkModeMediaQuery.matches) {
-      dispatch({ type: "SET_DARK_MODE" });
+      dispatch({ type: "SET_DARK_MODE", payload: true });
+    } else {
+      dispatch({ type: "SET_DARK_MODE", payload: false });
     }
   }, []);
 

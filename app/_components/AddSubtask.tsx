@@ -30,8 +30,8 @@ function AddSubtask({
   } = useTheme();
 
   return (
-    <div className="flex items-center gap-3">
-      <div className="relative w-full">
+    <div>
+      <div className="flex items-center gap-3">
         <input
           type="text"
           value={title}
@@ -49,24 +49,23 @@ function AddSubtask({
               message: "Too short",
             },
             maxLength: {
-              value: 15,
+              value: type === "column" ? 20 : 50,
               message: "Too long",
             },
             onChange: (e) => handleChange(e.target.value),
           })}
         />
-        {error?.[`task-${index}`]?.message && (
-          <ErrorMessage>
-            {error[`task-${index}`]!.message as string}
-          </ErrorMessage>
-        )}
+
+        <div
+          onClick={handleRemove}
+          className="cursor-pointer text-[2rem] text-[#828fa3] transition-all duration-300 hover:text-[#ea5555]"
+        >
+          <BsX />
+        </div>
       </div>
-      <div
-        onClick={handleRemove}
-        className="cursor-pointer text-[2rem] text-[#828fa3] transition-all duration-300 hover:text-[#ea5555]"
-      >
-        <BsX />
-      </div>
+      {error?.[`task-${index}`]?.message && (
+        <ErrorMessage>{error[`task-${index}`]!.message as string}</ErrorMessage>
+      )}
     </div>
   );
 }

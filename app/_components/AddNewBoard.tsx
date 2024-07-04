@@ -147,7 +147,7 @@ function AddNewBoard({
           >
             Board Name
           </label>
-          <div className="relative">
+          <div className="flex flex-col gap-3">
             <input
               type="text"
               id="boardName"
