@@ -64,7 +64,7 @@ function SignUp() {
       toast.success("Please check your email for verification");
     } catch (error) {
       console.log(error);
-      toast.error(getErrorMessage(error));
+      toast.error("There is already an account with this email");
     } finally {
       setIsLoading(false);
       reset();
