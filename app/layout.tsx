@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
-import SideBarNavigation from "@/app/_components/SideBarNavigation";
+// import SideBarNavigation from "@/app/_components/SideBarNavigation";
 import { BoardProvider } from "@/app/context/BoardContext";
 import { ThemeProvider } from "./context/ThemeContext";
 import { Toaster } from "react-hot-toast";
