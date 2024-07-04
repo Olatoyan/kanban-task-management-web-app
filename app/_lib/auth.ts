@@ -1,5 +1,6 @@
 import NextAuth, {
   Account,
+  AuthError,
   NextAuthConfig,
   Profile,
   Session,
@@ -8,6 +9,8 @@ import NextAuth, {
 import Google from "next-auth/providers/google";
 import { createUser, getUser } from "./data-service";
 import { SignInOptions } from "next-auth/react";
+import toast from "react-hot-toast";
+import { getErrorMessage } from "./helper";
 
 const authConfig = {
   providers: [

@@ -1,8 +1,10 @@
 import { signInAction } from "@/app/_lib/actions";
 import toast from "react-hot-toast";
 import { getErrorMessage } from "../_lib/helper";
+import { useRouter } from "next/navigation";
 
 function SignInButton() {
+  const router = useRouter();
   async function handleClick() {
     try {
       const isLoggedIn = await signInAction();
@@ -11,6 +13,7 @@ function SignInButton() {
     } catch (error) {
       console.log("ERRORRRRR😫😫😫😫😫😫😫😫😫", error);
       toast.error(getErrorMessage(error));
+      router.push("/auth/login");
     }
   }
 

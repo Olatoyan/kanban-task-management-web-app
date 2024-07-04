@@ -30,7 +30,8 @@ type ColumnActionType = {
 };
 
 export async function signInAction() {
-  return await signIn("google", { redirectTo: "/" });
+  const data = await signIn("google", { redirectTo: "/" });
+  console.log("THIS IS THE DATA", data);
 }
 
 export async function signupWithEmailAction({
@@ -165,13 +166,6 @@ export async function deleteItemAction(id: string, type: string) {
 }
 
 export async function createNewBoardAction(data: NewBoardFormType) {
-  const emailSession = await getSession();
-  const OAuthSession = await auth();
-
-  if (!emailSession || !OAuthSession) {
-    console.log("REDIRECTING!!!");
-    return redirect("/auth/login");
-  }
   try {
     console.log({ data });
     const { name, columns } = data;

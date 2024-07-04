@@ -35,6 +35,9 @@ export async function createUser({
 }) {
   await connectToDb();
   console.log(name, email);
+
+  const getUser = await User.findOne({ email });
+
   const user = new User({ name, email, isVerified: true, usedOAuth: true });
 
   await user.save();
@@ -43,21 +46,11 @@ export async function createUser({
 export async function getUser(email: string) {
   await connectToDb();
 
-  
-    const user = await User.findOne({ email });
+  const user = await User.findOne({ email });
 
-    if (!user) {
-      throw new Error("User not found");
-    }
+  console.log("GETUSER", user);
 
-    if (!user.usedOAuth) {
-      throw new Error(
-        "Account found, but you need to log in with your email and password.",
-      );
-    }
-
-    return user;
- 
+  return user;
 }
 
 export async function getUserSession() {
@@ -457,6 +450,8 @@ export async function createBoard({
   await newBoard.save();
 
   const getBoards = getUser?.boards;
+
+  console.log("CREATE USER BOARD", { getUser });
 
   getBoards.push(newBoard._id);
 
