@@ -77,7 +77,9 @@ export async function loginWithEmailAction({
 }) {
   try {
     const user = await loginWithEmailAndPassword({ email, password });
-    return user;
+    return {
+      user,
+    };
   } catch (error) {
     return {
       error: getErrorMessage(error),

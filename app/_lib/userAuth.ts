@@ -143,6 +143,14 @@ export async function loginWithEmailAndPassword({
     throw new Error("Invalid email or password");
   }
 
+  if (!user.isVerified) {
+    throw new Error("Please verify your email address first");
+  }
+
+  if (user.usedOAuth) {
+    throw new Error("You are already logged in with an OAuth account");
+  }
+
   const isCorrect = await comparePasswords(password, user?.password);
   console.log({ isCorrect });
 
@@ -153,14 +161,6 @@ export async function loginWithEmailAndPassword({
   // if (!user || !(await comparePasswords(password, user?.password))) {
   //   throw new Error("Invalid email or password");
   // }
-
-  if (!user.isVerified) {
-    throw new Error("Please verify your email address first");
-  }
-
-  if (user.usedOAuth) {
-    throw new Error("You are already logged in with an OAuth account");
-  }
 
   console.log("SUCESSFULLY LOGGED IN!!!!!!!");
 

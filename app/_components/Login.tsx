@@ -60,7 +60,9 @@ function Login() {
 
     if (result?.error) {
       toast.error(result.error);
-    } else {
+    }
+
+    if (result?.user) {
       toast.success("Login successful!");
       router.push("/");
     }
