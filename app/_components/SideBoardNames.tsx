@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { BoardType } from "../_lib/type";
+import { BoardType, isSessionType } from "../_lib/type";
 import { TbLayoutBoardSplit } from "react-icons/tb";
 import { useBoard } from "../context/BoardContext";
 import { useEffect } from "react";

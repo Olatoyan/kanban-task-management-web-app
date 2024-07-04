@@ -1,7 +1,7 @@
 "use client";
 
 import { getAllTasks } from "../_lib/data-service";
-import { BoardType } from "../_lib/type";
+import { BoardType, isSessionType } from "../_lib/type";
 import Logo from "./Logo";
 import { TbLayoutBoardSplit } from "react-icons/tb";
 import ToggleTheme from "./ToggleTheme";
