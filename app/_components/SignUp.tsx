@@ -23,6 +23,7 @@ function SignUp() {
     setValue,
     formState: { errors },
     setError,
+    reset,
   } = useForm();
 
   const {
@@ -62,9 +63,11 @@ function SignUp() {
       await signupWithEmailAction({ name, email, password });
       toast.success("Please check your email for verification");
     } catch (error) {
-      toast.error("There was an error creating your account");
+      console.log(error);
+      toast.error(getErrorMessage(error));
     } finally {
       setIsLoading(false);
+      reset();
     }
   }
 
