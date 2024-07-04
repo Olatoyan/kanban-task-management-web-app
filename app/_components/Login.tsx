@@ -100,7 +100,7 @@ function Login() {
                 <input
                   type="text"
                   id="email"
-                  className={`w-full rounded-[0.4rem] border bg-transparent px-6 py-3 text-[1.4rem] font-medium leading-[2.3rem] outline-[0] placeholder:text-opacity-25 ${errors?.email?.message ? "border-[#ea5555] focus:border-[#ea5555]" : "border-[rgba(130,143,163,0.25)] hover:border-[#635fc7] focus:border-[#635fc7] focus:outline-[#635fc7]"} text-white`}
+                  className={`w-full rounded-[0.4rem] border bg-transparent px-6 py-3 text-[1.6rem] font-medium leading-[2.3rem] outline-[0] placeholder:text-opacity-25 ${errors?.email?.message ? "border-[#ea5555] focus:border-[#ea5555]" : "border-[rgba(130,143,163,0.25)] hover:border-[#635fc7] focus:border-[#635fc7] focus:outline-[#635fc7]"} text-white`}
                   placeholder="Enter your email here"
                   {...register("email", {
                     required: "Can't be empty",
@@ -125,7 +125,7 @@ function Login() {
                 <input
                   type={showPassword ? "text" : "password"}
                   id="password"
-                  className={`w-full rounded-[0.4rem] border bg-transparent px-6 py-3 text-[1.4rem] font-medium leading-[2.3rem] outline-[0] placeholder:text-opacity-25 ${errors?.password?.message ? "border-[#ea5555] focus:border-[#ea5555]" : "border-[rgba(130,143,163,0.25)] hover:border-[#635fc7] focus:border-[#635fc7] focus:outline-[#635fc7]"} text-white`}
+                  className={`w-full rounded-[0.4rem] border bg-transparent px-6 py-3 text-[1.6rem] font-medium leading-[2.3rem] outline-[0] placeholder:text-opacity-25 ${errors?.password?.message ? "border-[#ea5555] focus:border-[#ea5555]" : "border-[rgba(130,143,163,0.25)] hover:border-[#635fc7] focus:border-[#635fc7] focus:outline-[#635fc7]"} text-white`}
                   placeholder="Enter your password"
                   {...register("password", {
                     required: "Can't be empty",

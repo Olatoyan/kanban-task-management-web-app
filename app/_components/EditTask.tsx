@@ -148,7 +148,7 @@ function EditTask({
             <input
               type="text"
               id="title"
-              className={`w-full rounded-[0.4rem] border bg-transparent px-6 py-3 text-[1.4rem] font-medium leading-[2.3rem] outline-[0] placeholder:text-opacity-25 ${errors?.title?.message ? "border-[#ea5555] focus:border-[#ea5555]" : "border-[rgba(130,143,163,0.25)] hover:border-[#635fc7] focus:border-[#635fc7] focus:outline-[#635fc7]"} ${isDarkMode ? "text-white" : "text-[#000112]"}`}
+              className={`w-full rounded-[0.4rem] border bg-transparent px-6 py-3 text-[1.6rem] font-medium leading-[2.3rem] outline-[0] placeholder:text-opacity-25 ${errors?.title?.message ? "border-[#ea5555] focus:border-[#ea5555]" : "border-[rgba(130,143,163,0.25)] hover:border-[#635fc7] focus:border-[#635fc7] focus:outline-[#635fc7]"} ${isDarkMode ? "text-white" : "text-[#000112]"}`}
               placeholder="Enter your title here"
               defaultValue={title}
               {...register("title", {
@@ -180,7 +180,7 @@ function EditTask({
               rows={4}
               id="description"
               defaultValue={description}
-              className={`w-full resize-none rounded-[0.4rem] border bg-transparent px-6 py-3 text-[1.4rem] font-medium leading-[2.3rem] outline-[0] placeholder:text-opacity-25 ${errors?.description?.message ? "border-[#ea5555] focus:border-[#ea5555]" : "border-[rgba(130,143,163,0.25)] hover:border-[#635fc7] focus:border-[#635fc7] focus:outline-[#635fc7]"} ${isDarkMode ? "text-white" : "text-[#000112]"}`}
+              className={`w-full resize-none rounded-[0.4rem] border bg-transparent px-6 py-3 text-[1.6rem] font-medium leading-[2.3rem] outline-[0] placeholder:text-opacity-25 ${errors?.description?.message ? "border-[#ea5555] focus:border-[#ea5555]" : "border-[rgba(130,143,163,0.25)] hover:border-[#635fc7] focus:border-[#635fc7] focus:outline-[#635fc7]"} ${isDarkMode ? "text-white" : "text-[#000112]"}`}
               placeholder="Enter your description here"
               {...register("description")}
             />
