@@ -57,6 +57,7 @@ function Login() {
     } catch (error) {
       toast.error("Invalid email or password");
     } finally {
+      toast.error("Invalid email or password");
       setIsLoading(false);
     }
   }
