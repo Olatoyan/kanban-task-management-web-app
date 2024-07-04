@@ -140,7 +140,7 @@ function AddNewColumn({ board }: { board: BoardType }) {
             name="name"
             id="boardName"
             defaultValue={board.name}
-            className={`rounded-[0.4rem] border border-[rgba(130,143,163,0.25)] bg-transparent px-6 py-3 text-[1.3rem] font-medium leading-[2.3rem] outline-[0] placeholder:text-opacity-25 disabled:cursor-not-allowed disabled:opacity-50 ${isDarkMode ? "text-white" : "text-[#000112]"}`}
+            className={`rounded-[0.4rem] border border-[rgba(130,143,163,0.25)] bg-transparent px-6 py-3 text-[1.4rem] font-medium leading-[2.3rem] outline-[0] placeholder:text-opacity-25 disabled:cursor-not-allowed disabled:opacity-50 ${isDarkMode ? "text-white" : "text-[#000112]"}`}
             placeholder="Enter your Board name here"
             disabled={true}
           />
@@ -160,7 +160,7 @@ function AddNewColumn({ board }: { board: BoardType }) {
                 key={index}
                 disabled={true}
                 type="text"
-                className={`w-full rounded-[0.4rem] border border-[rgba(130,143,163,0.25)] bg-transparent px-6 py-3 text-[1.3rem] font-medium leading-[2.3rem] outline-[0] placeholder:text-opacity-25 disabled:cursor-not-allowed disabled:opacity-50 ${isDarkMode ? "text-white" : "text-[#000112]"}`}
+                className={`w-full rounded-[0.4rem] border border-[rgba(130,143,163,0.25)] bg-transparent px-6 py-3 text-[1.4rem] font-medium leading-[2.3rem] outline-[0] placeholder:text-opacity-25 disabled:cursor-not-allowed disabled:opacity-50 ${isDarkMode ? "text-white" : "text-[#000112]"}`}
               />
             ))}
             {columns.map((column, index) => (
@@ -180,7 +180,7 @@ function AddNewColumn({ board }: { board: BoardType }) {
             ))}
           </div>
           <p
-            className={`cursor-pointer rounded-[2rem] py-[0.85rem] text-center text-[1.3rem] font-bold leading-[2.3rem] text-[#635fc7] transition-all duration-300 ${isDarkMode ? "bg-white" : "bg-[rgba(99,95,199,0.10)] hover:bg-[rgba(99,95,199,0.25)]"}`}
+            className={`cursor-pointer rounded-[2rem] py-[0.85rem] text-center text-[1.4rem] font-bold leading-[2.3rem] text-[#635fc7] transition-all duration-300 ${isDarkMode ? "bg-white" : "bg-[rgba(99,95,199,0.10)] hover:bg-[rgba(99,95,199,0.25)]"}`}
             onClick={updateColumns}
           >
             + Add New Column

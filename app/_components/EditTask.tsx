@@ -148,7 +148,7 @@ function EditTask({
             <input
               type="text"
               id="title"
-              className={`w-full rounded-[0.4rem] border bg-transparent px-6 py-3 text-[1.3rem] font-medium leading-[2.3rem] outline-[0] placeholder:text-opacity-25 ${errors?.title?.message ? "border-[#ea5555] focus:border-[#ea5555]" : "border-[rgba(130,143,163,0.25)] hover:border-[#635fc7] focus:border-[#635fc7] focus:outline-[#635fc7]"} ${isDarkMode ? "text-white" : "text-[#000112]"}`}
+              className={`w-full rounded-[0.4rem] border bg-transparent px-6 py-3 text-[1.4rem] font-medium leading-[2.3rem] outline-[0] placeholder:text-opacity-25 ${errors?.title?.message ? "border-[#ea5555] focus:border-[#ea5555]" : "border-[rgba(130,143,163,0.25)] hover:border-[#635fc7] focus:border-[#635fc7] focus:outline-[#635fc7]"} ${isDarkMode ? "text-white" : "text-[#000112]"}`}
               placeholder="Enter your title here"
               defaultValue={title}
               {...register("title", {
@@ -180,7 +180,7 @@ function EditTask({
               rows={4}
               id="description"
               defaultValue={description}
-              className={`w-full resize-none rounded-[0.4rem] border bg-transparent px-6 py-3 text-[1.3rem] font-medium leading-[2.3rem] outline-[0] placeholder:text-opacity-25 ${errors?.description?.message ? "border-[#ea5555] focus:border-[#ea5555]" : "border-[rgba(130,143,163,0.25)] hover:border-[#635fc7] focus:border-[#635fc7] focus:outline-[#635fc7]"} ${isDarkMode ? "text-white" : "text-[#000112]"}`}
+              className={`w-full resize-none rounded-[0.4rem] border bg-transparent px-6 py-3 text-[1.4rem] font-medium leading-[2.3rem] outline-[0] placeholder:text-opacity-25 ${errors?.description?.message ? "border-[#ea5555] focus:border-[#ea5555]" : "border-[rgba(130,143,163,0.25)] hover:border-[#635fc7] focus:border-[#635fc7] focus:outline-[#635fc7]"} ${isDarkMode ? "text-white" : "text-[#000112]"}`}
               placeholder="Enter your description here"
               {...register("description")}
             />
@@ -211,7 +211,7 @@ function EditTask({
             ))}
           </div>
           <p
-            className={`cursor-pointer rounded-[2rem] py-[0.85rem] text-center text-[1.3rem] font-bold leading-[2.3rem] text-[#635fc7] transition-all duration-300 ${isDarkMode ? "bg-white" : "bg-[rgba(99,95,199,0.10)] hover:bg-[rgba(99,95,199,0.25)]"}`}
+            className={`cursor-pointer rounded-[2rem] py-[0.85rem] text-center text-[1.4rem] font-bold leading-[2.3rem] text-[#635fc7] transition-all duration-300 ${isDarkMode ? "bg-white" : "bg-[rgba(99,95,199,0.10)] hover:bg-[rgba(99,95,199,0.25)]"}`}
             onClick={updateSubtasks}
           >
             + Add New SubTask
@@ -230,7 +230,7 @@ function EditTask({
             onClick={() => setIsExpanded((prev) => !prev)}
           >
             <p
-              className={`text-[1.3rem] font-bold leading-[2.3rem] ${isDarkMode ? "text-white" : "text-[#000112]"}`}
+              className={`text-[1.4rem] font-bold leading-[2.3rem] ${isDarkMode ? "text-white" : "text-[#000112]"}`}
             >
               {status}
             </p>
@@ -247,7 +247,7 @@ function EditTask({
               {allStatus.map((status, index) => (
                 <p
                   key={index}
-                  className="cursor-pointer text-[1.3rem] font-medium leading-[2.3rem] text-[#828fa3]"
+                  className="cursor-pointer text-[1.4rem] font-medium leading-[2.3rem] text-[#828fa3]"
                   onClick={() => changeStatus(status)}
                 >
                   {status}

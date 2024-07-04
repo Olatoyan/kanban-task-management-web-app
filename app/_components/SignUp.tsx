@@ -107,7 +107,7 @@ function SignUp() {
                 <input
                   type="text"
                   id="name"
-                  className={`w-full rounded-[0.4rem] border bg-transparent px-6 py-3 text-[1.3rem] font-medium leading-[2.3rem] outline-[0] placeholder:text-opacity-25 ${errors?.name?.message ? "border-[#ea5555] focus:border-[#ea5555]" : "border-[rgba(130,143,163,0.25)] hover:border-[#635fc7] focus:border-[#635fc7] focus:outline-[#635fc7]"} text-white`}
+                  className={`w-full rounded-[0.4rem] border bg-transparent px-6 py-3 text-[1.4rem] font-medium leading-[2.3rem] outline-[0] placeholder:text-opacity-25 ${errors?.name?.message ? "border-[#ea5555] focus:border-[#ea5555]" : "border-[rgba(130,143,163,0.25)] hover:border-[#635fc7] focus:border-[#635fc7] focus:outline-[#635fc7]"} text-white`}
                   placeholder="Enter your name here"
                   {...register("name", {
                     required: "Can't be empty",
@@ -139,7 +139,7 @@ function SignUp() {
                 <input
                   type="text"
                   id="email"
-                  className={`w-full rounded-[0.4rem] border bg-transparent px-6 py-3 text-[1.3rem] font-medium leading-[2.3rem] outline-[0] placeholder:text-opacity-25 ${errors?.email?.message ? "border-[#ea5555] focus:border-[#ea5555]" : "border-[rgba(130,143,163,0.25)] hover:border-[#635fc7] focus:border-[#635fc7] focus:outline-[#635fc7]"} text-white`}
+                  className={`w-full rounded-[0.4rem] border bg-transparent px-6 py-3 text-[1.4rem] font-medium leading-[2.3rem] outline-[0] placeholder:text-opacity-25 ${errors?.email?.message ? "border-[#ea5555] focus:border-[#ea5555]" : "border-[rgba(130,143,163,0.25)] hover:border-[#635fc7] focus:border-[#635fc7] focus:outline-[#635fc7]"} text-white`}
                   placeholder="Enter your email here"
                   {...register("email", {
                     required: "Can't be empty",
@@ -164,7 +164,7 @@ function SignUp() {
                 <input
                   type={showPassword ? "text" : "password"}
                   id="password"
-                  className={`w-full rounded-[0.4rem] border bg-transparent px-6 py-3 text-[1.3rem] font-medium leading-[2.3rem] outline-[0] placeholder:text-opacity-25 ${errors?.password?.message ? "border-[#ea5555] focus:border-[#ea5555]" : "border-[rgba(130,143,163,0.25)] hover:border-[#635fc7] focus:border-[#635fc7] focus:outline-[#635fc7]"} text-white`}
+                  className={`w-full rounded-[0.4rem] border bg-transparent px-6 py-3 text-[1.4rem] font-medium leading-[2.3rem] outline-[0] placeholder:text-opacity-25 ${errors?.password?.message ? "border-[#ea5555] focus:border-[#ea5555]" : "border-[rgba(130,143,163,0.25)] hover:border-[#635fc7] focus:border-[#635fc7] focus:outline-[#635fc7]"} text-white`}
                   placeholder="Must be at least 8 characters"
                   {...register("password", {
                     required: "Can't be empty",
@@ -195,7 +195,7 @@ function SignUp() {
                 <input
                   type={showPassword ? "text" : "password"}
                   id="confirmPassword"
-                  className={`w-full rounded-[0.4rem] border bg-transparent px-6 py-3 text-[1.3rem] font-medium leading-[2.3rem] outline-[0] placeholder:text-opacity-25 ${errors?.confirmPassword?.message ? "border-[#ea5555] focus:border-[#ea5555]" : "border-[rgba(130,143,163,0.25)] hover:border-[#635fc7] focus:border-[#7b7aa5] focus:outline-[#635fc7]"} text-white`}
+                  className={`w-full rounded-[0.4rem] border bg-transparent px-6 py-3 text-[1.4rem] font-medium leading-[2.3rem] outline-[0] placeholder:text-opacity-25 ${errors?.confirmPassword?.message ? "border-[#ea5555] focus:border-[#ea5555]" : "border-[rgba(130,143,163,0.25)] hover:border-[#635fc7] focus:border-[#7b7aa5] focus:outline-[#635fc7]"} text-white`}
                   placeholder="Please confirm your password"
                   {...register("confirmPassword", {
                     required: "Can't be empty",
@@ -210,7 +210,7 @@ function SignUp() {
                 )}
               </div>
             </div>
-            <p className="text-[1.3rem] text-[#fff]">
+            <p className="text-[1.4rem] text-[#fff]">
               Already have an account with us?{" "}
               <Link href="/auth/login" className="font-bold text-[#635fc7]">
                 Login

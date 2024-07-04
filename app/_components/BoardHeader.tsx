@@ -115,7 +115,7 @@ function BoardHeader({
             className={`absolute right-0 top-[7rem] flex w-full flex-col gap-[1.6rem] p-[1.6rem] shadow-[0px_10px_20px_0px_rgba(54,78,126,0.25)] tablet:w-[16rem] ${isDarkMode ? "bg-[#20212c]" : "bg-white"}`}
           >
             <p
-              className="cursor-pointer text-[1.3rem] font-medium leading-[2.3rem] text-[#828fa3]"
+              className="cursor-pointer text-[1.4rem] font-medium leading-[2.3rem] text-[#828fa3]"
               onClick={() => {
                 handleCloseOptionsBtn();
                 setSelectedBoard();
@@ -124,7 +124,7 @@ function BoardHeader({
               Edit Board
             </p>
             <p
-              className="cursor-pointer text-[1.3rem] font-medium leading-[2.3rem] text-[#ea5555]"
+              className="cursor-pointer text-[1.4rem] font-medium leading-[2.3rem] text-[#ea5555]"
               onClick={() => {
                 handleCloseOptionsBtn();
                 deleteSelectedBoard(currentBoardData!, "board");

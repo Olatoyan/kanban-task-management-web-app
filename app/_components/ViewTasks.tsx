@@ -63,13 +63,13 @@ function ViewTasks({ task }: { task: TaskType }) {
               className={`absolute right-[-10%] top-[20%] flex w-[19.2rem] flex-col gap-[1.6rem] p-[1.6rem] shadow-[0px_10px_20px_0px_rgba(54,78,126,0.25)] tablet:w-[16rem] ${isDarkMode ? "bg-[#20212c]" : "bg-white"}`}
             >
               <p
-                className="cursor-pointer text-[1.3rem] font-medium leading-[2.3rem] text-[#828fa3]"
+                className="cursor-pointer text-[1.4rem] font-medium leading-[2.3rem] text-[#828fa3]"
                 onClick={editSelectedTask}
               >
                 Edit Task
               </p>
               <p
-                className="cursor-pointer text-[1.3rem] font-medium leading-[2.3rem] text-[#ea5555]"
+                className="cursor-pointer text-[1.4rem] font-medium leading-[2.3rem] text-[#ea5555]"
                 // onClick={handleDeleteTask}
                 onClick={() => {
                   deleteSelectedTask(task, "task");
@@ -81,7 +81,7 @@ function ViewTasks({ task }: { task: TaskType }) {
           )}
         </div>
 
-        <p className="text-[1.3rem] font-medium leading-[2.3rem] text-[#828fa3]">
+        <p className="text-[1.4rem] font-medium leading-[2.3rem] text-[#828fa3]">
           {task.description}
         </p>
 
@@ -107,7 +107,7 @@ function ViewTasks({ task }: { task: TaskType }) {
           </p>
           <button className="flex w-full items-start rounded-[0.4rem] border border-[rgba(130,143,163,0.25)] px-6 py-3">
             <span
-              className={`text-[1.3rem] font-medium leading-[2.3rem] ${isDarkMode ? "text-white" : "text-[#000112]"}`}
+              className={`text-[1.4rem] font-medium leading-[2.3rem] ${isDarkMode ? "text-white" : "text-[#000112]"}`}
             >
               {task.status}
             </span>
