@@ -8,7 +8,10 @@ import { Toaster } from "react-hot-toast";
 const jakarta = Plus_Jakarta_Sans({ subsets: ["latin"], display: "swap" });
 
 export const metadata: Metadata = {
-  title: "Kanban task management web app",
+  title: {
+    template: "%s / Kanban",
+    default: "Kanban task management web app",
+  },
   description:
     "Explore the power of efficient task management with our Kanban web application. Designed as a project for Frontend Mentor, this app helps developers and teams streamline their workflows using the Kanban methodology. Built with the robust combination of Next.js, React, TypeScript and Tailwind CSS, it offers an intuitive and responsive user experience. Developed by Olatoyan George, this project is perfect for testing new ideas and sharing feedback within the developer community.",
 };

@@ -108,13 +108,13 @@ function BoardHeader({
 
       <div className="relative flex items-center gap-6">
         {isSession && (
-          <button className="mr-20" onClick={logUserOut}>
+          <button className="" onClick={logUserOut}>
             <CiLogout className="text-[3rem] text-[#828fa3]" />
           </button>
         )}
 
         <button
-          className="flex items-center gap-4 rounded-[2.4rem] bg-[#635fc7] px-[3.2rem] py-[1.4rem] text-[1.5rem] font-bold text-white disabled:cursor-not-allowed disabled:opacity-50 tablet:px-4 tablet:py-2"
+          className="ml-20 flex items-center gap-4 rounded-[2.4rem] bg-[#635fc7] px-[3.2rem] py-[1.4rem] text-[1.5rem] font-bold text-white disabled:cursor-not-allowed disabled:opacity-50 tablet:ml-12 tablet:px-4 tablet:py-2"
           onClick={addNewTask}
           disabled={data.length === 0 || currentBoardData!.columns.length === 0}
         >
