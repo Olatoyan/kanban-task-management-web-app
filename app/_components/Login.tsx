@@ -52,6 +52,8 @@ function Login() {
     const { email, password } = data;
     setIsLoading(true);
 
+    console.log({ email, password });
+
     const result = await loginWithEmailAction({ email, password });
 
     console.log(result);

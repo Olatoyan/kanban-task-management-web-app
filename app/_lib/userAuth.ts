@@ -138,11 +138,21 @@ export async function loginWithEmailAndPassword({
   password: string;
 }) {
   const user = await User.findOne({ email }).select("+password");
-  const isCorrect = await comparePasswords(password, user.password);
-  console.log({ isCorrect });
-  if (!user || !(await comparePasswords(password, user.password))) {
+
+  if (!user) {
     throw new Error("Invalid email or password");
   }
+
+  const isCorrect = await comparePasswords(password, user?.password);
+  console.log({ isCorrect });
+
+  if (!isCorrect) {
+    throw new Error("Invalid email or password");
+  }
+
+  // if (!user || !(await comparePasswords(password, user?.password))) {
+  //   throw new Error("Invalid email or password");
+  // }
 
   if (!user.isVerified) {
     throw new Error("Please verify your email address first");
