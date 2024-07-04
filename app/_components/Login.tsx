@@ -59,7 +59,7 @@ function Login() {
     console.log(result);
 
     if (result?.error) {
-      toast.error(result.error);
+      toast.error("Invalid email or password");
     }
 
     if (result?.user) {
