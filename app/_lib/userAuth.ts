@@ -51,7 +51,9 @@ export async function createUserWithEmailAndPassword({
   console.log({ newUser });
   const verificationToken = createEmailVerificationToken(newUser);
 
-  const verificationLink = `http://localhost:3000/auth/verify-email?token=${verificationToken}`;
+  const url = process.env.APP_URL;
+
+  const verificationLink = `${url}/auth/verify-email?token=${verificationToken}`;
 
   console.log({ verificationToken });
 
@@ -71,11 +73,11 @@ export async function createUserWithEmailAndPassword({
     `,
   };
 
-  // await sendEmail({
-  //   email,
-  //   subject: emailOptions.subject,
-  //   message: emailOptions.message,
-  // });
+  await sendEmail({
+    email,
+    subject: emailOptions.subject,
+    message: emailOptions.message,
+  });
 
   await newUser.save();
 
@@ -110,7 +112,7 @@ export async function verifyEmail(token: string) {
 
   // Update the user's verification status
   user.isVerified = true;
-  // user.emailVerificationToken = undefined;
+  user.emailVerificationToken = undefined;
   // user.emailVerificationToken = undefined;
   // user.emailVerificationTokenExpires = undefined;
   await user.save();
