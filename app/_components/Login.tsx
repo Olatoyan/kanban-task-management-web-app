@@ -53,9 +53,10 @@ function Login() {
         toast.success("Welcome back!");
       }
       console.log(session);
-      toast.error("Invalid email or password");
       // Handle successful login (e.g., redirect to dashboard)
     } catch (error) {
+      console.log("ERROR DURING LOG IN", error);
+      toast.error("Invalid email or password");
     } finally {
       // toast.error("Invalid email or password");
       setIsLoading(false);
