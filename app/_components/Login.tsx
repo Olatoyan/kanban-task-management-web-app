@@ -44,21 +44,29 @@ function Login() {
   };
 
   async function onSubmit(data: any) {
-    setIsLoading(true);
-    try {
-      const { email, password } = data;
-      const session = await loginWithEmailAction({ email, password });
-      if (session) {
-        router.push("/");
-        toast.success("Welcome back!");
-      }
-      console.log(session);
-      // Handle successful login (e.g., redirect to dashboard)
-    } catch (error) {
-      toast.error("Invalid email or password");
-    } finally {
-      setIsLoading(false);
+    const { email, password } = data;
+    const result = await loginWithEmailAction({ email, password });
+
+    if (result?.error) {
+      toast.error(result?.error);
     }
+
+    // setIsLoading(true);
+    // try {
+    //   const { email, password } = data;
+    //   const session = await loginWithEmailAction({ email, password });
+    //   if (session) {
+    //     router.push("/");
+    //     toast.success("Welcome back!");
+    //   }
+    //   console.log(session);
+    //   // Handle successful login (e.g., redirect to dashboard)
+    // } catch (error) {
+    //   console.log(error);
+    //   toast.error("Invalid email or password");
+    // } finally {
+    //   setIsLoading(false);
+    // }
   }
 
   console.log(errors);

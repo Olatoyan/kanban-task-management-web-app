@@ -140,28 +140,31 @@ export async function loginWithEmailAndPassword({
   await connectToDb();
   const user = await User.findOne({ email }).select("+password");
 
+  // if (!user) {
+  //   throw new Error("Invalid email or password");
+  // }
   if (!user) {
-    throw new Error("Invalid email or password");
+    return { error: "Invalid email or password" };
+  }
+
+  if (!user.isVerified) {
+    return { error: "Please verify your email address first" };
+  }
+
+  if (user.usedOAuth) {
+    return { error: "You are already logged in with an OAuth account" };
   }
 
   const isCorrect = await comparePasswords(password, user?.password);
   console.log({ isCorrect });
 
   if (!isCorrect) {
-    throw new Error("Invalid email or password");
+    return { error: "Invalid email or password" };
   }
 
   // if (!user || !(await comparePasswords(password, user?.password))) {
-  //   throw new Error("Invalid email or password");
+  //   r{ error: eturn"Invalid email or password"}
   // }
-
-  if (!user.isVerified) {
-    throw new Error("Please verify your email address first");
-  }
-
-  if (user.usedOAuth) {
-    throw new Error("You are already logged in with an OAuth account");
-  }
 
   console.log("SUCESSFULLY LOGGED IN!!!!!!!");
 
