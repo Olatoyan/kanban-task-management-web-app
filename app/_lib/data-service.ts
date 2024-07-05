@@ -9,7 +9,6 @@ import mongoose from "mongoose";
 import { getSession } from "./userAuth";
 import { redirect } from "next/navigation";
 import { auth } from "./auth";
-import { useRevalidator } from "react-router-dom";
 
 export async function createUserWithEmailAndPassword({
   name,
