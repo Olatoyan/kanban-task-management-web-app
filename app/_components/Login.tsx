@@ -56,8 +56,10 @@ function Login() {
 
     const result = await loginWithEmailAction({ email, password });
 
-    if(isActionError(result)) {
-      console.log("THERE IS A ERROR ", result.error)
+    console.log({ result });
+
+    if (isActionError(result)) {
+      console.log("THERE IS A ERROR ", result.error);
       toast.error(result.error);
     } else {
       toast.success("Login successful!");

@@ -2,7 +2,7 @@ import { SignJWT, jwtVerify } from "jose";
 import bcrypt from "bcryptjs";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
-import { decrypt, encrypt } from "./helper";
+import { ServerActionResponse, decrypt, encrypt } from "./helper";
 
 import User from "../../models/userModel";
 import { comparePasswords, createEmailVerificationToken } from "./userUtils";
@@ -136,11 +136,12 @@ export async function loginWithEmailAndPassword({
 }: {
   email: string;
   password: string;
-}) {
+}): Promise<ServerActionResponse> {
   const user = await User.findOne({ email }).select("+password");
 
   if (!user) {
     return { error: "Invalid email or password" };
+    // return { error: "Invalid email or password" };
   }
 
   if (!user.isVerified) {
@@ -177,7 +178,7 @@ export async function loginWithEmailAndPassword({
 
   console.log({ test });
 
-  return { email: user.email, isVerified: user.isVerified };
+  return { data: { email: user.email, isVerified: user.isVerified } };
 }
 
 export async function logout() {

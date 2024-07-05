@@ -75,8 +75,15 @@ export async function loginWithEmailAction({
   email: string;
   password: string;
 }): Promise<ServerActionResponse> {
-  const user = await loginWithEmailAndPassword({ email, password });
-  return user;
+  const data = await loginWithEmailAndPassword({ email, password });
+
+  if (data?.error) {
+    return {
+      error: data.error,
+    };
+  }
+
+  return data;
 }
 
 export async function toggleSubtaskAction(id: string) {
