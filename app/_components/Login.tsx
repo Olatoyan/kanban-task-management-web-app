@@ -95,10 +95,10 @@ function Login() {
     let session;
     try {
       session = await loginWithEmailAction({ email, password });
-      // if (session) {
-      // router.push("/");
-      toast.success("Welcome back!");
-      // }
+      if (session) {
+        // router.push("/");
+        toast.success("Welcome back!");
+      }
       console.log(session);
       // Handle successful login (e.g., redirect to dashboard)
     } catch (error) {
