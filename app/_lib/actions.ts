@@ -74,8 +74,8 @@ export async function loginWithEmailAction({
 }: {
   email: string;
   password: string;
-}): Promise<ServerActionResponse> {
-  // const data = await loginWithEmailAndPassword({ email, password });
+}) {
+  const data = await loginWithEmailAndPassword({ email, password });
 
   // if (data?.error) {
   //   return {
@@ -83,15 +83,15 @@ export async function loginWithEmailAction({
   //   };
   // }
 
-  // return data;
+  return data;
 
-  try {
-    await loginWithEmailAndPassword({ email, password });
-  } catch (error) {
-    return {
-      error: getErrorMessage(error),
-    };
-  }
+  // try {
+  //   await loginWithEmailAndPassword({ email, password });
+  // } catch (error) {
+  //   return {
+  //     error: getErrorMessage(error),
+  //   };
+  // }
 }
 
 export async function toggleSubtaskAction(id: string) {

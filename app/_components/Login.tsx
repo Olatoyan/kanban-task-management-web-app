@@ -58,15 +58,25 @@ function Login() {
 
     console.log({ result });
 
-    if (isActionError(result)) {
-      console.log("THERE IS A ERROR ", result.error);
-      toast.error(result.error);
-    } else {
-      toast.success("Login successful!");
-      router.push("/");
-    }
+    // if (isActionError(result)) {
+    //   console.log("THERE IS A ERROR ", result.error);
+    //   toast.error(result.error);
+    // } else {
+    //   toast.success("Login successful!");
+    //   // router.push("/");
+    // }
 
     console.log(result);
+
+    if (result?.data) {
+      toast.success("Login successful!");
+      // router.push("/");
+    } else if (result?.error) {
+      console.log("error is from db");
+      toast.error(result.error);
+    } else {
+      toast.error("Invalid email or password");
+    }
 
     // if (result?.error) {
     //   toast.error(result.error);
