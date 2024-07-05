@@ -75,23 +75,23 @@ export async function loginWithEmailAction({
   email: string;
   password: string;
 }) {
-  const data = await loginWithEmailAndPassword({ email, password });
+  // const data = await loginWithEmailAndPassword({ email, password });
 
-  // if (data?.error) {
-  //   return {
-  //     error: data.error,
-  //   };
-  // }
+  // // if (data?.error) {
+  // //   return {
+  // //     error: data.error,
+  // //   };
+  // // }
 
-  return data;
+  // return data;
 
-  // try {
-  //   await loginWithEmailAndPassword({ email, password });
-  // } catch (error) {
-  //   return {
-  //     error: getErrorMessage(error),
-  //   };
-  // }
+  try {
+    await loginWithEmailAndPassword({ email, password });
+  } catch (error) {
+    return {
+      error: getErrorMessage(error),
+    };
+  }
 }
 
 export async function toggleSubtaskAction(id: string) {
