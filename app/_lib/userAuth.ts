@@ -2,7 +2,7 @@ import { SignJWT, jwtVerify } from "jose";
 import bcrypt from "bcryptjs";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
-import { ServerActionResponse, decrypt, encrypt } from "./helper";
+import { decrypt, encrypt } from "./helper";
 
 import User from "../../models/userModel";
 import { comparePasswords, createEmailVerificationToken } from "./userUtils";
@@ -31,7 +31,7 @@ export async function createUserWithEmailAndPassword({
 }) {
   await connectToDb();
   if (!name || !email || !password) {
-    return { error: "Please fill in all fields" };
+    throw new Error("Please fill in all fields");
   }
 
   console.log(email);
@@ -40,7 +40,7 @@ export async function createUserWithEmailAndPassword({
   console.log({ isUserExists });
 
   if (isUserExists) {
-    return { error: "There is already a user with that email" };
+    throw new Error("There is already a user with that email");
   }
 
   console.log({ password });
@@ -107,7 +107,7 @@ export async function verifyEmail(token: string) {
 
   // Send an error response if the user is not found
   if (!user) {
-    return { error: "Invalid or expired verification token." };
+    throw new Error("Invalid or expired verification token.");
   }
 
   // Update the user's verification status
@@ -140,28 +140,27 @@ export async function loginWithEmailAndPassword({
   const user = await User.findOne({ email }).select("+password");
 
   if (!user) {
-    // throw new Error("Invalid email or password");
-    return { error: "Invalid email or password" };
-  }
-  // try {
-  if (!user.isVerified) {
-    return { error: "Please verify your email address first" };
-  }
-
-  if (user.usedOAuth) {
-    return { error: "You are already logged in with an OAuth account" };
+    throw new Error("Invalid email or password");
   }
 
   const isCorrect = await comparePasswords(password, user?.password);
   console.log({ isCorrect });
 
   if (!isCorrect) {
-    return { error: "Invalid email or password" };
+    throw new Error("Invalid email or password");
   }
 
   // if (!user || !(await comparePasswords(password, user?.password))) {
   //   throw new Error("Invalid email or password");
   // }
+
+  if (!user.isVerified) {
+    throw new Error("Please verify your email address first");
+  }
+
+  if (user.usedOAuth) {
+    throw new Error("You are already logged in with an OAuth account");
+  }
 
   console.log("SUCESSFULLY LOGGED IN!!!!!!!");
 
@@ -178,10 +177,7 @@ export async function loginWithEmailAndPassword({
 
   console.log({ test });
 
-  return { data: { email: user.email, isVerified: user.isVerified } };
-  // } catch (error) {
-  //   return { error };
-  // }
+  return user.toObject();
 }
 
 export async function logout() {

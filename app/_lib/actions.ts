@@ -12,7 +12,7 @@ import {
 } from "./data-service";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { ServerActionResponse, getErrorMessage } from "./helper";
+import { getErrorMessage } from "./helper";
 import { NewBoardFormType, NewTaskFormType } from "./type";
 import {
   createUserWithEmailAndPassword,
@@ -75,23 +75,8 @@ export async function loginWithEmailAction({
   email: string;
   password: string;
 }) {
-  // const data = await loginWithEmailAndPassword({ email, password });
-
-  // // if (data?.error) {
-  // //   return {
-  // //     error: data.error,
-  // //   };
-  // // }
-
-  // return data;
-
-  try {
-    await loginWithEmailAndPassword({ email, password });
-  } catch (error) {
-    return {
-      error: getErrorMessage(error),
-    };
-  }
+  const user = await loginWithEmailAndPassword({ email, password });
+  return user;
 }
 
 export async function toggleSubtaskAction(id: string) {

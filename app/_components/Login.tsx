@@ -52,11 +52,11 @@ function Login() {
     const { email, password } = data;
     setIsLoading(true);
 
-    console.log({ email, password });
+    // console.log({ email, password });
 
-    const result = await loginWithEmailAction({ email, password });
+    // const result = await loginWithEmailAction({ email, password });
 
-    console.log({ result });
+    // console.log({ result });
 
     // if (isActionError(result)) {
     //   console.log("THERE IS A ERROR ", result.error);
@@ -66,17 +66,17 @@ function Login() {
     //   // router.push("/");
     // }
 
-    console.log(result);
+    // console.log(result);
 
-    if (result?.data) {
-      toast.success("Login successful!");
-      // router.push("/");
-    } else if (result?.error) {
-      console.log("error is from db");
-      toast.error(result.error);
-    } else {
-      toast.error("Invalid email or password");
-    }
+    // if (result?.data) {
+    //   toast.success("Login successful!");
+    //   // router.push("/");
+    // } else if (result?.error) {
+    //   console.log("error is from db");
+    //   toast.error(result.error);
+    // } else {
+    //   toast.error("Invalid email or password");
+    // }
 
     // if (result?.error) {
     //   toast.error(result.error);
@@ -91,21 +91,25 @@ function Login() {
     //   toast.success("Login successful!");
     //   router.push("/");
     // }
-    setIsLoading(false);
-
-    // try {
-    //   if (session) {
-    //     router.push("/");
-    //     toast.success("Welcome back!");
-    //   }
-    //   console.log(session);
-    //   // Handle successful login (e.g., redirect to dashboard)
-    // } catch (error) {
-    //   console.log("ERROR DURING LOG IN", error);
-    //   toast.error("Invalid email or password");
-    // } finally {
-    //   // toast.error("Invalid email or password");
-    // }
+    // setIsLoading(false);
+    let session;
+    try {
+      session = await loginWithEmailAction({ email, password });
+      // if (session) {
+      // router.push("/");
+      toast.success("Welcome back!");
+      // }
+      console.log(session);
+      // Handle successful login (e.g., redirect to dashboard)
+    } catch (error) {
+      console.log("ERROR DURING LOG IN", error);
+      toast.error("Invalid email or password");
+    } finally {
+      setIsLoading(false);
+      if (!session?.email) {
+        toast.error("Invalid email or password");
+      }
+    }
   }
 
   console.log(errors);
