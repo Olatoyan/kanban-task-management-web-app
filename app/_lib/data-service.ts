@@ -9,6 +9,7 @@ import mongoose from "mongoose";
 import { getSession } from "./userAuth";
 import { redirect } from "next/navigation";
 import { auth } from "./auth";
+import { useRevalidator } from "react-router-dom";
 
 export async function createUserWithEmailAndPassword({
   name,
@@ -48,7 +49,7 @@ export async function getUser(email: string) {
 
   const user = await User.findOne({ email });
 
-  console.log("GETUSER", user);
+  // console.log("GETUSER", user);
 
   return user;
 }
@@ -58,7 +59,7 @@ export async function getUserSession() {
 
   const OAuthSession = await auth();
 
-  console.log({ OAuthSession });
+  // console.log({ OAuthSession });
 
   if (!emailSession && !OAuthSession) return [];
 
@@ -78,7 +79,7 @@ export async function getAllTasks() {
 
   const getBoards = getUser?.boards;
 
-  console.log({ getUser });
+  // console.log({ getUser });
 
   const data = await Board.find({ _id: { $in: getBoards } })
     .populate({
@@ -139,35 +140,53 @@ export async function updateTaskDetails({
 }) {
   await connectToDb();
 
+  const getUser = await getUserSession();
+
   const task = await Task.findById(id).populate("subtasks").exec();
   if (!task) {
     throw new Error("Task not found");
   }
 
+  console.log({ id });
+  console.log({ task });
+
   // Track existing subtasks and IDs to keep
   const subtaskTitles = new Set(subtasks.map((subtask) => subtask.title));
+  console.log({ subtaskTitles });
   const existingSubtaskIdsToKeep = [];
   const existingSubtaskTitles = new Set();
 
   // Loop through existing subtasks in the task
   for (let subtask of task.subtasks) {
+    console.log({ subtask });
     if (subtaskTitles.has(subtask.title.trim())) {
+      console.log(`${subtask.title} exists`);
       existingSubtaskIdsToKeep.push(subtask._id);
       existingSubtaskTitles.add(subtask.title);
     } else {
+      console.log(`${subtask.title} does not exist`);
       // Remove subtask if it's not in the form data
       await Subtask.findByIdAndDelete(subtask._id);
     }
   }
 
+  console.log({ existingSubtaskIdsToKeep });
+  console.log({ existingSubtaskTitles });
+
   // Add new subtasks from the form data
   for (let subtask of subtasks) {
     const trimmedTitle = subtask.title.trim();
     if (!existingSubtaskTitles.has(trimmedTitle)) {
-      let existingSubtask = await Subtask.findOne({ title: trimmedTitle });
+      let existingSubtask = await Subtask.findOne({
+        title: trimmedTitle,
+        userId: getUser?._id,
+      });
 
       if (!existingSubtask) {
-        existingSubtask = new Subtask({ title: trimmedTitle });
+        existingSubtask = new Subtask({
+          title: trimmedTitle,
+          userId: getUser?._id,
+        });
         await existingSubtask.save();
       }
 
@@ -176,17 +195,29 @@ export async function updateTaskDetails({
   }
 
   // Find the current column containing the task
-  const currentColumn = await Column.findOne({ tasks: id }).exec();
+  // Find the current column containing the task
+  const currentColumn = await Column.findOne({
+    tasks: { $in: [id] },
+    userId: getUser?._id,
+  }).exec();
+  console.log({ currentColumn });
   if (!currentColumn) {
     throw new Error("Current column not found");
   }
+
+  //
 
   // Remove the task from the current column's tasks array
   currentColumn.tasks.pull(id);
   await currentColumn.save();
 
   // Find the new column based on the new status
-  const newColumn = await Column.findOne({ name: status }).exec();
+  const newColumn = await Column.findOne({
+    name: status,
+    userId: getUser?._id,
+  }).exec();
+
+  console.log({ newColumn });
   if (!newColumn) {
     throw new Error("New column not found");
   }
@@ -195,16 +226,17 @@ export async function updateTaskDetails({
   newColumn.tasks.push(id);
   await newColumn.save();
 
-  const updatedData = await Task.findByIdAndUpdate(
-    id,
-    {
-      title,
-      description,
-      status,
-      subtasks: existingSubtaskIdsToKeep,
-    },
-    { new: true },
-  ).lean();
+  console.log(
+    "New column after update:",
+    await Column.findById(newColumn._id).exec(),
+  );
+
+  const updatedData = await Task.findByIdAndUpdate(id, {
+    title,
+    description,
+    status,
+    subtasks: existingSubtaskIdsToKeep,
+  }).lean();
 
   console.log("Updated!!!!!!!!!!");
 
@@ -226,16 +258,26 @@ export async function createTask({
 }) {
   await connectToDb();
 
+  const getUser = await getUserSession();
+
+  console.log({ getUser });
+
   // Create each subtask and collect their IDs
   const subtaskIds = [];
 
   for (const subtask of subtasks) {
     const trimmedTitle = subtask.title.trim();
 
-    let existingSubtask = await Subtask.findOne({ title: trimmedTitle });
+    let existingSubtask = await Subtask.findOne({
+      title: trimmedTitle,
+      userId: getUser?._id,
+    });
 
     if (!existingSubtask) {
-      existingSubtask = new Subtask({ title: trimmedTitle });
+      existingSubtask = new Subtask({
+        title: trimmedTitle,
+        userId: getUser?._id,
+      });
       await existingSubtask.save();
     }
 
@@ -413,7 +455,7 @@ export async function createBoard({
 
   for (const column of columns) {
     const trimmedTitle = column.name.trim();
-    const newColumn = new Column({ name: trimmedTitle });
+    const newColumn = new Column({ name: trimmedTitle, userId: getUser._id });
     await newColumn.save();
     columnIds.push(newColumn._id);
   }
@@ -421,6 +463,7 @@ export async function createBoard({
   const newBoard = new Board({
     name,
     columns: columnIds,
+    userId: getUser._id,
   });
 
   await newBoard.save();
@@ -451,6 +494,7 @@ export async function createBoard({
   const boardData = data as {
     _id: string;
     name: string;
+    userId: string;
     columns: {
       _id: string;
       name: string;
@@ -465,6 +509,7 @@ export async function createBoard({
 
   return data.map((board: any) => ({
     _id: board._id.toString(),
+    userId: board.userId.toString(),
     name: board.name,
     columns: board.columns.map((column: any) => ({
       ...column,
@@ -494,13 +539,18 @@ export async function updateBoardDetails({
   columns: { name: string; id?: string }[];
 }) {
   await connectToDb();
+
+  const getUser = await getUserSession();
   const board = await Board.findById(id).populate("columns");
   if (!board) {
     throw new Error("Board not found");
   }
 
   // Validate unique board name
-  const existingBoard = await Board.findOne({ name }).exec();
+  const existingBoard = await Board.findOne({
+    name,
+    userId: getUser._id,
+  }).exec();
   if (existingBoard && existingBoard._id.toString() !== id) {
     throw new Error("Board name already exists");
   }
@@ -536,6 +586,7 @@ export async function updateBoardDetails({
 
   for (const column of columnsToUpdate) {
     console.log("columnToUpdate", column);
+    await Column.findByIdAndUpdate(column.id, { name: column.name });
     const existingColumn = await Column.findById(column.id);
     if (!existingColumn) {
       throw new Error(`Column with ID ${column.id} not found`);
@@ -651,6 +702,8 @@ export async function addNewColumnsToBoard({
   columns: { name: string }[];
 }) {
   await connectToDb();
+  const getUser = await getUserSession();
+
   const board = await Board.findById(id).populate("columns");
   if (!board) {
     throw new Error("Board not found");
@@ -678,7 +731,10 @@ export async function addNewColumnsToBoard({
   const newColumns = [];
 
   for (const column of columns) {
-    const newColumn = new Column({ name: column.name.trim() });
+    const newColumn = new Column({
+      name: column.name.trim(),
+      userId: getUser._id,
+    });
     await newColumn.save();
     board.columns.push(newColumn._id);
     newColumns.push(newColumn);

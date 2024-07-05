@@ -12,6 +12,11 @@ const boardSchema = new mongoose.Schema({
       ref: "Column",
     },
   ],
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
+  },
 });
 
 const Board = mongoose.models.Board || mongoose.model("Board", boardSchema);

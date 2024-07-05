@@ -42,8 +42,8 @@ const authConfig = {
     },
 
     async session({ session, user }: { session: Session; user: User }) {
-      console.log({ session });
-      console.log({ user });
+      // console.log({ session });
+      // console.log({ user });
       const guest = await getUser(session.user!.email!);
 
       // session.user.guestId = guest.id;
