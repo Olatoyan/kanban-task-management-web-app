@@ -137,6 +137,7 @@ export async function loginWithEmailAndPassword({
   email: string;
   password: string;
 }) {
+  await connectToDb();
   const user = await User.findOne({ email }).select("+password");
 
   if (!user) {
