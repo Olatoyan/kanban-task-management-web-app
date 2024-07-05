@@ -59,13 +59,18 @@ function Login() {
     console.log(result);
 
     if (result?.error) {
-      toast.error("Invalid email or password");
+      toast.error(result.error);
     }
 
-    if (result?.user) {
-      toast.success("Login successful!");
+    if (result?.email) {
+      toast.success("Welcome back!");
       router.push("/");
     }
+
+    // if (result?.user) {
+    //   toast.success("Login successful!");
+    //   router.push("/");
+    // }
     setIsLoading(false);
 
     // try {

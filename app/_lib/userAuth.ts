@@ -31,7 +31,7 @@ export async function createUserWithEmailAndPassword({
 }) {
   await connectToDb();
   if (!name || !email || !password) {
-    throw new Error("Please fill in all fields");
+    return { error: "Please fill in all fields" };
   }
 
   console.log(email);
@@ -40,7 +40,7 @@ export async function createUserWithEmailAndPassword({
   console.log({ isUserExists });
 
   if (isUserExists) {
-    throw new Error("There is already a user with that email");
+    return { error: "There is already a user with that email" };
   }
 
   console.log({ password });
@@ -107,7 +107,7 @@ export async function verifyEmail(token: string) {
 
   // Send an error response if the user is not found
   if (!user) {
-    throw new Error("Invalid or expired verification token.");
+    return { error: "Invalid or expired verification token." };
   }
 
   // Update the user's verification status
@@ -140,22 +140,22 @@ export async function loginWithEmailAndPassword({
   const user = await User.findOne({ email }).select("+password");
 
   if (!user) {
-    throw new Error("Invalid email or password");
+    return { error: "Invalid email or password" };
   }
 
   if (!user.isVerified) {
-    throw new Error("Please verify your email address first");
+    return { error: "Please verify your email address first" };
   }
 
   if (user.usedOAuth) {
-    throw new Error("You are already logged in with an OAuth account");
+    return { error: "You are already logged in with an OAuth account" };
   }
 
   const isCorrect = await comparePasswords(password, user?.password);
   console.log({ isCorrect });
 
   if (!isCorrect) {
-    throw new Error("Invalid email or password");
+    return { error: "Invalid email or password" };
   }
 
   // if (!user || !(await comparePasswords(password, user?.password))) {
@@ -177,7 +177,7 @@ export async function loginWithEmailAndPassword({
 
   console.log({ test });
 
-  return user.toObject();
+  return { email: user.email, isVerified: user.isVerified };
 }
 
 export async function logout() {
