@@ -136,7 +136,7 @@ export async function loginWithEmailAndPassword({
 }: {
   email: string;
   password: string;
-}): Promise<ServerActionResponse> {
+}) {
   const user = await User.findOne({ email }).select("+password");
 
   if (!user) {
