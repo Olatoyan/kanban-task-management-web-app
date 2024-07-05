@@ -140,45 +140,48 @@ export async function loginWithEmailAndPassword({
   const user = await User.findOne({ email }).select("+password");
 
   if (!user) {
-    return { error: "Invalid email or password" };
+    throw new Error("Invalid email or password");
     // return { error: "Invalid email or password" };
   }
+  try {
+    if (!user.isVerified) {
+      return { error: "Please verify your email address first" };
+    }
 
-  if (!user.isVerified) {
-    return { error: "Please verify your email address first" };
+    if (user.usedOAuth) {
+      return { error: "You are already logged in with an OAuth account" };
+    }
+
+    const isCorrect = await comparePasswords(password, user?.password);
+    console.log({ isCorrect });
+
+    if (!isCorrect) {
+      return { error: "Invalid email or password" };
+    }
+
+    // if (!user || !(await comparePasswords(password, user?.password))) {
+    //   throw new Error("Invalid email or password");
+    // }
+
+    console.log("SUCESSFULLY LOGGED IN!!!!!!!");
+
+    const session = await createToken(email);
+
+    // Save the session in a cookie
+    cookies().set("session", session, {
+      httpOnly: true,
+      sameSite: "lax",
+      expires: new Date(Date.now() + 60 * 60 * 24 * 1000),
+    });
+
+    const test = await getSession();
+
+    console.log({ test });
+
+    return { data: { email: user.email, isVerified: user.isVerified } };
+  } catch (error) {
+    return { error };
   }
-
-  if (user.usedOAuth) {
-    return { error: "You are already logged in with an OAuth account" };
-  }
-
-  const isCorrect = await comparePasswords(password, user?.password);
-  console.log({ isCorrect });
-
-  if (!isCorrect) {
-    return { error: "Invalid email or password" };
-  }
-
-  // if (!user || !(await comparePasswords(password, user?.password))) {
-  //   throw new Error("Invalid email or password");
-  // }
-
-  console.log("SUCESSFULLY LOGGED IN!!!!!!!");
-
-  const session = await createToken(email);
-
-  // Save the session in a cookie
-  cookies().set("session", session, {
-    httpOnly: true,
-    sameSite: "lax",
-    expires: new Date(Date.now() + 60 * 60 * 24 * 1000),
-  });
-
-  const test = await getSession();
-
-  console.log({ test });
-
-  return { data: { email: user.email, isVerified: user.isVerified } };
 }
 
 export async function logout() {
