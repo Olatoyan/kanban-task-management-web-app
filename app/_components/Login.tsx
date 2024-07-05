@@ -48,16 +48,18 @@ function Login() {
 
     try {
       const { email, password } = data;
-      const session = await loginWithEmailAction({ email, password });
-      if (session) {
+     await loginWithEmailAction({ email, password });
+      
         router.push("/");
         toast.success("Welcome back!");
-      }
-      console.log(session);
+      
+      
       // Handle successful login (e.g., redirect to dashboard)
     } catch (error) {
-    } finally {
       toast.error("Invalid email or password");
+
+    } finally {
+      // toast.error("Invalid email or password");
       setIsLoading(false);
     }
   }
