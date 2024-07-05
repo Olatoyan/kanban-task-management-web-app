@@ -178,7 +178,7 @@ export async function loginWithEmailAndPassword({
 
   console.log({ test });
 
-  return user.toObject();
+  return user;
 }
 
 export async function logout() {
