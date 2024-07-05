@@ -7,7 +7,7 @@ import { BsEyeSlash, BsEyeFill } from "react-icons/bs";
 import Button from "./Button";
 import { useState } from "react";
 import { loginWithEmailAction } from "../_lib/actions";
-import { getErrorMessage } from "../_lib/helper";
+import { getErrorMessage, isActionError } from "../_lib/helper";
 import toast from "react-hot-toast";
 import SignInButton from "./SignInButton";
 import Link from "next/link";
@@ -56,16 +56,24 @@ function Login() {
 
     const result = await loginWithEmailAction({ email, password });
 
-    console.log(result);
-
-    if (result?.error) {
+    if(isActionError(result)) {
+      console.log("THERE IS A ERROR ", result.error)
       toast.error(result.error);
-    }
-
-    if (result?.email) {
-      toast.success("Welcome back!");
+    } else {
+      toast.success("Login successful!");
       router.push("/");
     }
+
+    console.log(result);
+
+    // if (result?.error) {
+    //   toast.error(result.error);
+    // }
+
+    // if (result?.email) {
+    //   toast.success("Welcome back!");
+    //   router.push("/");
+    // }
 
     // if (result?.user) {
     //   toast.success("Login successful!");
