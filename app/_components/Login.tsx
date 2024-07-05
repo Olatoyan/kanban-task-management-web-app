@@ -7,18 +7,13 @@ import { BsEyeSlash, BsEyeFill } from "react-icons/bs";
 import Button from "./Button";
 import { useState } from "react";
 import { loginWithEmailAction } from "../_lib/actions";
-import { getErrorMessage, isActionError } from "../_lib/helper";
+import { getErrorMessage } from "../_lib/helper";
 import toast from "react-hot-toast";
 import SignInButton from "./SignInButton";
 import Link from "next/link";
 import { redirect, useRouter } from "next/navigation";
 import { useBoard } from "../context/BoardContext";
 import Spinner from "./Spinner";
-
-type LoginType = {
-  email: string;
-  password: string;
-};
 
 function Login() {
   const {
@@ -28,7 +23,7 @@ function Login() {
     setValue,
     formState: { errors },
     setError,
-  } = useForm<LoginType>();
+  } = useForm();
 
   const {
     setIsLoading,
@@ -48,67 +43,22 @@ function Login() {
     return emailRegex.test(email) || "Invalid email address";
   };
 
-  async function onSubmit(data: LoginType) {
-    const { email, password } = data;
+  async function onSubmit(data: any) {
     setIsLoading(true);
 
-    // console.log({ email, password });
-
-    // const result = await loginWithEmailAction({ email, password });
-
-    // console.log({ result });
-
-    // if (isActionError(result)) {
-    //   console.log("THERE IS A ERROR ", result.error);
-    //   toast.error(result.error);
-    // } else {
-    //   toast.success("Login successful!");
-    //   // router.push("/");
-    // }
-
-    // console.log(result);
-
-    // if (result?.data) {
-    //   toast.success("Login successful!");
-    //   // router.push("/");
-    // } else if (result?.error) {
-    //   console.log("error is from db");
-    //   toast.error(result.error);
-    // } else {
-    //   toast.error("Invalid email or password");
-    // }
-
-    // if (result?.error) {
-    //   toast.error(result.error);
-    // }
-
-    // if (result?.email) {
-    //   toast.success("Welcome back!");
-    //   router.push("/");
-    // }
-
-    // if (result?.user) {
-    //   toast.success("Login successful!");
-    //   router.push("/");
-    // }
-    // setIsLoading(false);
-    let session;
     try {
-      session = await loginWithEmailAction({ email, password });
+      const { email, password } = data;
+      const session = await loginWithEmailAction({ email, password });
       if (session) {
-        // router.push("/");
+        router.push("/");
         toast.success("Welcome back!");
       }
       console.log(session);
       // Handle successful login (e.g., redirect to dashboard)
     } catch (error) {
-      console.log("ERROR DURING LOG IN", error);
-      toast.error("Invalid email or password");
     } finally {
+      toast.error("Invalid email or password");
       setIsLoading(false);
-      if (!session?.email) {
-        toast.error("Invalid email or password");
-      }
     }
   }
 
