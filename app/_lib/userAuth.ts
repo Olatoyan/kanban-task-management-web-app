@@ -178,7 +178,7 @@ export async function loginWithEmailAndPassword({
 
   console.log({ test });
 
-  return user;
+  return { email: user.email, isVerified: user.isVerified };
 }
 
 export async function logout() {
