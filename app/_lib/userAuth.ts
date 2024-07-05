@@ -87,6 +87,7 @@ export async function createUserWithEmailAndPassword({
 }
 
 export async function verifyEmail(token: string) {
+  await connectToDb();
   // Convert the token to a hashed value
   const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
 
@@ -155,10 +156,10 @@ export async function loginWithEmailAndPassword({
     return { error: "You are already logged in with an OAuth account" };
   }
 
-  const isCorrect = await comparePasswords(password, user?.password);
-  console.log({ isCorrect });
+  const isPasswordCorrect = await comparePasswords(password, user?.password);
+  console.log({ isPasswordCorrect });
 
-  if (!isCorrect) {
+  if (!isPasswordCorrect) {
     return { error: "Invalid email or password" };
   }
 

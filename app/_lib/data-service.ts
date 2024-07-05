@@ -114,28 +114,6 @@ export async function getAllTasks() {
   }));
 }
 
-export async function getColumn() {
-  await connectToDb();
-
-  const user = Column.findOne();
-
-  return user;
-}
-export async function getTasks() {
-  await connectToDb();
-
-  const user = Task.findOne();
-
-  return user;
-}
-export async function getSubtasks() {
-  await connectToDb();
-
-  const user = Subtask.findOne();
-
-  return user;
-}
-
 export async function toggleSubtask(id: string) {
   await connectToDb();
 
@@ -248,10 +226,6 @@ export async function createTask({
 }) {
   await connectToDb();
 
-  const session = await getSession();
-
-  if (!session) redirect("/auth/login");
-
   // Create each subtask and collect their IDs
   const subtaskIds = [];
 
@@ -347,6 +321,7 @@ export async function createTask({
 }
 
 export async function deleteItem({ type, id }: { type: string; id: string }) {
+  await connectToDb();
   if (type === "task") {
     // Find the task by ID and populate its subtasks
     const task = await Task.findById(id).populate("subtasks");
@@ -418,6 +393,7 @@ export async function createBoard({
   name: string;
   columns: { name: string }[];
 }) {
+  await connectToDb();
   const getUser = await getUserSession();
 
   // Check if a board with the same name already exists
@@ -517,6 +493,7 @@ export async function updateBoardDetails({
   name: string;
   columns: { name: string; id?: string }[];
 }) {
+  await connectToDb();
   const board = await Board.findById(id).populate("columns");
   if (!board) {
     throw new Error("Board not found");
@@ -673,6 +650,7 @@ export async function addNewColumnsToBoard({
   id: string;
   columns: { name: string }[];
 }) {
+  await connectToDb();
   const board = await Board.findById(id).populate("columns");
   if (!board) {
     throw new Error("Board not found");
