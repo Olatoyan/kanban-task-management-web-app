@@ -28,7 +28,7 @@ export default function RootLayout({
       >
         <ThemeProvider>
           <BoardProvider>
-            <main className="flex w-full">{children}</main>
+            <main className="flex w-full justify-center">{children}</main>
           </BoardProvider>
         </ThemeProvider>
 
