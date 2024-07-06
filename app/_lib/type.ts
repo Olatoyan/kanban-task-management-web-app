@@ -37,7 +37,8 @@ export type NewTaskFormType = {
   title: string;
   description: string;
   status: string;
-  subtasks: { title: string; isCompleted: boolean }[];
+  subtasks: { title: string; isCompleted: boolean; _id: string }[];
+  boardId: string;
 };
 
 export type isSessionType = JWTPayload | Session | null;

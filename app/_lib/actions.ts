@@ -24,6 +24,7 @@ import {
 
 type SubtaskActionType = {
   title: string;
+  id: string;
 };
 type ColumnActionType = {
   name: string;
@@ -87,18 +88,19 @@ export async function toggleSubtaskAction(id: string) {
 }
 
 export async function editTaskAction(data: NewTaskFormType) {
-  const { title, description, status, id, subtasks } = data;
+  const { title, description, status, id, subtasks, boardId } = data;
+  console.log({ title, description, status, id, subtasks, boardId });
 
   if (!title.trim() || title.length < 3) throw Error("A title is required");
 
-  if (!id) throw Error("A board id is required");
+  if (!id) throw Error("A task id is required");
   if (!status) throw Error("A status is required");
 
   const filteredSubtasks: SubtaskActionType[] = subtasks
-    .map((column) => ({ title: column.title.trim() }))
+    .map((column) => ({ title: column.title.trim(), id: column._id || "" }))
     .filter((column) => column.title !== "");
 
-  console.log({ title, description, status, id, filteredSubtasks });
+  console.log({ title, description, status, id, filteredSubtasks, boardId });
 
   // const title = formData.get("title");
   // const description = formData.get("description");
@@ -119,6 +121,7 @@ export async function editTaskAction(data: NewTaskFormType) {
 
   const newTask = updateTaskDetails({
     id,
+    boardId,
     title,
     description,
     status,
@@ -140,7 +143,7 @@ export async function createNewTaskAction(data: NewTaskFormType) {
   if (!status) throw Error("A status is required");
 
   const filteredSubtasks: SubtaskActionType[] = subtasks
-    .map((column) => ({ title: column.title.trim() }))
+    .map((column) => ({ title: column.title.trim(), id: column._id || "" }))
     .filter((column) => column.title !== "");
 
   console.log({ title, description, status, id, filteredSubtasks });

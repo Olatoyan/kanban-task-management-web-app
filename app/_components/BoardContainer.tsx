@@ -16,6 +16,7 @@ import { useTheme } from "../context/ThemeContext";
 import EmptyBoard from "./EmptyBoard";
 import Spinner from "./Spinner";
 import NoUserLogin from "./NoUserLogin";
+import { useEffect } from "react";
 
 function BoardContainer({
   data,
@@ -24,7 +25,7 @@ function BoardContainer({
   data: BoardType[];
   isSession: isSessionType;
 }) {
-  const { state, addNewColumn } = useBoard();
+  const { state, addNewColumn, setBoardId } = useBoard();
   const {
     state: { isSidebarHidden, isDarkMode },
   } = useTheme();
@@ -47,6 +48,13 @@ function BoardContainer({
     id: column._id!.toString(),
     name: column.name.toLowerCase(),
   }));
+
+  useEffect(() => {
+    if (currentBoardData) {
+      setBoardId(currentBoardData._id!);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentBoardData]);
 
   return (
     <section

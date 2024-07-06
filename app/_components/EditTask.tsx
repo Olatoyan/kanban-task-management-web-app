@@ -39,7 +39,11 @@ function EditTask({
     },
   });
 
-  const { clearSelectedTask, setIsLoading } = useBoard();
+  const {
+    clearSelectedTask,
+    setIsLoading,
+    state: { boardId },
+  } = useBoard();
   const {
     state: { isDarkMode },
   } = useTheme();
@@ -61,7 +65,10 @@ function EditTask({
   function updateSubtasks() {
     console.log("clicked");
 
-    const updatedSubtasks = [...subtasks, { title: "", isCompleted: false }];
+    const updatedSubtasks = [
+      ...subtasks,
+      { title: "", isCompleted: false, _id: "" },
+    ];
 
     console.log({ updatedSubtasks });
 
@@ -106,7 +113,7 @@ function EditTask({
     }
 
     try {
-      const newData = await editTaskAction({ ...data, id: id! });
+      const newData = await editTaskAction({ ...data, id: id!, boardId });
       console.log({ newData });
 
       // const newName = newData.name.split(" ").join("+");

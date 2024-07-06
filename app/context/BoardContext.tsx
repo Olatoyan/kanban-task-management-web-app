@@ -16,6 +16,7 @@ type StateType = {
   deletedTask: TaskType | null;
   deletedBoard: BoardType | null;
   isLoading: boolean;
+  boardId: string
 };
 
 type ActionType =
@@ -35,7 +36,9 @@ type ActionType =
   | { type: "ADD_NEW_TASK" }
   | { type: "ADD_NEW_BOARD" }
   | { type: "ADD_NEW_COLUMN" }
-  | { type: "SET_IS_LOADING"; payload: boolean };
+  | { type: "SET_IS_LOADING"; payload: boolean }
+  | { type: "SET_BOARD_ID"; payload: string }
+  ;
 
 const initialState: StateType = {
   selectedTask: null,
@@ -50,6 +53,7 @@ const initialState: StateType = {
   deletedTask: null,
   deletedBoard: null,
   isLoading: false,
+  boardId: ""
 };
 
 const BoardContext = createContext<{
@@ -66,6 +70,7 @@ const BoardContext = createContext<{
   addNewBoard: () => void;
   addNewColumn: () => void;
   setIsLoading: (isLoading: boolean) => void;
+  setBoardId: (boardId: string) => void;
 }>({
   state: initialState,
   dispatch: () => null,
@@ -79,6 +84,7 @@ const BoardContext = createContext<{
   addNewBoard: () => {},
   addNewColumn: () => {},
   setIsLoading: () => {},
+    setBoardId: () => {}
 });
 
 const reducer = (state: StateType, action: ActionType): StateType => {
@@ -151,6 +157,11 @@ const reducer = (state: StateType, action: ActionType): StateType => {
         ...state,
         isLoading: action.payload,
       };
+      case "SET_BOARD_ID":
+        return {
+          ...state,
+          boardId: action.payload,
+        };
     default:
       return state;
   }
@@ -205,6 +216,10 @@ function BoardProvider({ children }: { children: ReactNode }) {
     dispatch({ type: "SET_IS_LOADING", payload: isLoading });
   }
 
+  function setBoardId(boardId: string) {
+    dispatch({ type: "SET_BOARD_ID", payload: boardId });
+  }
+
   return (
     <BoardContext.Provider
       value={{
@@ -220,6 +235,7 @@ function BoardProvider({ children }: { children: ReactNode }) {
         addNewBoard,
         addNewColumn,
         setIsLoading,
+        setBoardId
       }}
     >
       {children}
