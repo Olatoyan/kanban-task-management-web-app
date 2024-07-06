@@ -10,8 +10,6 @@ async function page() {
   const session = await getSession();
   const OAuthSession = await auth();
 
-  console.log({ session });
-
   const isSession = session || OAuthSession;
 
   return <MainPage data={data} isSession={isSession} />;
