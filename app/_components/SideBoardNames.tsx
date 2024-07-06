@@ -1,11 +1,13 @@
 "use client";
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { BoardType, isSessionType } from "../_lib/type";
-import { TbLayoutBoardSplit } from "react-icons/tb";
-import { useBoard } from "../context/BoardContext";
+
 import { useEffect } from "react";
-import { useTheme } from "../context/ThemeContext";
+import { TbLayoutBoardSplit } from "react-icons/tb";
+
+import { BoardType, isSessionType } from "@/app/_lib/type";
+import { useBoard } from "@/app/_context/BoardContext";
+import { useTheme } from "@/app/_context/ThemeContext";
 
 function SideBoardNames({
   data,
@@ -25,12 +27,10 @@ function SideBoardNames({
 
   const activeBoard = searchParams.get("board") ?? data?.[0]?.name;
 
-  console.log("activeboard!!!!!", activeBoard);
 
   function handleClick() {
     addNewBoard();
     closeMobileNav();
-    console.log("clicked");
   }
 
   const handleBoardClick = (boardName: string) => {

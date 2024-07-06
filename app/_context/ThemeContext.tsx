@@ -94,7 +94,6 @@ function ThemeProvider({ children }: { children: ReactNode }) {
       "(prefers-color-scheme: dark)",
     );
 
-    console.log({ darkModeMediaQuery });
 
     if (darkModeMediaQuery.matches) {
       dispatch({ type: "SET_DARK_MODE", payload: true });

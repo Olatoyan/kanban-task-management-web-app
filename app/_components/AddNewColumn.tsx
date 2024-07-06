@@ -1,20 +1,34 @@
+import { useRouter } from "next/navigation";
+
 import { useEffect, useState } from "react";
-import { useBoard } from "../context/BoardContext";
-import AddSubtask from "./AddSubtask";
-import Button from "./Button";
+import { UseFormSetError, useForm } from "react-hook-form";
+
+import { useBoard } from "@/app/_context/BoardContext";
 import { BoardType, NewBoardFormType } from "@/app/_lib/type";
+import { validateColumns } from "@/app/_lib/helper";
 import {
   addColumnsToExistingBoardAction,
   updateBoardAction,
-} from "../_lib/actions";
-import { useRouter } from "next/navigation";
-import { UseFormSetError, useForm } from "react-hook-form";
-import { validateColumns } from "../_lib/helper";
-import { useTheme } from "../context/ThemeContext";
+} from "@/app/_lib/actions";
+import { useTheme } from "@/app/_context/ThemeContext";
+
+import AddSubtask from "./AddSubtask";
+import Button from "./Button";
 
 type columnFormProp = { name: string };
 function AddNewColumn({ board }: { board: BoardType }) {
   const router = useRouter();
+
+  const { clearSelectedTask, setIsLoading } = useBoard();
+  const {
+    state: { isDarkMode },
+  } = useTheme();
+
+  const [isAddColumn, setIsAddColumn] = useState(false);
+
+  useEffect(() => {
+    // This effect will run whenever 'columns' value changes after 'setValue' call
+  }, [isAddColumn]);
 
   const {
     register,
@@ -32,37 +46,17 @@ function AddNewColumn({ board }: { board: BoardType }) {
       ],
     },
   });
-  const { clearSelectedTask, setIsLoading } = useBoard();
-  const {
-    state: { isDarkMode },
-  } = useTheme();
-
-  const [isAddColumn, setIsAddColumn] = useState(false);
 
   const columns: columnFormProp[] = getValues("columns");
-  console.log(columns);
 
-  useEffect(() => {
-    // This effect will run whenever 'columns' value changes after 'setValue' call
-  }, [isAddColumn]);
-
-  function updateColumns() {
-    console.log("clicked");
-
+  function addNewColumn() {
     const updatedColumns = [...columns, { name: "" }];
-
-    console.log({ updatedColumns });
-
     setValue("columns", updatedColumns);
-
     setIsAddColumn((prev) => !prev);
   }
 
   function removeColumn(index: number) {
-    console.log(index);
-
     const updatedColumns = columns.filter((_, i) => index !== i);
-    console.log({ updatedColumns });
     setValue("columns", updatedColumns);
     setIsAddColumn((prev) => !prev);
   }
@@ -75,17 +69,9 @@ function AddNewColumn({ board }: { board: BoardType }) {
     setValue("columns", updatedColumns);
     setIsAddColumn((prev) => !prev);
   }
-  // async function clientaddColumnsToExistingBoardActionAction(formData: FormData) {
-  //   const result = await addColumnsToExistingBoardAction(formData);
-
-  //   console.log("ok");
-  //   console.log(result);
-  // }
 
   async function onSubmit(data: NewBoardFormType) {
     setIsLoading(true);
-
-    console.log({ data });
 
     if (!validateColumns(board.columns, data.columns, setError)) {
       setIsLoading(false);
@@ -97,11 +83,6 @@ function AddNewColumn({ board }: { board: BoardType }) {
         ...data,
         id: board._id!,
       });
-      console.log({ newData });
-
-      // const newName = newData.name.split(" ").join("+");
-
-      // router.push(`/?board=${newName}`);
     } catch (error) {
       console.error("Failed to update board:", error);
     } finally {
@@ -110,15 +91,11 @@ function AddNewColumn({ board }: { board: BoardType }) {
     }
   }
 
-  console.log(board);
 
   return (
     <div className="fixed inset-0 flex h-full w-full items-center justify-center">
       <form
         className={`z-[10] mx-8 flex max-h-[55rem] w-full max-w-[50rem] flex-col gap-10 overflow-auto rounded-[0.6rem] p-[3.2rem] tablet:px-8 ${isDarkMode ? "bg-[#2b2c37]" : "bg-white"}`}
-        // action={createNewTaskAction}
-        // action={clientaddColumnsToExistingBoardActionAction}
-        // onSubmit={clearSelectedTask}
         onSubmit={handleSubmit(onSubmit)}
       >
         <h3
@@ -127,7 +104,6 @@ function AddNewColumn({ board }: { board: BoardType }) {
           Add New Column
         </h3>
 
-        {/* <input name="id" type="hidden" value={board._id} /> */}
         <div className="flex flex-col gap-3">
           <label
             htmlFor="boardName"
@@ -174,17 +150,17 @@ function AddNewColumn({ board }: { board: BoardType }) {
                   handleChange={(name) => updateColumnName(index, name)}
                   register={register}
                   error={errors}
-                  // handleChange={handleColumnChange}
                 />
               </>
             ))}
           </div>
-          <p
+          <button
+            type="button"
             className={`cursor-pointer rounded-[2rem] py-[0.85rem] text-center text-[1.4rem] font-bold leading-[2.3rem] text-[#635fc7] transition-all duration-300 ${isDarkMode ? "bg-white" : "bg-[rgba(99,95,199,0.10)] hover:bg-[rgba(99,95,199,0.25)]"}`}
-            onClick={updateColumns}
+            onClick={addNewColumn}
           >
             + Add New Column
-          </p>
+          </button>
         </div>
 
         <Button pendingLabel="Saving...." label="Save Changes" />

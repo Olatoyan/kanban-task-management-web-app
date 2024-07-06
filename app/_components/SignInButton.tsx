@@ -12,7 +12,6 @@ function SignInButton({ isDarkMode }: { isDarkMode: boolean }) {
 
   return (
     <form action={handleClick}>
-      {/* <form> */}
       <button
         className={`flex items-center gap-6 border px-10 py-4 text-[1.4rem] font-medium ${isDarkMode ? "text-white" : "text-[#000112]"}`}
       >

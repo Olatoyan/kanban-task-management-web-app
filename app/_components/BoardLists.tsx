@@ -1,4 +1,4 @@
-import { ColumnType } from "../_lib/type";
+import { ColumnType } from "@/app/_lib/type";
 
 import BoardItem from "./BoardItem";
 

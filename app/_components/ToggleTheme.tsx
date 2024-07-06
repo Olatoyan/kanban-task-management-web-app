@@ -1,7 +1,7 @@
 "use client";
 
 import { BsEyeSlash, BsMoonStarsFill, BsSun } from "react-icons/bs";
-import { useTheme } from "../context/ThemeContext";
+import { useTheme } from "@/app/_context/ThemeContext";
 
 function ToggleTheme() {
   const {

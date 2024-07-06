@@ -1,9 +1,14 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import { BoardType, isSessionType } from "../_lib/type";
+
+import { useEffect } from "react";
+
+import { BoardType, isSessionType } from "@/app/_lib/type";
+import { useTheme } from "@/app/_context/ThemeContext";
+import { useBoard } from "@/app/_context/BoardContext";
+
 import BoardLists from "./BoardLists";
-import { useBoard } from "@/app/context/BoardContext";
 import ViewTasks from "./ViewTasks";
 import EditTask from "./EditTask";
 import DeleteModal from "./DeleteModal";
@@ -12,11 +17,9 @@ import AddNewBoard from "./AddNewBoard";
 import EditBoard from "./EditBoard";
 import AddNewColumn from "./AddNewColumn";
 import RevealSidebar from "./RevealSidebar";
-import { useTheme } from "../context/ThemeContext";
 import EmptyBoard from "./EmptyBoard";
 import Spinner from "./Spinner";
 import NoUserLogin from "./NoUserLogin";
-import { useEffect } from "react";
 
 function BoardContainer({
   data,
@@ -25,22 +28,18 @@ function BoardContainer({
   data: BoardType[];
   isSession: isSessionType;
 }) {
+  const searchParams = useSearchParams();
+
   const { state, addNewColumn, setBoardId } = useBoard();
   const {
     state: { isSidebarHidden, isDarkMode },
   } = useTheme();
 
-  console.log(data);
-  console.log("isLoading!!!!!!!!!!", state.isLoading);
 
-  const searchParams = useSearchParams();
 
   const currentBoard = searchParams.get("board") ?? data?.[0]?.name ?? "";
-
+  
   const currentBoardData = data?.find((board) => board.name === currentBoard);
-
-  console.log(currentBoardData);
-  console.log(currentBoardData?.columns);
 
   const allStatus = currentBoardData?.columns.map((column) => column.name);
 

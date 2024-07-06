@@ -1,14 +1,16 @@
-import { useEffect, useState } from "react";
-import { useBoard } from "../context/BoardContext";
-import AddSubtask from "./AddSubtask";
-import Button from "./Button";
-import { BoardType, NewBoardFormType } from "@/app/_lib/type";
-import { updateBoardAction } from "../_lib/actions";
-import { useForm } from "react-hook-form";
-import ErrorMessage from "./ErrorMessage";
 import { useRouter } from "next/navigation";
-import { validateBoardName, validateColumns } from "../_lib/helper";
-import { useTheme } from "../context/ThemeContext";
+
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+
+import { useBoard } from "@/app/_context/BoardContext";
+import { useTheme } from "@/app/_context/ThemeContext";
+import { BoardType, NewBoardFormType } from "@/app/_lib/type";
+import { updateBoardAction } from "@/app/_lib/actions";
+import { validateBoardName, validateColumns } from "@/app/_lib/helper";
+import Button from "./Button";
+import AddSubtask from "./AddSubtask";
+import ErrorMessage from "./ErrorMessage";
 
 type columnFormProp = { id: string; name: string };
 
@@ -20,7 +22,14 @@ function EditBoard({
   allBoardNames: { id: string; name: string }[];
 }) {
   const router = useRouter();
-  console.log(board);
+
+  const { clearSelectedTask, setIsLoading } = useBoard();
+
+  const {
+    state: { isDarkMode },
+  } = useTheme();
+
+  const [isAddColumn, setIsAddColumn] = useState(false);
 
   const {
     register,
@@ -39,37 +48,20 @@ function EditBoard({
     },
   });
 
-  const { clearSelectedTask, setIsLoading } = useBoard();
-  const {
-    state: { isDarkMode },
-  } = useTheme();
-
-  const [isAddColumn, setIsAddColumn] = useState(false);
-
   const columns: columnFormProp[] = getValues("columns");
-  console.log(columns);
 
   useEffect(() => {
     // This effect will run whenever 'columns' value changes after 'setValue' call
   }, [isAddColumn]);
 
-  function updateColumns() {
-    console.log("clicked");
-
+  function addNewColumn() {
     const updatedColumns = [...columns, { name: "", id: "" }];
-
-    console.log({ updatedColumns });
-
     setValue("columns", updatedColumns);
-
     setIsAddColumn((prev) => !prev);
   }
 
   function removeColumn(index: number) {
-    console.log(index);
-
     const updatedColumns = columns.filter((column, i) => index !== i);
-    console.log({ updatedColumns });
     setValue("columns", updatedColumns);
     setIsAddColumn((prev) => !prev);
   }
@@ -82,11 +74,8 @@ function EditBoard({
     setIsAddColumn((prev) => !prev);
   }
 
-  console.log(board);
-
   async function onSubmit(data: NewBoardFormType) {
     setIsLoading(true);
-    console.log(data);
 
     if (!validateBoardName(data.name, board?._id!, allBoardNames, setError)) {
       setIsLoading(false);
@@ -102,7 +91,6 @@ function EditBoard({
       const updatedBoard = await updateBoardAction({ ...data, id: board?._id });
 
       const newName = updatedBoard.name.split(" ").join("+");
-      console.log(updatedBoard);
       router.push(`/?board=${newName}`);
     } catch (error) {
       console.error("Failed to update board:", error);
@@ -111,9 +99,6 @@ function EditBoard({
       setIsLoading(false);
     }
   }
-
-  console.log(errors);
-  console.log({ columns });
 
   return (
     <div className="fixed inset-0 flex h-full w-full items-center justify-center">
@@ -170,8 +155,6 @@ function EditBoard({
           <div className="custom-scrollbar flex max-h-[16rem] flex-col gap-5 overflow-auto">
             {columns?.map((column, index) => {
               return (
-                // <div key={column.key}>
-                //   <>
                 <AddSubtask
                   title={column.name}
                   index={index}
@@ -182,20 +165,12 @@ function EditBoard({
                   handleChange={(name) => updateColumnName(index, name)}
                   key={index}
                 />
-                //   <input
-                //     type="hidden"
-                //     value={column.id}
-                //     {...register(`columns.${index}.id` as const)}
-                //   />
-                //   </>
-                // </div>
               );
             })}
           </div>
           <p
             className={`cursor-pointer rounded-[2rem] py-[0.85rem] text-center text-[1.4rem] font-bold leading-[2.3rem] text-[#635fc7] transition-all duration-300 ${isDarkMode ? "bg-white" : "bg-[rgba(99,95,199,0.10)] hover:bg-[rgba(99,95,199,0.25)]"}`}
-            onClick={updateColumns}
-            // onClick={addNewColumn}
+            onClick={addNewColumn}
           >
             + Add New Column
           </p>

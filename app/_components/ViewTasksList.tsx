@@ -1,10 +1,11 @@
 "use client";
 
-import { toggleSubtaskAction } from "../_lib/actions";
-import { SubtaskType } from "../_lib/type";
 import { useState, useTransition } from "react";
-import { useBoard } from "../context/BoardContext";
-import { useTheme } from "../context/ThemeContext";
+
+import { toggleSubtaskAction } from "@/app/_lib/actions";
+import { SubtaskType } from "@/app/_lib/type";
+import { useBoard } from "@/app/_context/BoardContext";
+import { useTheme } from "@/app/_context/ThemeContext";
 
 function ViewTasksList({ subtask }: { subtask: SubtaskType }) {
   const { state, setSelectedTask } = useBoard();
@@ -22,8 +23,6 @@ function ViewTasksList({ subtask }: { subtask: SubtaskType }) {
 
     startTransition(async () => {
       await toggleSubtaskAction(id!);
-
-      // Update the task in the global state
       const updatedTask = {
         ...state.selectedTask!,
         subtasks: state.selectedTask!.subtasks.map((s) =>

@@ -1,17 +1,20 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { NewTaskFormType, TaskType } from "../_lib/type";
-import AddSubtask from "./AddSubtask";
-import { useBoard } from "../context/BoardContext";
-import { BsChevronDown } from "react-icons/bs";
-import { editTaskAction } from "../_lib/actions";
-import Button from "./Button";
 import { useRouter } from "next/navigation";
+
+import { useEffect, useState } from "react";
+import { BsChevronDown } from "react-icons/bs";
 import { useForm } from "react-hook-form";
+
+import { NewTaskFormType, TaskType } from "@/app/_lib/type";
+import { useBoard } from "@/app/_context/BoardContext";
+import { editTaskAction } from "@/app/_lib/actions";
+import { validateSubtasks } from "@/app/_lib/helper";
+import { useTheme } from "@/app/_context/ThemeContext";
+
+import Button from "./Button";
 import ErrorMessage from "./ErrorMessage";
-import { validateSubtasks } from "../_lib/helper";
-import { useTheme } from "../context/ThemeContext";
+import AddSubtask from "./AddSubtask";
 
 function EditTask({
   task,
@@ -21,6 +24,24 @@ function EditTask({
   allStatus: string[];
 }) {
   const router = useRouter();
+
+  const {
+    clearSelectedTask,
+    setIsLoading,
+    state: { boardId },
+  } = useBoard();
+
+  const {
+    state: { isDarkMode },
+  } = useTheme();
+
+  const [isAddColumn, setIsAddColumn] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [status, setStatus] = useState(task.status);
+
+  useEffect(() => {
+    // This effect will run whenever 'subtasks' value changes after 'setValue' call
+  }, [isAddColumn]);
 
   const {
     register,
@@ -39,49 +60,21 @@ function EditTask({
     },
   });
 
-  const {
-    clearSelectedTask,
-    setIsLoading,
-    state: { boardId },
-  } = useBoard();
-  const {
-    state: { isDarkMode },
-  } = useTheme();
-
   const { title, description, _id: id } = task;
 
-  // const [subtasks, setSubtasks] = useState(task.subtasks);
-
   const subtasks = getValues("subtasks");
-  console.log(subtasks);
-  const [isAddColumn, setIsAddColumn] = useState(false);
-  const [isExpanded, setIsExpanded] = useState(false);
-  useEffect(() => {
-    // This effect will run whenever 'subtasks' value changes after 'setValue' call
-  }, [isAddColumn]);
 
-  const [status, setStatus] = useState(task.status);
-
-  function updateSubtasks() {
-    console.log("clicked");
-
+  function addNewSubtask() {
     const updatedSubtasks = [
       ...subtasks,
       { title: "", isCompleted: false, _id: "" },
     ];
-
-    console.log({ updatedSubtasks });
-
     setValue("subtasks", updatedSubtasks);
-
     setIsAddColumn((prev) => !prev);
   }
 
   function removeColumn(index: number) {
-    console.log(index);
-
     const updatedSubtasks = subtasks.filter((_, i) => index !== i);
-    console.log({ updatedSubtasks });
     setValue("subtasks", updatedSubtasks);
     setIsAddColumn((prev) => !prev);
   }
@@ -104,9 +97,6 @@ function EditTask({
   async function onSubmit(data: NewTaskFormType) {
     setIsLoading(true);
 
-    console.log({ data, id });
-    // console.log({ boardId });
-
     if (!validateSubtasks(data.subtasks, setError)) {
       setIsLoading(false);
       return;
@@ -114,11 +104,6 @@ function EditTask({
 
     try {
       const newData = await editTaskAction({ ...data, id: id!, boardId });
-      console.log({ newData });
-
-      // const newName = newData.name.split(" ").join("+");
-
-      // router.push(`/?board=${newName}`);
     } catch (error) {
       console.error("Failed to update board:", error);
     } finally {
@@ -131,8 +116,6 @@ function EditTask({
     <div className="fixed inset-0 flex h-full w-full items-center justify-center">
       <form
         className={`z-[10] mx-8 flex h-[55rem] w-full max-w-[50rem] flex-col gap-10 overflow-auto rounded-[0.6rem] p-[3.2rem] tablet:px-8 ${isDarkMode ? "bg-[#2b2c37]" : "bg-white"}`}
-        // action={editTaskAction}
-        // onSubmit={clearSelectedTask}
         onSubmit={handleSubmit(onSubmit)}
       >
         <h3
@@ -140,9 +123,6 @@ function EditTask({
         >
           Edit Task
         </h3>
-
-        {/* <input type="hidden" name="status" value={status} />
-        <input type="hidden" name="id" value={_id} /> */}
 
         <div className="flex flex-col gap-3">
           <label
@@ -219,7 +199,7 @@ function EditTask({
           </div>
           <p
             className={`cursor-pointer rounded-[2rem] py-[0.85rem] text-center text-[1.4rem] font-bold leading-[2.3rem] text-[#635fc7] transition-all duration-300 ${isDarkMode ? "bg-white" : "bg-[rgba(99,95,199,0.10)] hover:bg-[rgba(99,95,199,0.25)]"}`}
-            onClick={updateSubtasks}
+            onClick={addNewSubtask}
           >
             + Add New SubTask
           </p>

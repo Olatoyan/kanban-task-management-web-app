@@ -1,12 +1,12 @@
 "use client";
 
-import { getAllTasks } from "../_lib/data-service";
-import { BoardType, isSessionType } from "../_lib/type";
+import { getAllTasks } from "@/app/_lib/data-service";
+import { BoardType, isSessionType } from "@/app/_lib/type";
 import Logo from "./Logo";
 import { TbLayoutBoardSplit } from "react-icons/tb";
 import ToggleTheme from "./ToggleTheme";
 import SideBoardNames from "./SideBoardNames";
-import { useTheme } from "../context/ThemeContext";
+import { useTheme } from "@/app/_context/ThemeContext";
 
 function SideBar({
   data,
@@ -15,11 +15,11 @@ function SideBar({
   data: BoardType[];
   isSession: isSessionType;
 }) {
+  
   const {
     state: { isDarkMode, isSidebarHidden, isMobileNavOpen },
     closeMobileNav,
   } = useTheme();
-  console.log("SIDEBAR!!!!!!!!!!!!!!!!", data);
 
   return (
     <>

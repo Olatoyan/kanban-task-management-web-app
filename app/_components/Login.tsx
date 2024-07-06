@@ -1,34 +1,28 @@
 "use client";
 
 import Image from "next/image";
-import { useForm } from "react-hook-form";
-
-import { BsEyeSlash, BsEyeFill } from "react-icons/bs";
-import Button from "./Button";
-import { useState } from "react";
-import { loginWithEmailAction } from "../_lib/actions";
-import { getErrorMessage } from "../_lib/helper";
-import toast from "react-hot-toast";
-import SignInButton from "./SignInButton";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { redirect, useRouter } from "next/navigation";
-import { useBoard } from "../context/BoardContext";
-import Spinner from "./Spinner";
-import { useTheme } from "../context/ThemeContext";
 
-type LoginProps = {
-  email: string;
-  password: string;
-};
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { BsEyeSlash, BsEyeFill } from "react-icons/bs";
+import toast from "react-hot-toast";
+
+import { loginWithEmailAction } from "@/app/_lib/actions";
+import { useBoard } from "@/app/_context/BoardContext";
+import { useTheme } from "@/app/_context/ThemeContext";
+
+import SignInButton from "./SignInButton";
+import Button from "./Button";
+import Spinner from "./Spinner";
+import ErrorMessage from "./ErrorMessage";
 
 function Login() {
   const {
     register,
     handleSubmit,
-    getValues,
-    setValue,
     formState: { errors },
-    setError,
   } = useForm();
 
   const {
@@ -42,7 +36,7 @@ function Login() {
 
   const router = useRouter();
 
-  const [showPassword, setShowPassword] = useState(false); // State to toggle password visibility
+  const [showPassword, setShowPassword] = useState(false);
 
   const togglePasswordVisibility = () => {
     setShowPassword((prev) => !prev);
@@ -66,23 +60,7 @@ function Login() {
     toast.success("Welcome back!");
 
     setIsLoading(false);
-    // try {
-    //   const { email, password } = data;
-    //   const session = await loginWithEmailAction({ email, password });
-    //   if (session) {
-    //     router.push("/");
-    //     toast.success("Welcome back!");
-    //   }
-    //   console.log(session);
-    //   // Handle successful login (e.g., redirect to dashboard)
-    // } catch (error) {
-    //   console.log(error);
-    //   toast.error("Invalid email or password");
-    // } finally {
-    // }
   }
-
-  console.log(errors);
 
   return (
     <>
@@ -134,9 +112,7 @@ function Login() {
                   })}
                 />
                 {errors?.email?.message && (
-                  <p className="text-[1.2rem] font-medium leading-[2.3rem] text-[#ea5555]">
-                    {errors.email.message as string}
-                  </p>
+                  <ErrorMessage>{errors.email.message as string}</ErrorMessage>
                 )}
               </div>
             </div>
@@ -157,16 +133,17 @@ function Login() {
                     required: "Can't be empty",
                   })}
                 />
-                <span
+                <button
+                  type="button"
                   onClick={togglePasswordVisibility}
                   className="absolute right-4 top-[1rem] cursor-pointer text-[2rem] text-[#828fa3]"
                 >
                   {showPassword ? <BsEyeSlash /> : <BsEyeFill />}
-                </span>
+                </button>
                 {errors?.password?.message && (
-                  <p className="text-[1.2rem] font-medium leading-[2.3rem] text-[#ea5555]">
+                  <ErrorMessage>
                     {errors.password.message as string}
-                  </p>
+                  </ErrorMessage>
                 )}
               </div>
             </div>

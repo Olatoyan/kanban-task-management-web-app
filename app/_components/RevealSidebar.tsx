@@ -1,5 +1,5 @@
 import { BsEyeFill } from "react-icons/bs";
-import { useTheme } from "../context/ThemeContext";
+import { useTheme } from "@/app/_context/ThemeContext";
 
 function RevealSidebar() {
   const { state, toggleSidebar } = useTheme();

@@ -15,7 +15,6 @@ export async function createToken(email: string) {
   const expires = new Date(Date.now() + 60 * 60 * 24 * 1000);
   const session = await encrypt({ email, expires });
 
-  console.log({ session });
 
   return session;
 }
@@ -34,28 +33,19 @@ export async function createUserWithEmailAndPassword({
     throw new Error("Please fill in all fields");
   }
 
-  console.log(email);
   const isUserExists = await User.findOne({ email });
 
-  console.log({ isUserExists });
 
   if (isUserExists) {
     throw new Error("There is already a user with that email");
   }
-
-  console.log({ password });
-  // const hashedPassword = await hashPassword(password);
-
-  // console.log({ hashedPassword });
   const newUser = new User({ name, email, password });
-  console.log({ newUser });
   const verificationToken = createEmailVerificationToken(newUser);
 
   const url = process.env.APP_URL;
 
   const verificationLink = `${url}/auth/verify-email?token=${verificationToken}`;
 
-  console.log({ verificationToken });
 
   const emailOptions = {
     email,
@@ -81,7 +71,6 @@ export async function createUserWithEmailAndPassword({
 
   await newUser.save();
 
-  console.log({ newUser });
 
   return newUser;
 }
@@ -91,31 +80,21 @@ export async function verifyEmail(token: string) {
   // Convert the token to a hashed value
   const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
 
-  console.log({ hashedToken });
 
   // Find the user with the hashed token
   const user = await User.findOne({
     emailVerificationToken: hashedToken,
     isVerified: false,
-    // emailVerificationTokenExpires: { $gt: Date.now() }, // Check if the token is not expired
   });
 
-  console.log("THIS IS THE USER", { user });
 
-  if (user) {
-    console.log("FOUND THE USER!!!!");
-  }
 
-  // Send an error response if the user is not found
   if (!user) {
     throw new Error("Invalid or expired verification token.");
   }
 
-  // Update the user's verification status
   user.isVerified = true;
   user.emailVerificationToken = undefined;
-  // user.emailVerificationToken = undefined;
-  // user.emailVerificationTokenExpires = undefined;
   await user.save();
 
   const session = await createToken(user.email);
@@ -127,7 +106,6 @@ export async function verifyEmail(token: string) {
     expires: new Date(Date.now() + 60 * 60 * 24 * 1000),
   });
 
-  // Return plain object data instead of the user instance
   return { email: user.email, isVerified: user.isVerified };
 }
 
@@ -141,9 +119,7 @@ export async function loginWithEmailAndPassword({
   await connectToDb();
   const user = await User.findOne({ email }).select("+password");
 
-  // if (!user) {
-  //   throw new Error("Invalid email or password");
-  // }
+
   if (!user) {
     return { error: "Invalid email or password" };
   }
@@ -157,21 +133,14 @@ export async function loginWithEmailAndPassword({
   }
 
   const isPasswordCorrect = await comparePasswords(password, user?.password);
-  console.log({ isPasswordCorrect });
 
   if (!isPasswordCorrect) {
     return { error: "Invalid email or password" };
   }
 
-  // if (!user || !(await comparePasswords(password, user?.password))) {
-  //   r{ error: eturn"Invalid email or password"}
-  // }
-
-  console.log("SUCESSFULLY LOGGED IN!!!!!!!");
 
   const session = await createToken(email);
 
-  // Save the session in a cookie
   cookies().set("session", session, {
     httpOnly: true,
     sameSite: "lax",
@@ -181,7 +150,6 @@ export async function loginWithEmailAndPassword({
 
   const test = await getSession();
 
-  console.log({ test });
 
   return { email: user.email, isVerified: user.isVerified };
 }
@@ -197,20 +165,3 @@ export async function getSession() {
   return await decrypt(session);
 }
 
-// export async function updateSession(request: NextRequest) {
-//   const session = request.cookies.get("session")?.value;
-//   if (!session) return;
-
-//   // Refresh the session so it doesn't expire
-//   const parsed = await decrypt(session);
-//   parsed.expires = new Date(Date.now() + 10 * 1000);
-//   const res = NextResponse.next();
-
-//   res.cookies.set("session", await encrypt(parsed), {
-//     httpOnly: true,
-//     secure: process.env.NODE_ENV === "production",
-//     sameSite: "Lax",
-//     expires: parsed.expires,
-//   });
-//   return res;
-// }

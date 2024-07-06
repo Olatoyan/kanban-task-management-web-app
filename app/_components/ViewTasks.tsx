@@ -1,11 +1,13 @@
 "use client";
 
-import { BsThreeDotsVertical } from "react-icons/bs";
-import { TaskType } from "../_lib/type";
-import ViewTasksList from "./ViewTasksList";
-import { useBoard } from "@/app/context/BoardContext";
 import { useState } from "react";
-import { useTheme } from "../context/ThemeContext";
+import { BsThreeDotsVertical } from "react-icons/bs";
+
+import { useBoard } from "@/app/_context/BoardContext";
+import { TaskType } from "@/app/_lib/type";
+import { useTheme } from "@/app/_context/ThemeContext";
+
+import ViewTasksList from "./ViewTasksList";
 
 function ViewTasks({ task }: { task: TaskType }) {
   const [isOptionsOpen, setIsOptionsOpen] = useState(false);
@@ -70,7 +72,6 @@ function ViewTasks({ task }: { task: TaskType }) {
               </p>
               <p
                 className="cursor-pointer text-[1.4rem] font-medium leading-[2.3rem] text-[#ea5555]"
-                // onClick={handleDeleteTask}
                 onClick={() => {
                   deleteSelectedTask(task, "task");
                 }}

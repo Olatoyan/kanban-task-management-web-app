@@ -1,20 +1,22 @@
 "use client";
 
-import ErrorMessage from "@/app/_components/ErrorMessage";
 import Image from "next/image";
-import { useForm } from "react-hook-form";
-
-import { BsEyeSlash, BsEyeFill } from "react-icons/bs";
-import Button from "./Button";
-import { signupWithEmailAction } from "../_lib/actions";
-import { useState } from "react";
-import toast from "react-hot-toast";
-import { getErrorMessage } from "../_lib/helper";
 import Link from "next/link";
+
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { BsEyeSlash, BsEyeFill } from "react-icons/bs";
+import toast from "react-hot-toast";
+
+import ErrorMessage from "@/app/_components/ErrorMessage";
+import { signupWithEmailAction } from "@/app/_lib/actions";
+import { getErrorMessage } from "@/app/_lib/helper";
+import { useBoard } from "@/app/_context/BoardContext";
+import { useTheme } from "@/app/_context/ThemeContext";
+
 import SignInButton from "./SignInButton";
-import { useBoard } from "../context/BoardContext";
 import Spinner from "./Spinner";
-import { useTheme } from "../context/ThemeContext";
+import Button from "./Button";
 
 type SignUpType = {
   name: string;
@@ -28,9 +30,7 @@ function SignUp() {
     register,
     handleSubmit,
     getValues,
-    setValue,
     formState: { errors },
-    setError,
     reset,
   } = useForm<SignUpType>();
 
@@ -43,7 +43,7 @@ function SignUp() {
     state: { isDarkMode },
   } = useTheme();
 
-  const [showPassword, setShowPassword] = useState(false); // State to toggle password visibility
+  const [showPassword, setShowPassword] = useState(false);
 
   const togglePasswordVisibility = () => {
     setShowPassword((prev) => !prev);
@@ -70,12 +70,10 @@ function SignUp() {
   async function onSubmit(data: SignUpType) {
     setIsLoading(true);
     try {
-      console.log(data);
       const { name, email, password } = data;
       await signupWithEmailAction({ name, email, password });
       toast.success("Please check your email for verification");
     } catch (error) {
-      console.log(error);
       toast.error("There is already an account with this email");
     } finally {
       setIsLoading(false);
@@ -83,7 +81,6 @@ function SignUp() {
     }
   }
 
-  console.log(errors);
 
   return (
     <>
@@ -142,9 +139,9 @@ function SignUp() {
                   })}
                 />
                 {errors?.name?.message && (
-                  <p className="text-[1.2rem] font-medium leading-[2.3rem] text-[#ea5555]">
+                  <ErrorMessage>
                     {errors.name.message as string}
-                  </p>
+                  </ErrorMessage>
                 )}
               </div>
             </div>
@@ -167,9 +164,9 @@ function SignUp() {
                   })}
                 />
                 {errors?.email?.message && (
-                  <p className="text-[1.2rem] font-medium leading-[2.3rem] text-[#ea5555]">
+                  <ErrorMessage>
                     {errors.email.message as string}
-                  </p>
+                  </ErrorMessage>
                 )}
               </div>
             </div>
@@ -198,9 +195,9 @@ function SignUp() {
                   {showPassword ? <BsEyeSlash /> : <BsEyeFill />}
                 </span>
                 {errors?.password?.message && (
-                  <p className="text-[1.2rem] font-medium leading-[2.3rem] text-[#ea5555]">
+                  <ErrorMessage>
                     {errors.password.message as string}
-                  </p>
+                  </ErrorMessage>
                 )}
               </div>
             </div>
@@ -224,9 +221,9 @@ function SignUp() {
                 />
 
                 {errors?.confirmPassword?.message && (
-                  <p className="text-[1.2rem] font-medium leading-[2.3rem] text-[#ea5555]">
+                  <ErrorMessage>
                     {errors.confirmPassword.message as string}
-                  </p>
+                  </ErrorMessage>
                 )}
               </div>
             </div>

@@ -1,15 +1,18 @@
+import { useRouter } from "next/navigation";
+
 import { useEffect, useState } from "react";
-import { useBoard } from "../context/BoardContext";
+import { useForm } from "react-hook-form";
+
+import { useBoard } from "@/app/_context/BoardContext";
+import { useTheme } from "@/app/_context/ThemeContext";
+
+import { createNewBoardAction } from "@/app/_lib/actions";
+import { NewBoardFormType } from "@/app/_lib/type";
+import { validateBoardName, validateColumns } from "@/app/_lib/helper";
+
 import AddSubtask from "./AddSubtask";
 import Button from "./Button";
-import { createNewBoardAction } from "../_lib/actions";
-import { useForm } from "react-hook-form";
-import { NewBoardFormType } from "../_lib/type";
 import ErrorMessage from "./ErrorMessage";
-import { useRouter } from "next/navigation";
-import { getAllTasks } from "../_lib/data-service";
-import { validateBoardName, validateColumns } from "../_lib/helper";
-import { useTheme } from "../context/ThemeContext";
 
 type columnFormProp = { name: string };
 
@@ -19,6 +22,17 @@ function AddNewBoard({
   allBoardNames: { id: string; name: string }[];
 }) {
   const router = useRouter();
+
+  const { clearSelectedTask, setIsLoading } = useBoard();
+  const {
+    state: { isDarkMode },
+  } = useTheme();
+
+  const [isAddColumn, setIsAddColumn] = useState(false);
+
+  useEffect(() => {
+    // This effect will run whenever 'columns' value changes after 'setValue' call
+  }, [isAddColumn]);
 
   const {
     register,
@@ -39,36 +53,16 @@ function AddNewBoard({
     },
   });
 
-  const { clearSelectedTask, setIsLoading } = useBoard();
-  const {
-    state: { isDarkMode },
-  } = useTheme();
-  const [isAddColumn, setIsAddColumn] = useState(false);
-
   const columns: columnFormProp[] = getValues("columns");
-  console.log(columns);
 
-  useEffect(() => {
-    // This effect will run whenever 'columns' value changes after 'setValue' call
-  }, [isAddColumn]);
-
-  function updateColumns() {
-    console.log("clicked");
-
+  function addNewColumn() {
     const updatedColumns = [...columns, { name: "", id: "" }];
-
-    console.log({ updatedColumns });
-
     setValue("columns", updatedColumns);
-
     setIsAddColumn((prev) => !prev);
   }
 
   function removeColumn(index: number) {
-    console.log(index);
-
     const updatedColumns = columns.filter((_, i) => index !== i);
-    console.log({ updatedColumns });
     setValue("columns", updatedColumns);
     setIsAddColumn((prev) => !prev);
   }
@@ -81,12 +75,6 @@ function AddNewBoard({
     setValue("columns", updatedColumns);
     setIsAddColumn((prev) => !prev);
   }
-
-  // async function onSubmit(data: NewBoardFormType) {
-  //   console.log(data);
-
-  //   // await createNewBoardAction(data);
-  // }
 
   async function onSubmit(data: NewBoardFormType) {
     setIsLoading(true);
@@ -113,14 +101,10 @@ function AddNewBoard({
     }
   }
 
-  console.log(errors);
-
   return (
     <div className="fixed inset-0 flex h-full w-full items-center justify-center">
       <form
         className={`z-[10] mx-8 flex max-h-[55rem] w-full max-w-[50rem] flex-col gap-10 overflow-auto rounded-[0.6rem] p-[3.2rem] tablet:px-8 ${isDarkMode ? "bg-[#2b2c37]" : "bg-white"}`}
-        // action={createNewTaskAction}
-        // action={clientcreateNewBoardAction}
         onSubmit={handleSubmit(onSubmit)}
       >
         <h3
@@ -184,7 +168,7 @@ function AddNewBoard({
           <button
             type="button"
             className={`cursor-pointer rounded-[2rem] py-[0.85rem] text-center text-[1.3rem] font-bold leading-[2.3rem] text-[#635fc7] transition-all duration-300 ${isDarkMode ? "bg-white" : "bg-[rgba(99,95,199,0.10)] hover:bg-[rgba(99,95,199,0.25)]"}`}
-            onClick={updateColumns}
+            onClick={addNewColumn}
           >
             + Add New Column
           </button>

@@ -15,7 +15,6 @@ export interface IUser extends Document {
   boards?: string[];
 }
 
-// User schema definition
 const userSchema: Schema<IUser> = new mongoose.Schema({
   name: {
     type: String,
@@ -54,7 +53,6 @@ const userSchema: Schema<IUser> = new mongoose.Schema({
   boards: [{ type: Schema.Types.ObjectId, ref: "Board" }],
 });
 
-// Pre-save hook to hash the password
 userSchema.pre<IUser>("save", async function (next) {
   if (!this.isModified("password")) return next();
 

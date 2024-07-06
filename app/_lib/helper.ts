@@ -97,7 +97,7 @@ const key = new TextEncoder().encode(process.env.JWT_SECRET);
 
 export async function encrypt(payload: any) {
   const expirationTime = new Date();
-  expirationTime.setHours(expirationTime.getHours() + 24); // Set expiration to 24 hours from now
+  expirationTime.setHours(expirationTime.getHours() + 24);
 
   return await new SignJWT(payload)
     .setProtectedHeader({ alg: "HS256" })
@@ -105,24 +105,10 @@ export async function encrypt(payload: any) {
     .setExpirationTime(expirationTime)
     .sign(key);
 }
-// export async function encrypt(payload: any) {
-//   return await new SignJWT(payload)
-//     .setProtectedHeader({ alg: "HS256" })
-//     .setIssuedAt()
-//     .setExpirationTime("10 sec from now")
-//     .sign(key);
-// }
 
 export async function decrypt(input: string) {
   const { payload } = await jwtVerify(input, key, {
     algorithms: ["HS256"],
   });
   return payload;
-}
-
-export type ActionError = { error: string };
-export type ServerActionResponse<T = {}> = ActionError | undefined | T;
-
-export function isActionError(error: any): error is ActionError {
-  return error && "error" in error && error.error;
 }

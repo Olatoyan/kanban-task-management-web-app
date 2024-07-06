@@ -1,12 +1,13 @@
 "use client";
 
+import { useRouter, useSearchParams } from "next/navigation";
+
+import toast from "react-hot-toast";
+
 import Spinner from "@/app/_components/Spinner";
 import { verifyEmailAction } from "@/app/_lib/actions";
 import { getErrorMessage } from "@/app/_lib/helper";
-import { useBoard } from "@/app/context/BoardContext";
-import { redirect, useRouter, useSearchParams } from "next/navigation";
-import { useEffect } from "react";
-import toast from "react-hot-toast";
+import { useBoard } from "@/app/_context/BoardContext";
 
 function Page() {
   const searchParams = useSearchParams();
@@ -17,54 +18,20 @@ function Page() {
     setIsLoading,
   } = useBoard();
 
-  // useEffect(() => {
-  //   const verifyToken = async () => {
-  //     const token = searchParams.get("token");
-  //     if (token) {
-  //       try {
-  //         console.log(token);
-  //         const newToken = await verifyEmailAction(token);
-  //         console.log(newToken);
-  //         toast.success("Email verified successfully");
-  //         // redirect("/");
-  //         router.push("/"); // Redirect to homepage after successful verification
-  //       } catch (error) {
-  //         // redirect("/auth/signup");
-  //         toast.error("Invalid or expired verification token.");
-  //         console.error("Error verifying email:", error);
-  //         // Handle error or show error toast
-  //         // router.push("/auth/signup"); // Redirect to homepage after successful verification
-  //       }
-  //     } else {
-  //       console.log("No token provided");
-  //     }
-  //   };
-
-  //   verifyToken();
-  // }, [router, searchParams]);
-
   const verifyToken = async () => {
     setIsLoading(true);
     const token = searchParams.get("token");
     if (token) {
       try {
-        console.log(token);
-        const newToken = await verifyEmailAction(token);
-        console.log(newToken);
+        await verifyEmailAction(token);
         toast.success("Email verified successfully");
-        // redirect("/");
-        router.push("/"); // Redirect to homepage after successful verification
+        router.push("/");
       } catch (error) {
-        // redirect("/auth/signup");
         toast.error(getErrorMessage(error));
-        console.error("Error verifying email:", error);
-        // Handle error or show error toast
-        router.push("/auth/signup"); // Redirect to homepage after successful verification
+        router.push("/auth/signup");
       } finally {
         setIsLoading(false);
       }
-    } else {
-      console.log("No token provided");
     }
   };
 

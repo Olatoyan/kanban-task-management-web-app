@@ -1,11 +1,13 @@
 "use client";
 
+import { Suspense } from "react";
+
 import { BoardType, isSessionType } from "@/app/_lib/type";
 import BoardHeader from "@/app/_components/BoardHeader";
+import { useTheme } from "@/app/_context/ThemeContext";
 import BoardContainer from "@/app/_components/BoardContainer";
+
 import Spinner from "./Spinner";
-import { Suspense } from "react";
-import { useTheme } from "../context/ThemeContext";
 import SideBar from "./SideBar";
 
 function MainPage({

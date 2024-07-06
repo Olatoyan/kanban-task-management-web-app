@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
-import { BoardProvider } from "@/app/context/BoardContext";
-import { ThemeProvider } from "./context/ThemeContext";
+import { BoardProvider } from "@/app/_context/BoardContext";
+import { ThemeProvider } from "./_context/ThemeContext";
 import { Toaster } from "react-hot-toast";
 
 const jakarta = Plus_Jakarta_Sans({ subsets: ["latin"], display: "swap" });

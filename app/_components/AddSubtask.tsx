@@ -1,10 +1,12 @@
 "use client";
 
+import { MouseEventHandler } from "react";
 import { FieldErrors, UseFormRegister } from "react-hook-form";
 import { BsX } from "react-icons/bs";
+
+import { useTheme } from "@/app/_context/ThemeContext";
+
 import ErrorMessage from "./ErrorMessage";
-import { MouseEventHandler } from "react";
-import { useTheme } from "../context/ThemeContext";
 
 function AddSubtask({
   title,
@@ -23,8 +25,6 @@ function AddSubtask({
   register: UseFormRegister<any>;
   error: FieldErrors<any>;
 }) {
-  console.log(title);
-
   const {
     state: { isDarkMode },
   } = useTheme();

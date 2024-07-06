@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { useTheme } from "../context/ThemeContext";
+import { useTheme } from "../_context/ThemeContext";
 
 function Logo() {
   const {

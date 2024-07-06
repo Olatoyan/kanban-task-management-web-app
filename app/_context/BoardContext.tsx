@@ -1,7 +1,7 @@
 "use client";
 
 import { ReactNode, createContext, useContext, useReducer } from "react";
-import { BoardType, TaskType } from "../_lib/type";
+import { BoardType, TaskType } from "@/app/_lib/type";
 
 type StateType = {
   selectedTask: TaskType | null;
@@ -21,7 +21,6 @@ type StateType = {
 
 type ActionType =
   | { type: "SET_SELECTED_TASK"; payload: TaskType }
-  // | { type: "SET_SELECTED_BOARD"; payload: BoardType }
   | { type: "SET_SELECTED_BOARD" }
   | { type: "CLEAR_SELECTED_TASK" }
   | { type: "EDIT_SELECTED_TASK" }
@@ -61,7 +60,6 @@ const BoardContext = createContext<{
   dispatch: React.Dispatch<ActionType>;
   setSelectedTask: (task: TaskType) => void;
   setSelectedBoard: () => void;
-  // setSelectedBoard: (board: BoardType) => void;
   clearSelectedTask: () => void;
   editSelectedTask: () => void;
   deleteSelectedTask: (task: TaskType, deletedType: string) => void;
@@ -98,7 +96,6 @@ const reducer = (state: StateType, action: ActionType): StateType => {
     case "SET_SELECTED_BOARD":
       return {
         ...state,
-        // selectedBoard: action.payload,
         isEditingBoard: true,
       };
     case "CLEAR_SELECTED_TASK":

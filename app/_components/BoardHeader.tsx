@@ -1,18 +1,18 @@
 "use client";
 
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { BoardType, isSessionType } from "../_lib/type";
-import { useEffect, useRef, useState } from "react";
-import { BsThreeDotsVertical, BsChevronDown } from "react-icons/bs";
-import { useBoard } from "../context/BoardContext";
-import { useTheme } from "../context/ThemeContext";
+import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
 
-import { BsPlus } from "react-icons/bs";
+import { useEffect, useRef, useState } from "react";
+import { BsThreeDotsVertical, BsChevronDown, BsPlus } from "react-icons/bs";
 import { CiLogout } from "react-icons/ci";
 
+import { BoardType, isSessionType } from "@/app/_lib/type";
+import { signOutAction } from "@/app/_lib/actions";
+import { useBoard } from "@/app/_context/BoardContext";
+import { useTheme } from "@/app/_context/ThemeContext";
+
 import MobileLogo from "@/public/logo-mobile.svg";
-import { signOutAction } from "../_lib/actions";
 
 function BoardHeader({
   data,
@@ -23,7 +23,6 @@ function BoardHeader({
 }) {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const pathname = usePathname();
 
   const { addNewTask, setSelectedBoard, deleteSelectedBoard, setIsLoading } =
     useBoard();
@@ -47,16 +46,6 @@ function BoardHeader({
   function handleCloseOptionsBtn() {
     setIsOptionsOpen(false);
   }
-
-  // useEffect(() => {
-  //   if (!boardName) return;
-  //   const currentBoard = searchParams.get("board");
-  //   if (currentBoard !== boardName) {
-  //     const params = new URLSearchParams(window.location.search);
-  //     params.set("board", boardName);
-  //     router.push(`${pathname}?${params.toString()}`, { scroll: false });
-  //   }
-  // }, [boardName, searchParams, pathname, router]);
 
   async function logUserOut() {
     setIsLoading(true);

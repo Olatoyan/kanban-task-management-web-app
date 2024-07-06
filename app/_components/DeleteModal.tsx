@@ -1,7 +1,7 @@
-import { deleteItemAction } from "../_lib/actions";
-import { BoardType, TaskType } from "../_lib/type";
-import { useBoard } from "../context/BoardContext";
-import { useTheme } from "../context/ThemeContext";
+import { deleteItemAction } from "@/app/_lib/actions";
+import { BoardType, TaskType } from "@/app/_lib/type";
+import { useBoard } from "@/app/_context/BoardContext";
+import { useTheme } from "@/app/_context/ThemeContext";
 
 function DeleteModal({
   type,
@@ -11,6 +11,7 @@ function DeleteModal({
   data: TaskType | BoardType;
 }) {
   const { clearSelectedTask, setIsLoading } = useBoard();
+  
   const {
     state: { isDarkMode },
   } = useTheme();

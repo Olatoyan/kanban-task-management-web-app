@@ -1,4 +1,4 @@
-import { useBoard } from "../context/BoardContext";
+import { useBoard } from "@/app/_context/BoardContext";
 
 function EmptyBoard() {
   const { addNewBoard } = useBoard();

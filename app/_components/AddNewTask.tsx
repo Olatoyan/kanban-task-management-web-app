@@ -1,15 +1,18 @@
-import { useEffect, useState } from "react";
-import Button from "./Button";
-import { BsChevronDown } from "react-icons/bs";
-import AddSubtask from "./AddSubtask";
-import { createNewTaskAction } from "../_lib/actions";
-import { useBoard } from "../context/BoardContext";
-import { NewTaskFormType } from "../_lib/type";
-import { useForm } from "react-hook-form";
-import ErrorMessage from "./ErrorMessage";
 import { useRouter } from "next/navigation";
-import { validateSubtasks } from "../_lib/helper";
-import { useTheme } from "../context/ThemeContext";
+
+import { useEffect, useState } from "react";
+import { BsChevronDown } from "react-icons/bs";
+import { useForm } from "react-hook-form";
+
+import { createNewTaskAction } from "@/app/_lib/actions";
+import { useBoard } from "@/app/_context/BoardContext";
+import { NewTaskFormType } from "@/app/_lib/type";
+import { validateSubtasks } from "@/app/_lib/helper";
+import { useTheme } from "@/app/_context/ThemeContext";
+
+import ErrorMessage from "./ErrorMessage";
+import Button from "./Button";
+import AddSubtask from "./AddSubtask";
 
 type TaskFormProp = { title: string };
 
@@ -21,6 +24,19 @@ function AddNewTask({
   boardId: string;
 }) {
   const router = useRouter();
+
+  const { clearSelectedTask, setIsLoading } = useBoard();
+  const {
+    state: { isDarkMode },
+  } = useTheme();
+
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [status, setStatus] = useState(allStatus[0]);
+  const [isAddColumn, setIsAddColumn] = useState(false);
+
+  useEffect(() => {
+    // This effect will run whenever 'subtasks' value changes after 'setValue' call
+  }, [isAddColumn]);
 
   const {
     register,
@@ -43,72 +59,28 @@ function AddNewTask({
       ],
     },
   });
-  const [isExpanded, setIsExpanded] = useState(false);
-  const [status, setStatus] = useState(allStatus[0]);
-  const [isAddColumn, setIsAddColumn] = useState(false);
 
   const subtasks = getValues("subtasks");
-  console.log(subtasks);
 
-  useEffect(() => {
-    // This effect will run whenever 'subtasks' value changes after 'setValue' call
-  }, [isAddColumn]);
-
-  // const [subtasks, setSubtasks] = useState([
-  //   {
-  //     title: "",
-  //     isCompleted: false,
-  //     key: Date.now().toString(),
-  //   },
-  // ]);
-
-  const { clearSelectedTask, setIsLoading } = useBoard();
-  const {
-    state: { isDarkMode },
-  } = useTheme();
-
-  // function addNewSubtask() {
-  //   const newSubtask = {
-  //     title: "",
-  //     isCompleted: false,
-  //     key: Date.now().toString(),
-  //   };
-  //   setSubtasks((prev) => [...prev, newSubtask]);
-  // }
-
-  // function removeSubtask(index: number) {
-  //   setSubtasks((prev) => prev.filter((_, i) => i !== index));
-  // }
-
-  function updateSubtasks() {
-    console.log("clicked");
-
+  function addNewSubtask() {
     const updatedSubtasks = [
       ...subtasks,
       { title: "", isCompleted: false, _id: "" },
     ];
-
-    console.log({ updatedSubtasks });
-
     setValue("subtasks", updatedSubtasks);
-
     setIsAddColumn((prev) => !prev);
   }
 
-  function removeColumn(index: number) {
-    console.log(index);
-
+  function removeSubtask(index: number) {
     const updatedSubtasks = subtasks.filter((_, i) => index !== i);
-    console.log({ updatedSubtasks });
     setValue("subtasks", updatedSubtasks);
     setIsAddColumn((prev) => !prev);
   }
 
-  function updateColumnName(index: number, title: string) {
+  function updateSubtaskName(index: number, title: string) {
     const updatedSubtasks = subtasks.map((column, i) =>
       i === index ? { ...column, title } : column,
     );
-
     setValue("subtasks", updatedSubtasks);
     setIsAddColumn((prev) => !prev);
   }
@@ -119,20 +91,8 @@ function AddNewTask({
     setIsExpanded(false);
   }
 
-  // async function onSubmit(data: NewTaskFormType) {
-  //   console.log(data);
-  //   const newData = { ...data, status, id: boardId };
-
-  //   await createNewTaskAction(newData);
-
-  //   clearSelectedTask();
-  // }
-
   async function onSubmit(data: NewTaskFormType) {
     setIsLoading(true);
-
-    console.log({ data });
-    console.log({ boardId });
 
     if (!validateSubtasks(data.subtasks, setError)) {
       setIsLoading(false);
@@ -141,8 +101,6 @@ function AddNewTask({
 
     try {
       const newData = await createNewTaskAction({ ...data, id: boardId });
-      console.log({ newData });
-
       const newName = newData.name.split(" ").join("+");
 
       router.push(`/?board=${newName}`);
@@ -154,14 +112,10 @@ function AddNewTask({
     }
   }
 
-  console.log(errors);
-
   return (
     <div className="fixed inset-0 flex h-full w-full items-center justify-center">
       <form
         className={`z-[10] mx-8 flex h-[55rem] w-full max-w-[50rem] flex-col gap-10 overflow-auto rounded-[0.6rem] p-[3.2rem] tablet:px-8 ${isDarkMode ? "bg-[#2b2c37]" : "bg-white"}`}
-        // action={createNewTaskAction}
-        // action={clientcreateNewTaskAction}
         onSubmit={handleSubmit(onSubmit)}
       >
         <h3
@@ -169,9 +123,6 @@ function AddNewTask({
         >
           Add New Task
         </h3>
-
-        {/* <input type="hidden" name="status" value={status} />
-        <input type="hidden" name="id" value={boardId} /> */}
 
         <div className="flex flex-col gap-3">
           <label
@@ -237,19 +188,20 @@ function AddNewTask({
                 key={index}
                 title={subtask.title}
                 index={index}
-                handleRemove={() => removeColumn(index)}
-                handleChange={(name) => updateColumnName(index, name)}
+                handleRemove={() => removeSubtask(index)}
+                handleChange={(name) => updateSubtaskName(index, name)}
                 register={register}
                 error={errors}
               />
             ))}
           </div>
-          <p
+          <button
+            type="button"
             className={`cursor-pointer rounded-[2rem] py-[0.85rem] text-center text-[1.4rem] font-bold leading-[2.3rem] text-[#635fc7] transition-all duration-300 ${isDarkMode ? "bg-white" : "bg-[rgba(99,95,199,0.10)] hover:bg-[rgba(99,95,199,0.25)]"}`}
-            onClick={updateSubtasks}
+            onClick={addNewSubtask}
           >
             + Add New SubTask
-          </p>
+          </button>
         </div>
 
         <div className="relative">

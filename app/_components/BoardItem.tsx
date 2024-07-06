@@ -1,8 +1,8 @@
 "use client";
 
-import { TaskType } from "../_lib/type";
-import { useBoard } from "@/app/context/BoardContext";
-import { useTheme } from "../context/ThemeContext";
+import { TaskType } from "@/app/_lib/type";
+import { useBoard } from "@/app/_context/BoardContext";
+import { useTheme } from "@/app/_context/ThemeContext";
 
 function BoardItem({ task }: { task: TaskType }) {
   const numSubTasksCompleted = task.subtasks
@@ -10,9 +10,11 @@ function BoardItem({ task }: { task: TaskType }) {
     .filter(Boolean).length;
 
   const { setSelectedTask } = useBoard();
+
   const {
     state: { isDarkMode },
   } = useTheme();
+
   return (
     <div
       className={`group flex cursor-pointer flex-col rounded-[0.8rem] px-[1.6rem] py-[2.3rem] shadow-[0px_4px_6px_0px_rgba(54,78,126,0.10)] transition-all duration-300 ${isDarkMode ? "bg-[#2b2c37]" : "bg-white"} }`}
