@@ -17,7 +17,7 @@ function AddSubtask({
 }: {
   title?: string;
   index: number;
-  handleRemove: MouseEventHandler<HTMLDivElement>;
+  handleRemove: MouseEventHandler<HTMLButtonElement>;
   handleChange: (value: string) => void;
   type?: string;
   register: UseFormRegister<any>;
@@ -56,12 +56,13 @@ function AddSubtask({
           })}
         />
 
-        <div
+        <button
+          type="button"
           onClick={handleRemove}
           className="cursor-pointer text-[2rem] text-[#828fa3] transition-all duration-300 hover:text-[#ea5555]"
         >
           <BsX />
-        </div>
+        </button>
       </div>
       {error?.[`task-${index}`]?.message && (
         <ErrorMessage>{error[`task-${index}`]!.message as string}</ErrorMessage>

@@ -83,7 +83,10 @@ function AddNewTask({
   function updateSubtasks() {
     console.log("clicked");
 
-    const updatedSubtasks = [...subtasks, { title: "", isCompleted: false }];
+    const updatedSubtasks = [
+      ...subtasks,
+      { title: "", isCompleted: false, _id: "" },
+    ];
 
     console.log({ updatedSubtasks });
 

@@ -14,6 +14,12 @@ import Link from "next/link";
 import { redirect, useRouter } from "next/navigation";
 import { useBoard } from "../context/BoardContext";
 import Spinner from "./Spinner";
+import { useTheme } from "../context/ThemeContext";
+
+type LoginProps = {
+  email: string;
+  password: string;
+};
 
 function Login() {
   const {
@@ -30,6 +36,10 @@ function Login() {
     state: { isLoading },
   } = useBoard();
 
+  const {
+    state: { isDarkMode },
+  } = useTheme();
+
   const router = useRouter();
 
   const [showPassword, setShowPassword] = useState(false); // State to toggle password visibility
@@ -44,6 +54,7 @@ function Login() {
   };
 
   async function onSubmit(data: any) {
+    setIsLoading(true);
     const { email, password } = data;
     const result = await loginWithEmailAction({ email, password });
 
@@ -51,7 +62,10 @@ function Login() {
       toast.error(result?.error);
     }
 
-    // setIsLoading(true);
+    router.push("/");
+    toast.success("Welcome back!");
+
+    setIsLoading(false);
     // try {
     //   const { email, password } = data;
     //   const session = await loginWithEmailAction({ email, password });
@@ -65,7 +79,6 @@ function Login() {
     //   console.log(error);
     //   toast.error("Invalid email or password");
     // } finally {
-    //   setIsLoading(false);
     // }
   }
 
@@ -73,14 +86,17 @@ function Login() {
 
   return (
     <>
-      <section className="flex w-full items-center justify-center bg-[#20212c]">
-        <section className="flex w-full max-w-[60rem] flex-col items-center gap-12 bg-[#2b2c37] p-[3.2rem]">
+      <section
+        className={`flex w-full items-center justify-center ${isDarkMode ? "bg-[#20212c]" : "bg-[#f9fafb]"}`}
+      >
+        <section
+          className={`flex w-full max-w-[60rem] flex-col items-center gap-12 p-[3.2rem] ${isDarkMode ? "bg-[#2b2c37]" : "bg-white"}`}
+        >
           <Image
-            src="/logo-light.svg"
+            src={isDarkMode ? "/logo-light.svg" : "/logo-dark.svg"}
             alt="logo"
             width={155}
             height={26}
-            className=""
           />
 
           <form
@@ -88,7 +104,9 @@ function Login() {
             className="flex w-full flex-col gap-[2.4rem]"
           >
             <div>
-              <h2 className="text-[2.4rem] font-bold text-white">
+              <h2
+                className={`text-[2.4rem] font-bold ${isDarkMode ? "text-white" : "text-[#000112]"} `}
+              >
                 Welcome Back!
               </h2>
               <p className="text-[1.4rem] text-[#828fa3]">
@@ -100,7 +118,7 @@ function Login() {
             <div className="flex flex-col gap-3">
               <label
                 htmlFor="email"
-                className={`text-[1.2rem] font-bold text-white`}
+                className={`text-[1.2rem] font-bold ${isDarkMode ? "text-white" : "text-[#000112]"}`}
               >
                 Email
               </label>
@@ -108,7 +126,7 @@ function Login() {
                 <input
                   type="text"
                   id="email"
-                  className={`w-full rounded-[0.4rem] border bg-transparent px-6 py-3 text-[1.6rem] font-medium leading-[2.3rem] outline-[0] placeholder:text-opacity-25 ${errors?.email?.message ? "border-[#ea5555] focus:border-[#ea5555]" : "border-[rgba(130,143,163,0.25)] hover:border-[#635fc7] focus:border-[#635fc7] focus:outline-[#635fc7]"} text-white`}
+                  className={`w-full rounded-[0.4rem] border bg-transparent px-6 py-3 text-[1.6rem] font-medium leading-[2.3rem] outline-[0] placeholder:text-opacity-25 ${errors?.email?.message ? "border-[#ea5555] focus:border-[#ea5555]" : "border-[rgba(130,143,163,0.25)] hover:border-[#635fc7] focus:border-[#635fc7] focus:outline-[#635fc7]"} ${isDarkMode ? "text-white" : "text-[#000112]"}`}
                   placeholder="Enter your email here"
                   {...register("email", {
                     required: "Can't be empty",
@@ -125,7 +143,7 @@ function Login() {
             <div className="flex flex-col gap-3">
               <label
                 htmlFor="password"
-                className={`text-[1.2rem] font-bold text-white`}
+                className={`text-[1.2rem] font-bold ${isDarkMode ? "text-white" : "text-[#000112]"}`}
               >
                 Password
               </label>
@@ -133,7 +151,7 @@ function Login() {
                 <input
                   type={showPassword ? "text" : "password"}
                   id="password"
-                  className={`w-full rounded-[0.4rem] border bg-transparent px-6 py-3 text-[1.6rem] font-medium leading-[2.3rem] outline-[0] placeholder:text-opacity-25 ${errors?.password?.message ? "border-[#ea5555] focus:border-[#ea5555]" : "border-[rgba(130,143,163,0.25)] hover:border-[#635fc7] focus:border-[#635fc7] focus:outline-[#635fc7]"} text-white`}
+                  className={`w-full rounded-[0.4rem] border bg-transparent px-6 py-3 text-[1.6rem] font-medium leading-[2.3rem] outline-[0] placeholder:text-opacity-25 ${errors?.password?.message ? "border-[#ea5555] focus:border-[#ea5555]" : "border-[rgba(130,143,163,0.25)] hover:border-[#635fc7] focus:border-[#635fc7] focus:outline-[#635fc7]"} ${isDarkMode ? "text-white" : "text-[#000112]"}`}
                   placeholder="Enter your password"
                   {...register("password", {
                     required: "Can't be empty",
@@ -152,7 +170,9 @@ function Login() {
                 )}
               </div>
             </div>
-            <p className="text-[1.4rem] text-[#fff]">
+            <p
+              className={`text-[1.4rem] ${isDarkMode ? "text-white" : "text-[#000112]"}`}
+            >
               Don&#39;t have an account with us yet?{"   "}
               <Link href="/auth/signup" className="font-bold text-[#635fc7]">
                 Create one now
@@ -162,8 +182,12 @@ function Login() {
             <Button pendingLabel="Logging in" label="Log Into Your Account" />
           </form>
 
-          <p className="text-[1.5rem] text-[#fff]">OR</p>
-          <SignInButton />
+          <p
+            className={`text-[1.5rem] ${isDarkMode ? "text-white" : "text-[#000112]"}`}
+          >
+            OR
+          </p>
+          <SignInButton isDarkMode={isDarkMode} />
         </section>
       </section>
 

@@ -181,12 +181,13 @@ function AddNewBoard({
               />
             ))}
           </div>
-          <p
+          <button
+            type="button"
             className={`cursor-pointer rounded-[2rem] py-[0.85rem] text-center text-[1.3rem] font-bold leading-[2.3rem] text-[#635fc7] transition-all duration-300 ${isDarkMode ? "bg-white" : "bg-[rgba(99,95,199,0.10)] hover:bg-[rgba(99,95,199,0.25)]"}`}
             onClick={updateColumns}
           >
             + Add New Column
-          </p>
+          </button>
         </div>
 
         <Button pendingLabel="Creating" label="Create New Board" />
