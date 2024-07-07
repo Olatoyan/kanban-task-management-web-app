@@ -57,7 +57,7 @@ function Login() {
     }
 
     router.push("/");
-    toast.success("Welcome back!");
+    toast.success("Successfully logged in");
 
     setIsLoading(false);
   }

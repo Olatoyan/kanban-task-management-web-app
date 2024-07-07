@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+
 export default function Error({
   error,
   reset,
@@ -14,12 +16,13 @@ export default function Error({
       </h1>
       <p className="text-lg text-[#828fa3]">{error.message}</p>
 
-      <button
+      <Link
+        href="/"
         className="inline-block bg-[#635fc7] px-[2.4rem] py-5 text-[1.6rem] text-white"
         onClick={reset}
       >
-        Try again
-      </button>
+        Go back home
+      </Link>
     </section>
   );
 }
