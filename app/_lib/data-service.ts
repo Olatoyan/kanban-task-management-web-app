@@ -50,9 +50,6 @@ export async function getAllTasks() {
   await connectToDb();
 
   const getUser = await getUserSession();
-  if (!getUser) {
-    throw new Error("User not authenticated");
-  }
 
   const getBoards = getUser?.boards;
 
