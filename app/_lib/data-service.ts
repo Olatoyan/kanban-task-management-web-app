@@ -10,8 +10,6 @@ import { getSession } from "./userAuth";
 import { redirect } from "next/navigation";
 import { auth } from "./auth";
 
-
-
 export async function createUser({
   name,
   email,
@@ -173,7 +171,6 @@ export async function updateTaskDetails({
     }
   }
 
-
   for (let subtask of subtasks) {
     const trimmedTitle = subtask.title.trim();
     if (!existingSubtaskTitles.has(trimmedTitle)) {
@@ -194,7 +191,6 @@ export async function updateTaskDetails({
   // Find and remove the task from its current column
   for (let column of boardColumns) {
     const getColumn = await Column.findById(column._id);
-
 
     // Find the task in the column
     const getTask = getColumn.tasks.find(
@@ -234,10 +230,8 @@ export async function updateTaskDetails({
     subtasks: existingSubtaskIdsToKeep,
   }).lean();
 
-
   return updatedData;
 }
-
 
 export async function createTask({
   id,
@@ -455,12 +449,12 @@ export async function createBoard({
   const newBoard = new Board({
     name,
     columns: columnIds,
+    userId: getUser._id,
   });
 
   await newBoard.save();
 
   const getBoards = getUser?.boards;
-
 
   getBoards.push(newBoard._id);
 
@@ -542,7 +536,6 @@ export async function updateBoardDetails({
     (col: { _id: string }) => !incomingColumnIds.includes(col._id.toString()),
   );
 
-
   for (const column of columnsToUpdate) {
     await Column.findByIdAndUpdate(column.id, { name: column.name });
     const existingColumn = await Column.findById(column.id);
@@ -554,8 +547,6 @@ export async function updateBoardDetails({
       await Task.findByIdAndUpdate(task._id, { status: column.name });
     }
   }
-
- 
 
   // Remove deleted columns and their associated tasks and subtasks
   for (const column of columnsToRemove) {
