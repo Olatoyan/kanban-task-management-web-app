@@ -54,10 +54,10 @@ function Login() {
 
     if (result?.error) {
       toast.error(result?.error);
+    } else {
+      router.push("/");
+      toast.success("Successfully logged in");
     }
-
-    router.push("/");
-    toast.success("Successfully logged in");
 
     setIsLoading(false);
   }
